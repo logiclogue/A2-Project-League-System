@@ -1,26 +1,26 @@
 <?php
 
-require "Database.php";
+require 'Database.php';
 
 
 class Login
 {
 	public static function init() {
-		$email = $_GET["email"];
-		$password = $_GET["password"];
+		$email = $_GET['email'];
+		$password = $_GET['password'];
 
 		$query = Database::$conn->prepare("SELECT hash FROM members WHERE email=:email");
-		$query->bindParam(":email", $email, PDO::PARAM_STR);
+		$query->bindParam(':email', $email, PDO::PARAM_STR);
 		$query->execute();
 
 		$result = $query->fetchAll(PDO::FETCH_ASSOC);
 		$hash = $result[0]['hash'];
 
 		if (password_verify($password, $hash)) {
-			die("logged in");
+			die('logged in');
 		}
 		else {
-			die("incorrect email or password");
+			die('incorrect email or password');
 		}
 
 		$query->close();
