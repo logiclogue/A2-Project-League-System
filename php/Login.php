@@ -5,14 +5,16 @@ require "Database.php";
 
 class Login
 {
-	public static function main() {
+	public static function init() {
 		$email = $_GET["email"];
 		$password = $_GET["password"];
-		$query = Database::$conn->prepare("SELECT hash FROM members WHERE email=?");
-		$query->bind_param("s", $email);
+
+		$query = Database::$conn->prepare("SELECT hash FROM members WHERE email=:email");
+		$query->bindParam(":email", $email, PDO::PARAM_STR);
 		$query->execute();
-		$query->bind_result($hash);
-		$query->fetch();
+
+		$result = $query->fetchAll(PDO::FETCH_ASSOC);
+		$hash = $result[0]['hash'];
 
 		if (password_verify($password, $hash)) {
 			die("logged in");
@@ -25,6 +27,6 @@ class Login
 	}
 }
 
-Login::main();
+Login::init();
 
 ?>

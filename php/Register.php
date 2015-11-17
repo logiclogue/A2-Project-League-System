@@ -5,7 +5,7 @@ require "Database.php";
 
 class Register
 {
-	public static function main() {
+	public static function init() {
 		$email = $_GET["email"];
 		$first_name = $_GET["first_name"];
 		$last_name = $_GET["last_name"];
@@ -21,6 +21,6 @@ class Register
 	}
 }
 
-Register::main();
+Register::init();
 
 ?>
