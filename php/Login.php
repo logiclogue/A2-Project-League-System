@@ -1,6 +1,6 @@
 <?php
 
-require 'Database.php';
+require dirname(__DIR__) . '/php/Database.php';
 
 
 class Login
@@ -9,7 +9,7 @@ class Login
 		$email = $_GET['email'];
 		$password = $_GET['password'];
 
-		$query = Database::$conn->prepare("SELECT hash FROM users WHERE email=:email");
+		$query = Database::$conn->prepare('SELECT hash FROM users WHERE email=:email');
 		$query->bindParam(':email', $email, PDO::PARAM_STR);
 		$query->execute();
 

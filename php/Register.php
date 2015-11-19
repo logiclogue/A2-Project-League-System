@@ -1,6 +1,6 @@
 <?php
 
-require 'Database.php';
+require dirname(__DIR__) . '/php/Database.php';
 
 
 class Register
