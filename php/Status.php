@@ -8,7 +8,7 @@ class Status
 	private static $status_object = array('logged_in' => false);
 
 
-	private static function print() {
+	private static function printStatus() {
 		die(json_encode(self::$status_object));
 	}
 
@@ -16,10 +16,10 @@ class Status
 		if (isset($_SESSION['id'])) {
 			self::$status_object['logged_in'] = true;
 
-			self::print();
+			self::printStatus();
 		}
 		else {
-			self::print();
+			self::printStatus();
 		}
 	}
 }
