@@ -12,9 +12,10 @@ class Database
 
 		self::$conn = new PDO('mysql:host=' . $connData['servername'] . ';dbname=' . $connData['database'], $connData['username'], $connData['password']);
 
-		if (self::$conn->connect_error) {
-			die('Connection failed' . self::$conn->connect_error);
-		}
+		// must error check here!
+
+		// start session
+		session_start();
 	}
 }
 
