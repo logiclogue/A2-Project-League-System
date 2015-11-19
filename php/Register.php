@@ -6,10 +6,12 @@ require dirname(__DIR__) . '/php/Database.php';
 class Register
 {
 	public static function init() {
-		$email = $_GET['email'];
-		$first_name = $_GET['first_name'];
-		$last_name = $_GET['last_name'];
-		$password = $_GET['password'];
+		$json = json_decode($_GET['json'], true);
+
+		$email = $json['email'];
+		$first_name = $json['first_name'];
+		$last_name = $json['last_name'];
+		$password = $json['password'];
 
 		$hash = password_hash($password, PASSWORD_BCRYPT);
 
