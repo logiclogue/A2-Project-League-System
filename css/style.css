@@ -1,11 +1,14 @@
 body {
 	background-color: #E9E9E9;
+	font-family: 'Open Sans', sans-serif;
+	font-color: #3C3C3C;
 }
 
 
 input {
 	border-radius: 0.5rem !important;
 }
+
 
 button {
 	text-transform: none;
@@ -19,7 +22,7 @@ button {
 }
 
 button:hover {
-	background-color: #3bbaf7;
+	background-color: #3BBAF7;
 	color: #FFF;
 }
 
@@ -31,4 +34,17 @@ button:hover {
 	border-radius: 1rem;
 
 	background-color: #FFF;
+}
+
+.box-container.side {
+	border-width: 0.3rem;
+	border-color: #DADADA;
+	border-style: solid;
+	background-color: #E9E9E9;
+}
+
+.box-container.side h2 {
+	font-size: 2rem;
+	color: #999;
+	text-transform: uppercase;
 }

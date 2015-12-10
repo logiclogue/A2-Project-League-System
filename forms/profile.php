@@ -13,12 +13,12 @@
 	</div>
 
 	<div class="five columns">
-		<div class="box-container">
-			<h3>Rating</h3>
+		<div class="box-container side">
+			<h2>Rating</h2>
 			<span>1342</span>
 		</div>
 
-		<div class="box-container">
+		<div class="box-container side">
 			<h2>Contact</h2>
 		</div>
 	</div>
