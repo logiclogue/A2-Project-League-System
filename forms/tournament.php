@@ -38,7 +38,7 @@
 
 	<div class="five columns">
 		<div class="box-container side">
-			<h2>Members<a class="u-pull-right">+</a></h2>
+			<h2>Members<a class="u-pull-right">Edit</a></h2>
 
 			<span><a>Jordan Lord</a></span><br>
 			<span><a>John Doe</a></span>

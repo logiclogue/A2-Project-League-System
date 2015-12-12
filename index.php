@@ -17,6 +17,7 @@
 <body>
 
 	<?php
+	require("forms/create-tournament.php");
 	require("forms/tournament.php");
 	require("forms/profile.php");
 	require("forms/login.php");
