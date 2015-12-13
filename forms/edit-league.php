@@ -1,18 +1,18 @@
 <div class="container">
 
 	<div class="box-container seven columns">
-		<h1>Create Tournament</h1>
+		<h1>Edit League</h1>
 
-		<!-- Tournament name field -->
-		<label>Tournament Name</label>
+		<!-- League name field -->
+		<label>League Name</label>
 		<input class="u-full-width" type="text">
 
 		<!-- Tournamet description field -->
-		<label>Tournament Description</label>
+		<label>League Description</label>
 		<textarea class="u-full-width"></textarea>
 
 		<!-- Submit button -->
-		<button class="u-full-width">Create</button>
+		<button class="u-full-width">Update</button>
 	</div>
 
 	<div class="box-container side five columns">

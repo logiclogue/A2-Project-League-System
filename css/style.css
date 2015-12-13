@@ -5,6 +5,17 @@ body {
 }
 
 
+h1 {
+	font-size: 3rem;
+}
+
+
+h2 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+}
+
+
 input {
 	border-radius: 0.5rem !important;
 }
@@ -45,15 +56,29 @@ hr {
 	border-width: 0.3rem;
 	border-color: #DADADA;
 	border-style: solid;
+
 	background-color: #E9E9E9;
 }
 
 .box-container.side h2 {
-	font-size: 2rem;
 	color: #999;
 	text-transform: uppercase;
 }
 
+
+.result {
+	margin-bottom: 2rem;
+}
+
+.result .head {
+	padding: 0.5rem;
+
+	color: #999;
+}
+
+.result .body {
+	padding: 0.5rem;
+}
 
 .result .score {
 	color: white;

@@ -1,7 +1,9 @@
 <div class="container">
 
 	<div class="box-container seven columns">
-		<h1>Premier League</h1>
+		<h1>Premier League<a class="u-pull-right">Edit</a></h1>
+
+		<p>The top tier of the Primrose squash leagues</p>
 
 		<table class="u-full-width">
 			<thead>
@@ -38,7 +40,7 @@
 
 	<div class="five columns">
 		<div class="box-container side">
-			<h2>Members<a class="u-pull-right">Edit</a></h2>
+			<h2>Members</h2>
 
 			<span><a>Jordan Lord</a></span><br>
 			<span><a>John Doe</a></span>
