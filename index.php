@@ -17,6 +17,7 @@
 <body>
 
 	<?php
+	require("forms/input-result.php");
 	require("forms/edit-league.php");
 	require("forms/league.php");
 	require("forms/profile.php");
