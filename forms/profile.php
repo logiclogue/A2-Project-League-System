@@ -38,10 +38,13 @@
 
 		<div class="box-container side">
 			<h2>Leagues</h2>
+			<a>Premier League</a>
 
 			<h2>Managing</h2>
+			<a>Premier League</a>
 
 			<h2>Achievements</h2>
+			<span>Division 1 winner x2</span>
 		</div>
 
 		<div class="box-container side">
