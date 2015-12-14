@@ -48,6 +48,35 @@ hr {
 }
 
 
+.nav {
+	list-style: none;
+
+	margin-bottom: 2rem;
+	overflow: hidden;
+}
+
+.nav li {
+	display: inline-block;
+	float: left;
+}
+
+.nav.mini a {
+	color: #999;
+
+	padding: 1rem;
+
+	border-style: solid;
+	border-width: 0 0 0.3rem 0;
+	border-color: #E9E9E9;
+}
+
+.nav.mini a.active {
+	color: #1EAEDB;
+
+	border-color: #1EAEDB;
+}
+
+
 .box-container {
 	padding: 2rem 2rem 1rem 2rem;
 	margin-bottom: 4rem;

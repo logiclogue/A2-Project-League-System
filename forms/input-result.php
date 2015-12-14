@@ -6,11 +6,11 @@
 		<table>
 			<tr>
 				<td>Jordan Lord</td>
-				<td><input type="text"></td>
+				<td><input type="number" min="0" max="3"></td>
 			</tr>
 			<tr>
 				<td>John Doe</td>
-				<td><input type="text"></td>
+				<td><input type="number" min="0" max="3"></td>
 			</tr>
 		</table>
 

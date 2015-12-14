@@ -3,7 +3,11 @@
 	<div class="box-container seven columns">
 		<h1>Jordan Lord</h1>
 
-		<hr>
+		<ul class="nav mini">
+			<li><a class="active">Results</a></li>
+			<li><a>Fixtures</a></li>
+			<li><a>Progress</a></li>
+		</ul>
 
 		<div class="result">
 			<div class="head">
@@ -13,7 +17,8 @@
 
 			<div class="body">
 				<span class="score win">3-1</span>
-				<span>vs <a>John Doe</a></span>
+				<span>vs <a>John Doe</a> (1234)</span>
+				<span class="u-pull-right">+23</span>
 			</div>
 		</div>
 
@@ -26,6 +31,7 @@
 			<div class="body">
 				<span class="score loss">2-3</span>
 				<span>vs <a>John Doe</a></span>
+				<span class="u-pull-right">-31</span>
 			</div>
 		</div>
 	</div>

@@ -5,6 +5,13 @@
 
 		<p>The top tier of the Primrose squash leagues</p>
 
+		<ul class="nav mini">
+			<li><a class="active">Table</a></li>
+			<li><a>Results</a></li>
+			<li><a>Fixtures</a></li>
+			<li><a>Progress</a></li>
+		</ul>
+
 		<table class="u-full-width">
 			<thead>
 				<tr>
