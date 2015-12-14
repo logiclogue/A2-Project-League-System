@@ -43,8 +43,93 @@
 					<td>1312</td>
 					<td>6</td>
 				</tr>
+
+				<tr>
+					<td>3</td>
+					<td>Wilfred Morales</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>1300</td>
+					<td>0</td>
+				</tr>
+
+				<tr>
+					<td>3</td>
+					<td>Shane Washington</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>1300</td>
+					<td>0</td>
+				</tr>
+
+				<tr>
+					<td>3</td>
+					<td>Sylvester Briggs</td>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+					<td>1300</td>
+					<td>0</td>
+				</tr>
 			</tbody>
 		</table>
+
+		<hr>
+
+		<div class="result">
+			<div class="head">
+				<span>FRI 11 NOV 2015</span>
+				<a class="u-pull-right">Premier League</a><br>
+			</div>
+
+			<div class="body">
+				<span><a>Jordan Lord</a> (1342)</span><br>
+				<span><a>John Doe</a> (1234)</span>
+				<span class="score win">3-1</span>
+			</div>
+		</div>
+
+		<div class="result">
+			<div class="head">
+				<span>TUE 03 NOV 2015</span>
+				<a class="u-pull-right">Premier League</a><br>
+			</div>
+
+			<div class="body">
+				<span class="score loss">2-3</span>
+				<span><a>John Doe</a> (1203)</span>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="result">
+			<div class="head">
+				<a>ENTER RESULT</a>
+				<a class="u-pull-right">Premier League</a><br>
+			</div>
+
+			<div class="body">
+				<span><a>John Doe</a> (1312)</span><br>
+				<span><a>Shane Washington</a> (1300)</span>
+				<span class="u-pull-right">%52</span>
+			</div>
+		</div>
+
+		<div class="result">
+			<div class="head">
+				<a>ENTER RESULT</a>
+				<a class="u-pull-right">Premier League</a><br>
+			</div>
+
+			<div class="body">
+				<span><a>Wilfred Morales</a> (1300)</span><br>
+				<span><a>Sylvester Briggs</a> (1300)</span>
+				<span class="u-pull-right">%50</span>
+			</div>
+		</div>
 	</div>
 
 	<div class="five columns">
@@ -52,7 +137,10 @@
 			<h2>Members</h2>
 
 			<span><a>Jordan Lord</a></span><br>
-			<span><a>John Doe</a></span>
+			<span><a>John Doe</a></span><br>
+			<span><a>Wilfred Morales</a></span><br>
+			<span><a>Shane Washington</a></span><br>
+			<span><a>Sylvester Briggs</a></span>
 
 			<h2>Managers</h2>
 

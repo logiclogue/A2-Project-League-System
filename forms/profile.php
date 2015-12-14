@@ -34,6 +34,36 @@
 				<span class="u-pull-right">-31</span>
 			</div>
 		</div>
+
+		<hr>
+
+		<div class="result">
+			<div class="head">
+				<a>ENTER RESULT</a>
+				<a class="u-pull-right">Premier League</a><br>
+			</div>
+
+			<div class="body">
+				<span>vs <a>Shane Washington</a> (1300)</span>
+				<span class="u-pull-right">%56</span>
+			</div>
+		</div>
+
+		<div class="result">
+			<div class="head">
+				<a>ENTER RESULT</a>
+				<a class="u-pull-right">Premier League</a><br>
+			</div>
+
+			<div class="body">
+				<span>vs <a>Sylvester Briggs</a> (1300)</span>
+				<span class="u-pull-right">%56</span>
+			</div>
+		</div>
+
+		<hr>
+
+		<img width="u-full-width" height="500">
 	</div>
 
 	<div class="five columns">
