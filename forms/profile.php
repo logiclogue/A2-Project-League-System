@@ -30,7 +30,7 @@
 
 			<div class="body">
 				<span class="score loss">2-3</span>
-				<span>vs <a>John Doe</a></span>
+				<span>vs <a>John Doe</a> (1203)</span>
 				<span class="u-pull-right">-31</span>
 			</div>
 		</div>

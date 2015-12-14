@@ -9,7 +9,6 @@
 			<li><a class="active">Table</a></li>
 			<li><a>Results</a></li>
 			<li><a>Fixtures</a></li>
-			<li><a>Progress</a></li>
 		</ul>
 
 		<table class="u-full-width">
@@ -17,6 +16,7 @@
 				<tr>
 					<th>Pos</th>
 					<th>Name</th>
+					<th>Played</th>
 					<th>Wins</th>
 					<th>Losses</th>
 					<th>Rating</th>
@@ -29,6 +29,7 @@
 					<td>Jordan Lord</td>
 					<td>1</td>
 					<td>1</td>
+					<td>1</td>
 					<td>1342</td>
 					<td>8</td>
 				</tr>
@@ -36,6 +37,7 @@
 				<tr>
 					<td>2</td>
 					<td>John Doe</td>
+					<td>1</td>
 					<td>1</td>
 					<td>1</td>
 					<td>1312</td>
@@ -51,6 +53,10 @@
 
 			<span><a>Jordan Lord</a></span><br>
 			<span><a>John Doe</a></span>
+
+			<h2>Managers</h2>
+
+			<span><a>Jordan Lord</a></span>
 		</div>
 	</div>
 
