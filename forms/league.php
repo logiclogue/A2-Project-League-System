@@ -85,9 +85,9 @@
 			</div>
 
 			<div class="body">
-				<span><a>Jordan Lord</a> (1342)</span><br>
-				<span><a>John Doe</a> (1234)</span>
+				<span><a>Jordan Lord</a> (1342)</span>
 				<span class="score win">3-1</span>
+				<span><a>John Doe</a> (1234)</span>
 			</div>
 		</div>
 
@@ -98,6 +98,7 @@
 			</div>
 
 			<div class="body">
+				<span><a>Jordan Lord</a> (1342)</span>
 				<span class="score loss">2-3</span>
 				<span><a>John Doe</a> (1203)</span>
 			</div>
@@ -134,6 +135,10 @@
 
 	<div class="five columns">
 		<div class="box-container side">
+			<h2>Managers</h2>
+
+			<span><a>Jordan Lord</a></span><br><br>
+			
 			<h2>Members</h2>
 
 			<span><a>Jordan Lord</a></span><br>
@@ -141,10 +146,6 @@
 			<span><a>Wilfred Morales</a></span><br>
 			<span><a>Shane Washington</a></span><br>
 			<span><a>Sylvester Briggs</a></span>
-
-			<h2>Managers</h2>
-
-			<span><a>Jordan Lord</a></span>
 		</div>
 	</div>
 

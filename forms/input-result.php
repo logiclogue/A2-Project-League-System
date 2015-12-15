@@ -5,11 +5,11 @@
 
 		<table>
 			<tr>
-				<td>Jordan Lord</td>
+				<td><h2>Jordan Lord</h2></td>
 				<td><input type="number" min="0" max="3"></td>
 			</tr>
 			<tr>
-				<td>John Doe</td>
+				<td><h2>John Doe</h2></td>
 				<td><input type="number" min="0" max="3"></td>
 			</tr>
 		</table>
