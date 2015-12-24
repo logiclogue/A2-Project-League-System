@@ -1,46 +1,104 @@
 <?php
 
-require dirname(__DIR__) . '/php/Database.php';
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+
+session_start();
 
 
-class Login
+/**
+ * Model for logging into the system.
+ * 
+ * @class Login
+ * @extends Model
+ * @static
+ */
+class Login extends Model
 {
-	public static $json;
+	/**
+	 * SQL query string for getting the details of the user.
+	 * Finds user by email.
+	 *
+	 * @property query
+	 * @type String
+	 */
+	private static $query = <<<SQL
+		SELECT id, email, first_name, last_name, hash
+		FROM users
+		WHERE email=:email
+SQL;
 
-	private static $errorMsg = 'Incorrect email or password';
+	/**
+	 * Connects to the database.
+	 * Binds query and parameters.
+	 *
+	 * @property result
+	 * @type Object
+	 */
+	private static $result;
+	/**
+	 * Stores result from database.
+	 * User data.
+	 *
+	 * @property user
+	 * @type Object
+	 */
+	private static $user = array();
 
 
-	public static function execute() {
-		if (isset(self::$json)) {
-			// decode json string
-			$json = json_decode(self::$json, true);
+	/**
+	 * Stores the user details in the current user session.
+	 *
+	 * @method storeSession
+	 * @return {Boolean} true.
+	 */
+	private static function storeSession() {
+		$_SESSION['user'] = array();
+		$_SESSION['user']['id'] = self::$user['id'];
+		$_SESSION['user']['email'] = self::$user['email'];
+		$_SESSION['user']['first_name'] = self::$user['first_name'];
+		$_SESSION['user']['last_name'] = self::$user['last_name'];
 
-			// extract data from json
-			$email = $json['email'];
-			$password = $json['password'];
+		return true;
+	}
 
-			// sql query
-			$query = Database::$conn->prepare('SELECT hash FROM users WHERE email=:email');
-			$query->bindParam(':email', $email, PDO::PARAM_STR);
-			$query->execute();
+	/**
+	 * Checks to see if password entered matches the password associated to the email entered.
+	 *
+	 * @method verify
+	 * @return {Boolean} Whether password entered is correct one.
+	 */
+	private static function verify() {
+		self::$user = self::$result->fetchAll(PDO::FETCH_ASSOC)[0];
 
-			// fetch relevant data
-			$result = $query->fetchAll(PDO::FETCH_ASSOC);
-			$hash = $result[0]['hash'];
-
-			// check if password is correct
-			if (password_verify($password, $hash)) {
-				$_SESSION['id'] = $email;
-			}
-
-			$query->close();
+		// check if password matches
+		if (password_verify(self::$data['password'], self::$user['hash'])) {
+			return self::storeSession();
+		}
+		else {
+			return false;
 		}
 	}
 
-	public static function init() {
-		if (isset($_GET['json'])) {
-			self::$json = $_GET['json'];
-			self::execute();
+
+	/**
+	 * Defines @property result.
+	 * Binds parameters to @property query.
+	 *
+	 * @method main
+	 * @return {Boolean} Whether executed query and successfully logged in.
+	 */
+	protected static function main() {
+		self::$result = Database::$conn->prepare(self::$query);
+
+		self::$result->bindParam(':email', self::$data['email']);
+		
+		// check if query is successful
+		if (self::$result->execute()) {
+			return self::verify();
+		}
+		else {
+			return false;
 		}
 	}
 }
