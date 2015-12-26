@@ -1,26 +1,26 @@
 <?php
 
-require dirname(__DIR__) . '/php/Database.php';
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/php/Model.php');
+
+session_start();
 
 
-class Status
+class Status extends Model
 {
 	private static $status_object = array('logged_in' => false);
 
 
-	private static function printStatus() {
-		die(json_encode(self::$status_object));
+	private static function getStatus() {
+		return self::$status_object;
 	}
 
-	public static function init() {
+	public static function main() {
 		if (isset($_SESSION['id'])) {
 			self::$status_object['logged_in'] = true;
+		}
 
-			self::printStatus();
-		}
-		else {
-			self::printStatus();
-		}
+		return self::getStatus();
 	}
 }
 
