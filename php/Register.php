@@ -26,10 +26,28 @@ class Register extends Model
 		VALUES (:email, :first_name, :last_name, :hash)
 SQL;
 	
+	/**
+	 * For executing the query string.
+	 *
+	 * @property result
+	 * @type Object
+	 */
 	private static $result;
+	/**
+	 * Hash of the password entered.
+	 *
+	 * @property hash
+	 * @type String
+	 */
 	private static $hash;
 
 
+	/**
+	 * Used to bind the parameters to @property query.
+	 * Data inputted by user is bound.
+	 *
+	 * @method bindParams
+	 */
 	private static function bindParams() {
 		self::$result->bindParam(':email', self::$data['email']);
 		self::$result->bindParam(':first_name', self::$data['first_name']);
@@ -37,6 +55,14 @@ SQL;
 		self::$result->bindParam(':hash', $hash);
 	}
 
+	/**
+	 * Prepares query.
+	 * Hashes password.
+	 * Executes query.
+	 *
+	 * @method main
+	 * @return {Boolean} On successfully registered.
+	 */
 	public static function main() {
 		self::$result = Database::$conn->prepare(self::$query);
 		self::$hash = password_hash(self::$data['password'], PASSWORD_BCRYPT);
