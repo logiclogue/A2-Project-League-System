@@ -6,33 +6,48 @@ require_once(dirname(__DIR__) . '/php/Database.php');
 session_start();
 
 
+/**
+ * Register model used to register onto the system.
+ *
+ * @class Register
+ * @extends Model
+ * @static
+ */
 class Register extends Model
 {
+	/**
+	 * SQL query string for inserting user data into the database.
+	 *
+	 * @property query
+	 * @type String
+	 */
 	private static $query = <<<SQL
 		INSERT INTO users (email, first_name, last_name, hash)
 		VALUES (:email, :first_name, :last_name, :hash)
 SQL;
+	
+	private static $result;
+	private static $hash;
 
+
+	private static function bindParams() {
+		self::$result->bindParam(':email', self::$data['email']);
+		self::$result->bindParam(':first_name', self::$data['first_name']);
+		self::$result->bindParam(':last_name', self::$data['last_name']);
+		self::$result->bindParam(':hash', $hash);
+	}
 
 	public static function main() {
-		$email = self::$data['email'];
-		$first_name = self::$data['first_name'];
-		$last_name = self::$data['last_name'];
-		$password = self::$data['password'];
+		self::$result = Database::$conn->prepare(self::$query);
+		self::$hash = password_hash(self::$data['password'], PASSWORD_BCRYPT);
 
-		$hash = password_hash($password, PASSWORD_BCRYPT);
-
-		$query = Database::$conn->prepare(self::$query);
-		$query->bindParam(':email', $email);
-		$query->bindParam(':first_name', $first_name);
-		$query->bindParam(':last_name', $last_name);
-		$query->bindParam(':hash', $hash);
+		self::bindParams();
 		
-		if ($query->execute()) {
-			die('Success');
+		if (self::$result->execute()) {
+			return true;
 		}
 		else {
-			die('Failure to create user');
+			return false;
 		}
 	}
 }

@@ -7,7 +7,7 @@ session_start();
 
 
 /**
- * Model for logging into the system.
+ * Login model for logging into the system.
  * 
  * @class Login
  * @extends Model
