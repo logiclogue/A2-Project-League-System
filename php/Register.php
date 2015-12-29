@@ -52,7 +52,7 @@ SQL;
 		self::$result->bindParam(':email', self::$data['email']);
 		self::$result->bindParam(':first_name', self::$data['first_name']);
 		self::$result->bindParam(':last_name', self::$data['last_name']);
-		self::$result->bindParam(':hash', $hash);
+		self::$result->bindParam(':hash', self::$hash);
 	}
 
 	/**
