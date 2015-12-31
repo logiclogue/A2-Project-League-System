@@ -3,6 +3,7 @@
 require_once(dirname(__DIR__) . '/php/Login.php');
 require_once(dirname(__DIR__) . '/php/Register.php');
 require_once(dirname(__DIR__) . '/php/Status.php');
+require_once(dirname(__DIR__) . '/php/Logout.php');
 
 
 class Main
@@ -18,6 +19,8 @@ class Main
 
 		echo json_encode($reg);
 		echo json_encode($test);
+		echo json_encode(Status::call());
+		Logout::call();
 		echo json_encode(Status::call());
 	}
 }

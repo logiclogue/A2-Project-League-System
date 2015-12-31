@@ -17,13 +17,12 @@ class Status extends Model
 {
 	/**
 	 * The status object holds the status data.
-	 * Initially sets `logged_in` to false.
 	 *
 	 * @property status_object
 	 * @type Array
 	 * @private
 	 */
-	private static $status_object = array('logged_in' => false);
+	private static $status_object;
 
 
 	/**
@@ -45,6 +44,8 @@ class Status extends Model
 	 * @return {Array} @property status_object.
 	 */
 	protected static function main() {
+		self::$status_object = array('logged_in' => false);
+
 		// if logged in
 		if (isset($_SESSION['user']['id'])) {
 			self::$status_object['logged_in'] = true;
