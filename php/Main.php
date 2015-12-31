@@ -1,12 +1,24 @@
 <?php
 
-require dirname(__DIR__) . '/php/Login.php';
+require_once(dirname(__DIR__) . '/php/Login.php');
+require_once(dirname(__DIR__) . '/php/Register.php');
+require_once(dirname(__DIR__) . '/php/Status.php');
 
 
 class Main
 {
 	public static function init() {
-		die('here');
+		/*$reg = Register::call(array(
+			'email' => 'another',
+			'password' => 'password',
+			'first_name' => 'John',
+			'last_name' => 'Doe'
+		));*/
+		$test = Login::call(array('email' => 'test', 'password' => 'password'));
+
+		echo json_encode($reg);
+		echo json_encode($test);
+		echo json_encode(Status::call());
 	}
 }
 
