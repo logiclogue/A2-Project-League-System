@@ -6,6 +6,12 @@ require_once(dirname(__DIR__) . '/php/Status.php');
 require_once(dirname(__DIR__) . '/php/Logout.php');
 
 
+/**
+ * Class for testing PHP models.
+ *
+ * @class Main
+ * @static
+ */
 class Main
 {
 	private static function echo_n($data) {
