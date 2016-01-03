@@ -9,13 +9,13 @@ require_once(dirname(__DIR__) . '/php/Logout.php');
 /**
  * Class for testing PHP models.
  *
- * @class Main
+ * @class Test
  * @static
  */
-class Main
+class Test
 {
 	private static function echo_n($data) {
-		echo json_encode($data) . '<br>';
+		echo json_encode($data, JSON_PRETTY_PRINT) . '<br>';
 	}
 
 
@@ -28,14 +28,14 @@ class Main
 		));*/
 		$test = Login::call(array('email' => 'test', 'password' => 'password'));
 
-		self::echo_n($reg);
+		//self::echo_n($reg);
 		self::echo_n($test);
-		self::echo_n(Status::call());
-		Logout::call();
-		self::echo_n(Status::call());
+		self::echo_n(Status::call(array()));
+		Logout::call(array());
+		self::echo_n(Status::call(array()));
 	}
 }
 
-Main::init();
+Test::init();
 
 ?>
