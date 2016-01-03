@@ -33,6 +33,7 @@ class Test
 		self::echo_n(Status::call(array()));
 		Logout::call(array());
 		self::echo_n(Status::call(array()));
+		self::echo_n($_SESSION);
 	}
 }
 
