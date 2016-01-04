@@ -34,6 +34,7 @@ SQL;
 	 *
 	 * @property result
 	 * @type Object
+	 * @private
 	 */
 	private static $result;
 	/**
@@ -42,6 +43,7 @@ SQL;
 	 *
 	 * @property user
 	 * @type Object
+	 * @private
 	 */
 	private static $user = array();
 
@@ -65,7 +67,8 @@ SQL;
 	/**
 	 * Checks to see if password entered matches the password associated to the email entered.
 	 *
-	 * @method verify
+	 * @method verify]
+	 * @private
 	 * @return {Boolean} Whether password entered is correct one.
 	 */
 	private static function verify() {
@@ -86,6 +89,7 @@ SQL;
 	 * Binds parameters to @property query.
 	 *
 	 * @method main
+	 * @protected
 	 * @return {Boolean} Whether executed query and successfully logged in.
 	 */
 	protected static function main() {

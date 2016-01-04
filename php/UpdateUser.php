@@ -28,20 +28,34 @@ class UpdateUser extends Model
 		first_name = :first_name
 		last_name = :last_name
 		home_phone = :home_phone
-		mobile_number = :mobile_number
+		mobile_phone = :mobile_phone
 		WHERE id = :id
 SQL;
 
+	/**
+	 * Database object variable.
+	 *
+	 * @property 
+	 */
+	private static $stmt;
+
 
 	/**
-	 * 
+	 * Main method once @method main has checked login.
 	 *
 	 * @method update
 	 * @private
 	 * @return {Boolean} Whether successfully updated.
 	 */
 	private static function update() {
+		self::$stmt = self::$conn->prepare(self::$query);
 
+		self::$stmt->bindParam(':first_name', self::$data['first_name']);
+		self::$stmt->bindParam(':last_name', self::$data['last_name']);
+		self::$stmt->bindParam(':last_name', self::$data['last_name']);
+		self::$stmt->bindParam(':home_phone', self::$data['home_phone']);
+
+		return self::$stmt->execute();
 	}
 
 	/**
