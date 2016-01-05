@@ -35,7 +35,9 @@ SQL;
 	/**
 	 * Database object variable.
 	 *
-	 * @property 
+	 * @property stmt
+	 * @type Object
+	 * @private
 	 */
 	private static $stmt;
 
