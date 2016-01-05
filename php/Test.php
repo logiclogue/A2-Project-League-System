@@ -48,7 +48,9 @@ class Test
 		self::login();
 		self::echo_n(UpdateUser::call(array(
 			'first_name' => 'Jordan',
-			'last_name' => 'Lord'
+			'last_name' => 'Lord',
+			'home_phone' => null,
+			'mobile_phone' => null
 		)));
 	}
 }

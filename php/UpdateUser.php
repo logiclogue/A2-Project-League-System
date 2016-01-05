@@ -25,9 +25,9 @@ class UpdateUser extends Model
 	private static $query = <<<SQL
 		UPDATE users
 		SET
-		first_name = :first_name
-		last_name = :last_name
-		home_phone = :home_phone
+		first_name = CASE WHEN :first_name IS NULL THEN first_name ELSE :first_name END,
+		last_name = CASE WHEN :last_name IS NULL THEN last_name ELSE :last_name END,
+		home_phone = :home_phone,
 		mobile_phone = :mobile_phone
 		WHERE id = :id
 SQL;
@@ -48,12 +48,13 @@ SQL;
 	 * @return {Boolean} Whether successfully updated.
 	 */
 	private static function update() {
-		self::$stmt = self::$conn->prepare(self::$query);
+		self::$stmt = Database::$conn->prepare(self::$query);
 
+		self::$stmt->bindParam(':id', $_SESSION['user']['id']);
 		self::$stmt->bindParam(':first_name', self::$data['first_name']);
 		self::$stmt->bindParam(':last_name', self::$data['last_name']);
-		self::$stmt->bindParam(':last_name', self::$data['last_name']);
 		self::$stmt->bindParam(':home_phone', self::$data['home_phone']);
+		self::$stmt->bindParam(':mobile_phone', self::$data['mobile_phone']);
 
 		return self::$stmt->execute();
 	}
