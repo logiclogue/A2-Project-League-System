@@ -1,10 +1,10 @@
 <?php
 
-require_once(dirname(__DIR__) . '/php/Login.php');
-require_once(dirname(__DIR__) . '/php/Register.php');
-require_once(dirname(__DIR__) . '/php/Status.php');
-require_once(dirname(__DIR__) . '/php/Logout.php');
-require_once(dirname(__DIR__) . '/php/UpdateUser.php');
+require_once(dirname(__DIR__) . '/models/Login.php');
+require_once(dirname(__DIR__) . '/models/Register.php');
+require_once(dirname(__DIR__) . '/models/Status.php');
+require_once(dirname(__DIR__) . '/models/Logout.php');
+require_once(dirname(__DIR__) . '/models/UpdateUser.php');
 
 
 /**
