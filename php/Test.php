@@ -57,6 +57,12 @@ class Test
 			'home_phone' => null,
 			'mobile_phone' => null
 		)));
+
+		echo 'Create tournament: ';
+		self::echo_n(CreateTournament::call(array(
+			'name' => 'Premier League',
+			'description' => 'The top tier of the Primrose Squash leagues'
+		)));
 	}
 }
 
