@@ -23,7 +23,7 @@ class Database
 	 * @private
 	 */
 	private static $query_delete = <<<SQL
-		DROP TABLE `results`, `result_user_maps`, `tournament`, `tournament_user_maps`, `users`
+		DROP TABLE `results`, `result_user_maps`, `tournaments`, `tournament_user_maps`, `users`
 SQL;
 
 
