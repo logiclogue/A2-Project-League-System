@@ -5,6 +5,7 @@ require_once(dirname(__DIR__) . '/models/Register.php');
 require_once(dirname(__DIR__) . '/models/Status.php');
 require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UpdateUser.php');
+require_once(dirname(__DIR__) . '/models/CreateTournament.php');
 
 
 /**
@@ -28,6 +29,9 @@ class Test
 	}
 
 	public static function init() {
+		echo 'Database reset: ';
+		self::echo_n(Database::reset());
+
 		/*$reg = Register::call(array(
 			'email' => 'another',
 			'password' => 'password',
@@ -37,6 +41,7 @@ class Test
 		$test = self::login();
 
 		//self::echo_n($reg);
+		echo 'Logged in: ';
 		self::echo_n($test);
 		self::echo_n(Status::call(array()));
 		

@@ -15,24 +15,62 @@ class Database
 	 * @type Object
 	 */
 	public static $conn;
+	/**
+	 * SQL query string for deleting all tables
+	 *
+	 * @property query_delete
+	 * @type String
+	 * @private
+	 */
+	private static $query_delete = <<<SQL
+		DROP TABLE `results`, `result_user_maps`, `tournament`, `tournament_user_maps`, `users`
+SQL;
 
 
 	/**
 	 * This method is used to create the tables and columns in the database.
-	 * It `database.sql` file provides the SQL to do this.
+	 * The `database.sql` file provides the SQL query string to do this.
 	 *
 	 * @method create
+	 * @public
+	 * @return {Boolean} Whether success.
 	 */
 	public static function create() {
 		$query = file_get_contents(dirname(__DIR__) . '/database.sql');
-		$result = self::$conn->prepare($query);
+		$stmt = self::$conn->prepare($query);
 
-		if ($result->execute()) {
-			echo 'Success';
-		}
-		else {
-			echo 'Failure';
-		}
+		return $stmt->execute();
+	}
+
+	/**
+	 * Method that deletes all the tables in the database.
+	 *
+	 * @method delete
+	 * @public
+	 * @return {Boolean} Whether success.
+	 */
+	public static function delete() {
+		$stmt = self::$conn->prepare(self::$query_delete);
+
+		$stmt->execute();
+
+		// Issues when with this query because it doesn't change any rows.
+		return true;
+	}
+
+	/**
+	 * Resets database.
+	 * Deletes then recreates.
+	 *
+	 * @method reset
+	 * @public
+	 * @return {Boolean} Whether success.
+	 */
+	public static function reset() {
+		$delete_success = self::delete();
+		$create_success = self::create();
+
+		return $delete_success && $create_success;
 	}
 
 	/**
