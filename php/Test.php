@@ -6,6 +6,7 @@ require_once(dirname(__DIR__) . '/models/Status.php');
 require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UpdateUser.php');
 require_once(dirname(__DIR__) . '/models/CreateTournament.php');
+require_once(dirname(__DIR__) . '/models/GetUser.php');
 
 
 /**
@@ -63,6 +64,8 @@ class Test
 			'name' => 'Premier League',
 			'description' => 'The top tier of the Primrose Squash leagues'
 		)));
+
+		self::echo_n(GetUser::call(array('id' => 1)));
 	}
 }
 
