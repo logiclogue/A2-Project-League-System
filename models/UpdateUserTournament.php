@@ -38,6 +38,14 @@ class UpdateUserTournament extends Model
 SQL;
 
 
+	/**
+	 * Main method for executing the database statment.
+	 * Updating the user.
+	 *
+	 * @method update
+	 * @private
+	 * @return {Boolean} Whether successfully updated.
+	 */
 	private static function update() {
 		$stmt = Database::$conn->prepare(self::$query);
 
