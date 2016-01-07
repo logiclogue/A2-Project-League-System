@@ -7,6 +7,7 @@ require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UpdateUser.php');
 require_once(dirname(__DIR__) . '/models/CreateTournament.php');
 require_once(dirname(__DIR__) . '/models/GetUser.php');
+require_once(dirname(__DIR__) . '/models/AttachUserTournament.php');
 
 
 /**
@@ -66,6 +67,12 @@ class Test
 		)));
 
 		self::echo_n(GetUser::call(array('id' => 1)));
+		self::echo_n(AttachUserTournament::call(array(
+			'user_id' => 1,
+			'tournament_id' => 1,
+			'is_league_manager' => false,
+			'is_player' => true
+		)));
 	}
 }
 
