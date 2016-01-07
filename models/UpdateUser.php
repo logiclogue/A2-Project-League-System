@@ -79,4 +79,6 @@ SQL;
 	}
 }
 
+UpdateUser::init();
+
 ?>

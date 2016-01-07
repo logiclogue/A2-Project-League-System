@@ -70,4 +70,6 @@ SQL;
 	}
 }
 
+CreateTournament::init();
+
 ?>
