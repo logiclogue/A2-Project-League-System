@@ -36,11 +36,11 @@ SQL;
 	 * Connects to the database.
 	 * Binds query and parameters.
 	 *
-	 * @property result
+	 * @property stmt
 	 * @type Object
 	 * @private
 	 */
-	private static $result;
+	private static $stmt;
 	/**
 	 * Stores result from database.
 	 * User data.
@@ -76,7 +76,7 @@ SQL;
 	 * @return {Boolean} Whether password entered is correct one.
 	 */
 	private static function verify() {
-		self::$user = self::$result->fetchAll(PDO::FETCH_ASSOC)[0];
+		self::$user = self::$stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
 		// check if password matches
 		if (password_verify(self::$data['password'], self::$user['hash'])) {
@@ -97,12 +97,12 @@ SQL;
 	 * @return {Boolean} Whether executed query and successfully logged in.
 	 */
 	protected static function main() {
-		self::$result = Database::$conn->prepare(self::$query);
+		self::$stmt = Database::$conn->prepare(self::$query);
 
-		self::$result->bindParam(':email', self::$data['email']);
+		self::$stmt->bindParam(':email', self::$data['email']);
 		
 		// check if query is successful
-		if (self::$result->execute()) {
+		if (self::$stmt->execute()) {
 			return self::verify();
 		}
 		else {
