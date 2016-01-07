@@ -13,6 +13,9 @@ session_start();
  * @extends Model
  * @static
  */
+/**
+ * @param id {Integer} Id of the user to be fetched.
+ */
 class GetUser extends Model
 {
 	/**

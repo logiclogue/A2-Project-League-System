@@ -13,6 +13,10 @@ session_start();
  * @extends Model
  * @static
  */
+/**
+ * @param email {String} Email of the user.
+ * @param password {String} Password of the user.
+ */
 class Login extends Model
 {
 	/**

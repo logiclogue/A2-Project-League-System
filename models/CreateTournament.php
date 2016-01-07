@@ -13,6 +13,10 @@ session_start();
  * @extends Model
  * @static
  */
+/**
+ * @param name {String} The name of the tournament.
+ * @param description {String} The description of the tournament.
+ */
 class CreateTournament extends Model
 {
 	/**

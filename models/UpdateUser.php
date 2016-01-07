@@ -13,6 +13,12 @@ session_start();
  * @extends Model
  * @static
  */
+/**
+ * @param first_name {String} The new first name of the user.
+ * @param last_name {String} The new last name of the user.
+ * @param home_phone {String} The new home phone number of the user.
+ * @param mobile_phone {String} THe new mobile phone number of the user.
+ */
 class UpdateUser extends Model
 {
 	/**
