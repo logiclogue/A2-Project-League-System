@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS `tournament_user_maps` (
   `user_id` mediumint(8) unsigned NOT NULL,
   `tournament_id` mediumint(8) unsigned NOT NULL,
   `is_league_manager` tinyint(1) NOT NULL,
-  `is_player` tinyint(1) NOT NULL
+  `is_player` tinyint(1) NOT NULL,
+  PRIMARY KEY (`user_id`,`tournament_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
