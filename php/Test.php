@@ -61,6 +61,11 @@ class Test
 			'mobile_phone' => null
 		)));
 
+		echo 'logout: ';
+		self::echo_n(Logout::call(array()));
+
+		self::echo_n($_SESSION);
+
 		echo 'Create tournament: ';
 		self::echo_n(CreateTournament::call(array(
 			'name' => 'Premier League',
@@ -79,7 +84,7 @@ class Test
 			'user_id' => 1,
 			'tournament_id' => 1,
 			'is_league_manager' => true,
-			'is_player' => false
+			'is_player' => true
 		)));
 	}
 }

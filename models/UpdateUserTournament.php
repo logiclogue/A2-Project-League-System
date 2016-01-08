@@ -22,7 +22,7 @@ session_start();
 class UpdateUserTournament extends Model
 {
 	/**
-	 * SQL query string for updating the user in the tournament
+	 * SQL query string for updating the user in the tournament.
 	 *
 	 * @property query
 	 * @private
