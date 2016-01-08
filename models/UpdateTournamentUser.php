@@ -9,7 +9,7 @@ session_start();
 /**
  * Model for updating a user in a tournament.
  *
- * @class UpdateUserTournament
+ * @class UpdateTournamentUser
  * @extends Model
  * @static
  */
@@ -19,7 +19,7 @@ session_start();
  * @param is_league_manager {Boolean} Whether the user is now a league manager.
  * @param is_player {Boolean} Whether the user is now a player in the tournament.
  */
-class UpdateUserTournament extends Model
+class UpdateTournamentUser extends Model
 {
 	/**
 	 * SQL query string for updating the user in the tournament.
@@ -74,6 +74,6 @@ SQL;
 	}
 }
 
-UpdateUserTournament::init();
+UpdateTournamentUser::init();
 
 ?>
