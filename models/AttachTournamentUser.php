@@ -9,7 +9,7 @@ session_start();
 /**
  * Model used by a league manager to attach a user to their league.
  *
- * @class AttachUserTournament
+ * @class AttachTournamentUser
  * @extends Model
  * @static
  */
@@ -19,7 +19,7 @@ session_start();
  * @param is_league_manager {Boolean} Whether the attached user is a league manager.
  * @param is_player {Boolean} Whether the attached user is playing in the tournament.
  */
-class AttachUserTournament extends Model
+class AttachTournamentUser extends Model
 {
 	/**
 	 * SQL query string for attaching a player a player to a tournament.
@@ -69,6 +69,6 @@ SQL;
 	}
 }
 
-AttachUserTournament::init();
+AttachTournamentUser::init();
 
 ?>

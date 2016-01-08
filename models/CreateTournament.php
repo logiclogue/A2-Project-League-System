@@ -2,7 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
-require_once(dirname(__DIR__) . '/models/AttachUserTournament.php');
+require_once(dirname(__DIR__) . '/models/AttachTournamentUser.php');
 
 session_start();
 
@@ -50,7 +50,7 @@ SQL;
 	 * @return {Boolean} Whether successfully attached the current user as a league manager.
 	 */
 	private static function attachLeagueManager() {
-		return AttachUserTournament::call(array(
+		return AttachTournamentUser::call(array(
 			'user_id' => $_SESSION['user']['id'],
 			'tournament_id' => Database::$conn->lastInsertId(),
 			'is_league_manager' => true,
