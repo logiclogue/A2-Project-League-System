@@ -13,6 +13,15 @@ session_start();
  * @extends Model
  * @static
  */
+/**
+ * @return logged_in {Boolean} Whether you are logged in.
+ * @return user {Array} User data if logged in:
+ *  @return user.id {Integer} Your id.
+ *  @return user.email {String} Your email address.
+ *  @return user.first_name {String} Your first name.
+ *  @return user.last_name {String} Your last name.
+ *
+ */
 class Status extends Model
 {
 	/**

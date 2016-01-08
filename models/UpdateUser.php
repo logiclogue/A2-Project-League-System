@@ -18,6 +18,8 @@ session_start();
  * @param last_name {String} The new last name of the user.
  * @param home_phone {String} The new home phone number of the user.
  * @param mobile_phone {String} THe new mobile phone number of the user.
+ *
+ * @return {Boolean} Whether successfully updated the user.
  */
 class UpdateUser extends Model
 {

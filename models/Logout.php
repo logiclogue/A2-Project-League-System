@@ -12,6 +12,9 @@ session_start();
  * @extends Model
  * @static
  */
+/**
+ * @return {Boolean} Whether successfully logged out.
+ */
 class Logout extends Model
 {
 	/**

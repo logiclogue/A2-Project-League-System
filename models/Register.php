@@ -19,6 +19,7 @@ session_start();
  * @param last_name {String} The last name of the user.
  * @param password {String} The password of the user.
  *
+ * @return {Boolean} Whether successfully registered.
  */
 class Register extends Model
 {

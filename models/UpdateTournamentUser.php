@@ -18,6 +18,8 @@ session_start();
  * @param tournament_id {Integer} Id of tournament that user is in.
  * @param is_league_manager {Boolean} Whether the user is now a league manager.
  * @param is_player {Boolean} Whether the user is now a player in the tournament.
+ *
+ * @return {Boolean} Whether successfully updated the user in the tournament.
  */
 class UpdateTournamentUser extends Model
 {

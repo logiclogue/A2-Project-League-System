@@ -17,6 +17,8 @@ session_start();
 /**
  * @param name {String} The name of the tournament.
  * @param description {String} The description of the tournament.
+ *
+ * @return {Boolean} Whether successful in updating the user in the tournament.
  */
 class CreateTournament extends Model
 {

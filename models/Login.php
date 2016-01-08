@@ -16,6 +16,8 @@ session_start();
 /**
  * @param email {String} Email of the user.
  * @param password {String} Password of the user.
+ *
+ * @return {Boolean} Whether successfully logged in.
  */
 class Login extends Model
 {

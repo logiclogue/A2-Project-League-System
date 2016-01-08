@@ -15,6 +15,9 @@ session_start();
  */
 /**
  * @param id {Integer} Id of the user to be fetched.
+ *
+ * @return first_name {String} First name of the user.
+ * @return last_name {String} Last name of the user.
  */
 class GetUser extends Model
 {

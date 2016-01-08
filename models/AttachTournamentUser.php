@@ -18,6 +18,8 @@ session_start();
  * @param tournament_id {Integer} Id of the tournament that the user is going to be attached to.
  * @param is_league_manager {Boolean} Whether the attached user is a league manager.
  * @param is_player {Boolean} Whether the attached user is playing in the tournament.
+ *
+ * @return {Boolean} Whether successful on attaching the user.
  */
 class AttachTournamentUser extends Model
 {
