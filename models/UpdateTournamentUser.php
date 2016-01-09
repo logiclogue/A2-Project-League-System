@@ -74,6 +74,21 @@ SQL;
 	}
 
 	/**
+	 * Method that checks to see if the user wants to join or leave the leagues.
+	 *
+	 * @method checkCommand
+	 * @private
+	 */
+	private static function checkCommand() {
+		if (self::$data['join']) {
+			self::bindBools(false, true);
+		}
+		else if (self::$data['leave']) {
+			self::bindBools(false, false);
+		}
+	}
+
+	/**
 	 * Main method for executing the database statment.
 	 * Updating the user.
 	 *
@@ -85,14 +100,7 @@ SQL;
 		self::$stmt = Database::$conn->prepare(self::$query);
 
 		self::bindParams();
-
-		// Checks to see if user wants to join or leave the leagues.
-		if (self::$data['join']) {
-			self::bindBools(false, true);
-		}
-		else if (self::$data['leave']) {
-			self::bindBools(false, false);
-		}
+		self::checkCommand();
 
 		return self::$stmt->execute();
 	}
