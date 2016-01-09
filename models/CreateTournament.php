@@ -61,7 +61,7 @@ SQL;
 	}
 
 	/**
-	 * Main function for 
+	 * Main function for creating database object, binding params, and executing query.
 	 *
 	 * @method create
 	 * @private
