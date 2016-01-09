@@ -25,6 +25,7 @@ class UpdateTournamentUser extends Model
 {
 	/**
 	 * SQL query string for updating the user in the tournament.
+	 * Using `REPLACE` because it can `INSERT` or `UPDATE` whether record exists.
 	 *
 	 * @property query
 	 * @private
