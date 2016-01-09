@@ -30,13 +30,8 @@ class UpdateTournamentUser extends Model
 	 * @private
 	 */
 	private static $query = <<<SQL
-		UPDATE tournament_user_maps
-		SET
-		is_league_manager = :is_league_manager,
-		is_player = :is_player
-		WHERE
-		user_id = :user_id AND
-		tournament_id = :tournament_id
+		REPLACE INTO tournament_user_maps (user_id, tournament_id, is_league_manager, is_player)
+		VALUES (:user_id, :tournament_id, :is_league_manager, :is_player)
 SQL;
 
 
