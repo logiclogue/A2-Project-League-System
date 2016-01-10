@@ -23,7 +23,39 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  */
 class GetTournament extends Model
 {
+	/**
+	 * SQL query string for fetching tournament data.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private static $query = <<<SQL
+		SELECT name, description
+		FROM tournaments
+		WHERE id = :id
+SQL;
 
+
+	/**
+	 * Method that fetches the database info.
+	 *
+	 * @method main
+	 * @protected
+	 * @return {Array} Tournament data.
+	 */
+	protected static function main() {
+		$stmt = Database::$conn->prepare(self::$query);
+
+		$stmt->bindParam(':id', self::$data['id']);
+
+		if ($stmt->execute()) {
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			return false;
+		}
+	}
 }
 
 ?>

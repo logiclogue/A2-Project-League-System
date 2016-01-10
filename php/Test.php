@@ -8,6 +8,7 @@ require_once(dirname(__DIR__) . '/models/UpdateUser.php');
 require_once(dirname(__DIR__) . '/models/CreateTournament.php');
 require_once(dirname(__DIR__) . '/models/GetUser.php');
 require_once(dirname(__DIR__) . '/models/UpdateTournamentUser.php');
+require_once(dirname(__DIR__) . '/models/GetTournament.php');
 
 
 /**
@@ -84,6 +85,8 @@ class Test
 			'tournament_id' => 1,
 			'leave' => true
 		)));
+
+		self::echo_n(GetTournament::call(array('id' => 1)));
 	}
 }
 
