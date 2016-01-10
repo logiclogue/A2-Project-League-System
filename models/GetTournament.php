@@ -35,7 +35,52 @@ class GetTournament extends Model
 		FROM tournaments
 		WHERE id = :id
 SQL;
+	/**
+	 * SQL query string for fetching the players in the tournament.
+	 *
+	 * @property query_players
+	 * @type String
+	 * @private
+	 */
+	private static $query_players = <<<SQL
+		SELECT u.first_name, u.last_name
+		FROM users u
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u.id
+		WHERE tu.tournament_id = :id AND u.is_player = true
+SQL;
+	/**
+	 * SQL query string for fetching the league managers of the tournament.
+	 *
+	 * @property query_leauge_managers
+	 * @type String
+	 * @private
+	 */
+	private static $query_leauge_managers = <<<SQL
+		SELECT u.first_name, u.last_name
+		FROM users u
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u.id
+		WHERE tu.tournament_id = :id AND u.is_league_manager = true
+SQL;
 
+	/**
+	 * Return array containing all tournament data.
+	 *
+	 * @property tournament_data
+	 * @type Array
+	 * @private
+	 */
+	private static $tournament_data = array();
+
+
+	private static function fetchPlayers() {
+		
+	}
+
+	private static function fetchLeagueManagers() {
+
+	}
 
 	/**
 	 * Method that fetches the database info.
