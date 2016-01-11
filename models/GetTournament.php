@@ -47,7 +47,7 @@ SQL;
 		FROM users u
 		INNER JOIN tournament_user_maps tu
 		ON tu.user_id = u.id
-		WHERE tu.tournament_id = :id AND u.is_player = true
+		WHERE tu.tournament_id = :id AND tu.is_player = true
 SQL;
 	/**
 	 * SQL query string for fetching the league managers of the tournament.
@@ -56,30 +56,53 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_leauge_managers = <<<SQL
+	private static $query_league_managers = <<<SQL
 		SELECT u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
 		ON tu.user_id = u.id
-		WHERE tu.tournament_id = :id AND u.is_league_manager = true
+		WHERE tu.tournament_id = :id AND tu.is_league_manager = true
 SQL;
 
 	/**
-	 * Return array containing all tournament data.
+	 * Array to be returned containing all tournament data.
 	 *
-	 * @property tournament_data
+	 * @property tournament
 	 * @type Array
 	 * @private
 	 */
-	private static $tournament_data = array();
+	private static $tournament = array();
 
 
-	private static function fetchPlayers() {
-		
+	private static function getData($query, &$variable) {
+		$stmt = Database::$conn->prepare($query);
+
+		$stmt->bindParam(':id', self::$data['id']);
+
+		if ($stmt->execute()) {
+			$variable = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
-	private static function fetchLeagueManagers() {
+	private static function getPlayers() {
+		return self::getData(self::$query_players, self::$tournament['players']);
+	}
 
+	private static function getLeagueManagers() {
+		return self::getData(self::$query_league_managers, self::$tournament['league_managers']);
+	}
+
+	private static function getTournamentData() {
+		$is_success = self::getData(self::$query, self::$tournament);
+
+		self::$tournament = self::$tournament[0];
+
+		return $is_success;
 	}
 
 	/**
@@ -90,12 +113,8 @@ SQL;
 	 * @return {Array} Tournament data.
 	 */
 	protected static function main() {
-		$stmt = Database::$conn->prepare(self::$query);
-
-		$stmt->bindParam(':id', self::$data['id']);
-
-		if ($stmt->execute()) {
-			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		if (self::getTournamentData() && self::getPlayers() && self::getLeagueManagers()) {
+			return self::$tournament;
 		}
 		else {
 			return false;
