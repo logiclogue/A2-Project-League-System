@@ -74,6 +74,15 @@ SQL;
 	private static $tournament = array();
 
 
+	/**
+	 * Method for executing queries and retrieving data.
+	 *
+	 * @method getData
+	 * @private
+	 * @param query {String} Query string to be executed.
+	 * @param variable {Array} Array to hold result from query.
+	 * @return {Boolean} Whether successfully executes query.
+	 */
 	private static function getData($query, &$variable) {
 		$stmt = Database::$conn->prepare($query);
 
@@ -89,17 +98,39 @@ SQL;
 		}
 	}
 
+	/**
+	 * Method that queries players in the tournament.
+	 *
+	 * @method getPlayers
+	 * @private
+	 * @return {Boolean} Whether successfully retrieved data.
+	 */
 	private static function getPlayers() {
 		return self::getData(self::$query_players, self::$tournament['players']);
 	}
 
+	/**
+	 * Method that queries league managers in the tournament.
+	 *
+	 * @method getLeagueManagers
+	 * @private
+	 * @return {Boolean} Whether successfully retrieved data.
+	 */
 	private static function getLeagueManagers() {
 		return self::getData(self::$query_league_managers, self::$tournament['league_managers']);
 	}
 
+	/**
+	 * Method that gets the data about the tournament.
+	 *
+	 * @method getTournamentData
+	 * @private
+	 * @return {Boolean} Whether successfully retrieved data.
+	 */
 	private static function getTournamentData() {
 		$is_success = self::getData(self::$query, self::$tournament);
 
+		// only one tournament, so set it equal to first result.
 		self::$tournament = self::$tournament[0];
 
 		return $is_success;
