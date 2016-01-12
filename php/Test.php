@@ -83,7 +83,8 @@ class Test
 		self::echo_n(UpdateTournamentUser::call(array(
 			'user_id' => 1,
 			'tournament_id' => 1,
-			'leave' => true
+			'is_league_manager' => false,
+			'is_player' => false
 		)));
 
 		self::echo_n(GetTournament::call(array('id' => 1)));

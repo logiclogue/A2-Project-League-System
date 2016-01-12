@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/models/GetTournament.php');
 
 session_start();
 
@@ -18,8 +19,8 @@ session_start();
  * @param tournament_id {Integer} Id of tournament that user is in.
  * @param is_league_manager {Boolean} Whether the user is now a league manager.
  * @param is_player {Boolean} Whether the user is now a player in the tournament.
- * @param leave {Boolean} Whether delete the user from the tournament (is_league_manager = false, is_player = false). (optional)
- * @param join {Boolean} Whether joining the tournament (is_league_manager = false, is_player = true). (optional)
+ * @param leave {Boolean} Whether delete the user from the tournament (is_player = false). (optional)
+ * @param join {Boolean} Whether joining the tournament (is_player = true). (optional)
  *
  * @return {Boolean} Whether successfully updated the user in the tournament.
  */
@@ -52,9 +53,9 @@ SQL;
 	 * Binds to @property query.
 	 *
 	 * @method bindBools
+	 * @private
 	 * @param is_league_manager {Boolean} Whether the user is now a league manager.
 	 * @param is_player {Boolean} Whether the user is now a player in the tournament.
-	 * @private
 	 */
 	private static function bindBools($is_league_manager, $is_player) {
 		self::$stmt->bindParam(':is_league_manager', $is_league_manager);
