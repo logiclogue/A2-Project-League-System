@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/php/Tournament.php');
 require_once(dirname(__DIR__) . '/models/GetTournament.php');
 
 session_start();
@@ -11,7 +12,7 @@ session_start();
  * Model for updating a user in a tournament.
  *
  * @class UpdateTournamentUser
- * @extends Model
+ * @extends Tournament
  * @static
  */
 /**
@@ -24,7 +25,7 @@ session_start();
  *
  * @return {Boolean} Whether successfully updated the user in the tournament.
  */
-class UpdateTournamentUser extends Model
+class UpdateTournamentUser extends Tournament
 {
 	/**
 	 * SQL query string for updating the user in the tournament.
