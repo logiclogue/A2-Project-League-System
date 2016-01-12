@@ -80,12 +80,12 @@ class Test
 			'is_league_manager' => true,
 			'is_player' => true
 		)));
-		self::echo_n(UpdateTournamentUser::call(array(
+		/*self::echo_n(UpdateTournamentUser::call(array(
 			'user_id' => 1,
 			'tournament_id' => 1,
 			'is_league_manager' => false,
 			'is_player' => false
-		)));
+		)));*/
 
 		self::echo_n(GetTournament::call(array('id' => 1)));
 	}
