@@ -1,13 +1,14 @@
 <?php
 
-require_once(dirname(__DIR__) . '/models/Tournament.php');
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
 
 
 /**
  * Model that fetches tournament data based on id.
  *
  * @class GetTournament
- * @extends Tournament
+ * @extends Model
  * @static
  */
 /**
@@ -16,11 +17,11 @@ require_once(dirname(__DIR__) . '/models/Tournament.php');
  * @return name {String} Name of the tournament.
  * @return description {String} Description of the tournament.
  * @return league_managers {Array} Array of league managers.
- *  @return league_managers[] {Object} Result of @class GetUser for each league manager. // !!!
+ *  @return league_managers[] {Object} Result of @class GetUser for each league manager.
  * @return players {Array} Array of players in the tournament.
- *  @return players[] {Object} Result of @class GetUser for each player. // !!!
+ *  @return players[] {Object} Result of @class GetUser for each player.
  */
-class GetTournament extends Tournament
+class GetTournament extends Model
 {
 	/**
 	 * SQL query string for fetching tournament data.
@@ -34,6 +35,34 @@ class GetTournament extends Tournament
 		FROM tournaments
 		WHERE id = :id
 SQL;
+	/**
+	 * SQL query string for fetching the players in the tournament.
+	 *
+	 * @property query_players
+	 * @type String
+	 * @private
+	 */
+	private static $query_players = <<<SQL
+		SELECT u.first_name, u.last_name
+		FROM users u
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u.id
+		WHERE tu.tournament_id = :id AND tu.is_player = true
+SQL;
+	/**
+	 * SQL query string for fetching the league managers of the tournament.
+	 *
+	 * @property query_leauge_managers
+	 * @type String
+	 * @private
+	 */
+	private static $query_league_managers = <<<SQL
+		SELECT u.first_name, u.last_name
+		FROM users u
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u.id
+		WHERE tu.tournament_id = :id AND tu.is_league_manager = true
+SQL;
 
 	/**
 	 * Array to be returned containing all tournament data.
@@ -46,6 +75,30 @@ SQL;
 
 
 	/**
+	 * Method for executing queries and retrieving data.
+	 *
+	 * @method getData
+	 * @private
+	 * @param query {String} Query string to be executed.
+	 * @param variable {Array} Array to hold result from query.
+	 * @return {Boolean} Whether successfully executes query.
+	 */
+	private static function getData($query, &$variable) {
+		$stmt = Database::$conn->prepare($query);
+
+		$stmt->bindParam(':id', self::$data['id']);
+
+		if ($stmt->execute()) {
+			$variable = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
 	 * Method that queries players in the tournament.
 	 *
 	 * @method getPlayers
@@ -53,7 +106,7 @@ SQL;
 	 * @return {Boolean} Whether successfully retrieved data.
 	 */
 	private static function getPlayers() {
-		return self::getData(self::$data['id'], self::$query_players, self::$tournament['players']);
+		return self::getData(self::$query_players, self::$tournament['players']);
 	}
 
 	/**
@@ -64,7 +117,7 @@ SQL;
 	 * @return {Boolean} Whether successfully retrieved data.
 	 */
 	private static function getLeagueManagers() {
-		return self::getData(self::$data['id'], self::$query_league_managers, self::$tournament['league_managers']);
+		return self::getData(self::$query_league_managers, self::$tournament['league_managers']);
 	}
 
 	/**
@@ -75,7 +128,7 @@ SQL;
 	 * @return {Boolean} Whether successfully retrieved data.
 	 */
 	private static function getTournamentData() {
-		$is_success = self::getData(self::$data['id'], self::$query, self::$tournament);
+		$is_success = self::getData(self::$query, self::$tournament);
 
 		// only one tournament, so set it equal to first result.
 		self::$tournament = self::$tournament[0];

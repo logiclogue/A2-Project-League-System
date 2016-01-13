@@ -43,9 +43,11 @@ SQL;
 SQL;
 
 	/**
+	 * SQL query string for checking whether the user is a player in a particular league.
 	 *
-	 *
-	 *
+	 * @property query_player_count
+	 * @type String
+	 * @private
 	 */
 	private static $query_player_count = <<<SQL
 		SELECT COUNT(*)
@@ -56,9 +58,11 @@ SQL;
 		is_player = 1
 SQL;
 	/**
+	 * SQL query string for checking whether the user is league manager of a particular league.
 	 *
-	 *
-	 *
+	 * @property query_league_manager_count
+	 * @type String
+	 * @private
 	 */
 	private static $query_league_manager_count = <<<SQL
 		SELECT COUNT(*)
@@ -71,24 +75,22 @@ SQL;
 
 
 	/**
-	 * Method for executing queries and retrieving data.
+	 * Method for telling whether the current user is a player in the tournament.
 	 *
-	 * @method getData
+	 * @method isPlayer
 	 * @protected
-	 * @param id {Integer} Id to be bound to the query string.
-	 * @param query {String} Query string to be executed.
-	 * @param variable {Array} Array to hold result from query.
-	 * @return {Boolean} Whether successfully executes query.
+	 * @param user_id {Integer} Id of the user to query.
+	 * @param tournament_id {Integer} Id of the tournament to query.
+	 * @return {Boolean} Whether the user is a player in that tournament.
 	 */
-	protected static function getData($id, $query, &$variable) {
-		$stmt = Database::$conn->prepare($query);
+	protected static function isPlayer($user_id, $tournament_id) {
+		$stmt = Database::$conn->prepare($query_player_count);
 
-		$stmt->bindParam(':id', $id);
+		$stmt->bindParam(':user_id', $user_id);
+		$stmt->bindParam(':tournament_id', $tournament_id);
 
 		if ($stmt->execute()) {
-			$variable = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-			return true;
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		}
 		else {
 			return false;
@@ -96,23 +98,26 @@ SQL;
 	}
 
 	/**
-	 * Method for telling whether the current user is a player in the tournament.
-	 *
-	 * @method isPlayer
-	 * @protected
-	 */
-	protected static function isPlayer($id) {
-		
-	}
-
-	/**
 	 * Method for telling whether the current user is a league manager is the tournament.
 	 *
 	 * @method isLeagueManager
 	 * @protected
+	 * @param user_id {Integer} Id of the user to query.
+	 * @param tournament_id {Integer} Id of the tournament to query.
+	 * @return {Boolean} Whether the user is a league manager in that tournament.
 	 */
-	protected static function isLeagueManager() {
+	protected static function isLeagueManager($user_id, $tournament_id) {
+		$stmt = Datbase::$conn->prepare($query_league_manager_count);
 
+		$stmt->bindParam(':user_id', $user_id);
+		$stmt->bindParam(':tournament_id', $tournament_id);
+
+		if ($stmt->execute()) {
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			return false;
+		}
 	}
 }
 
