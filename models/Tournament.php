@@ -84,13 +84,18 @@ SQL;
 	 * @return {Boolean} Whether the user is a player in that tournament.
 	 */
 	protected static function isPlayer($user_id, $tournament_id) {
-		$stmt = Database::$conn->prepare($query_player_count);
+		$stmt = Database::$conn->prepare(self::$query_player_count);
 
 		$stmt->bindParam(':user_id', $user_id);
 		$stmt->bindParam(':tournament_id', $tournament_id);
 
 		if ($stmt->execute()) {
-			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == "1") {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -107,13 +112,18 @@ SQL;
 	 * @return {Boolean} Whether the user is a league manager in that tournament.
 	 */
 	protected static function isLeagueManager($user_id, $tournament_id) {
-		$stmt = Datbase::$conn->prepare($query_league_manager_count);
+		$stmt = Database::$conn->prepare(self::$query_league_manager_count);
 
 		$stmt->bindParam(':user_id', $user_id);
 		$stmt->bindParam(':tournament_id', $tournament_id);
 
 		if ($stmt->execute()) {
-			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == "1") {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;

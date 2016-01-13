@@ -55,10 +55,25 @@ SQL;
 	 * @private
 	 * @param is_league_manager {Boolean} Whether the user is now a league manager.
 	 * @param is_player {Boolean} Whether the user is now a player in the tournament.
+	 * @return {Boolean} Whether able to update the user.
 	 */
 	private static function bindBools($is_league_manager, $is_player) {
-		self::$stmt->bindParam(':is_league_manager', $is_league_manager);
-		self::$stmt->bindParam(':is_player', $is_player);
+		$is_user_league_manager = self::isLeagueManager($_SESSION['user']['id'], $data['tournament_id']);
+		$league_managers_count = 0;
+
+		if ($is_user_league_manager || $league_managers_count) {
+			self::$stmt->bindParam(':is_league_manager', $is_league_manager);
+		}
+		else {
+			return false;
+		}
+
+		if ($is_user_league_manager || $league_managers_count || $data['user_id'] == $_SESSION['user']['id']) {
+			self::$stmt->bindParam(':is_player', $is_player);
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -66,11 +81,13 @@ SQL;
 	 *
 	 * @method bindParams
 	 * @private
+	 * @return {Boolean} @method bindBools.
 	 */
 	private static function bindParams() {
 		self::$stmt->bindParam(':user_id', self::$data['user_id']);
 		self::$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
-		self::bindBools(self::$data['is_league_manager'], self::$data['is_player']);
+
+		return self::bindBools(self::$data['is_league_manager'], self::$data['is_player']);
 	}
 
 	/**
@@ -78,13 +95,14 @@ SQL;
 	 *
 	 * @method checkCommand
 	 * @private
+	 * @return {Boolean} @method bindBools.
 	 */
 	private static function checkCommand() {
 		if (self::$data['join']) {
-			self::bindBools(false, true);
+			return self::bindBools(false, true);
 		}
 		else if (self::$data['leave']) {
-			self::bindBools(false, false);
+			return self::bindBools(false, false);
 		}
 	}
 
@@ -99,7 +117,10 @@ SQL;
 	private static function update() {
 		self::$stmt = Database::$conn->prepare(self::$query);
 
-		self::bindParams();
+		if (!self::bindParams()) {
+			return false;
+		}
+
 		self::checkCommand();
 
 		return self::$stmt->execute();
