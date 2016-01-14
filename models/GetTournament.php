@@ -72,12 +72,15 @@ SQL;
 	 * @private
 	 */
 	private static function getPlayers() {
-		$stmt = Database::$conn->prepare($query_players);
+		$stmt = Database::$conn->prepare(self::$query_players);
 
-		$stmt->bindParam(':id', $data['id']);
+		$stmt->bindParam(':id', self::$data['id']);
 
 		if ($stmt->execute()) {
-			self::$return_data['players'] = self::$stmt->fetchAll(PDO::FETCH_ASSOC);
+			self::$return_data['players'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			self::$success = false;
 		}
 	}
 
