@@ -4,7 +4,7 @@ require_once(dirname(__DIR__) . '/models/Login.php');
 require_once(dirname(__DIR__) . '/models/Register.php');
 require_once(dirname(__DIR__) . '/models/Status.php');
 require_once(dirname(__DIR__) . '/models/Logout.php');
-require_once(dirname(__DIR__) . '/models/UpdateUser.php');
+require_once(dirname(__DIR__) . '/models/UserUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
 require_once(dirname(__DIR__) . '/models/UserGet.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
@@ -54,7 +54,7 @@ class Test
 		self::echo_n($_SESSION);
 
 		self::login();
-		self::echo_n(UpdateUser::call(array(
+		self::echo_n(UserUpdate::call(array(
 			'first_name' => 'Jordan',
 			'last_name' => 'Lord',
 			'home_phone' => null,

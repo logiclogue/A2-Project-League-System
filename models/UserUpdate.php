@@ -9,7 +9,7 @@ session_start();
 /**
  * This model is used to update user details.
  *
- * @class UpdateUser
+ * @class UserUpdate
  * @extends Model
  * @static
  */
@@ -19,7 +19,7 @@ session_start();
  * @param home_phone {String} The new home phone number of the user.
  * @param mobile_phone {String} THe new mobile phone number of the user.
  */
-class UpdateUser extends Model
+class UserUpdate extends Model
 {
 	/**
 	 * SQL query string to update the user's data.
@@ -85,6 +85,6 @@ SQL;
 	}
 }
 
-UpdateUser::init();
+UserUpdate::init();
 
 ?>
