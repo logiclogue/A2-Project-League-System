@@ -9,7 +9,7 @@ session_start();
 /**
  * Model for updating a user in a tournament.
  *
- * @class UpdateTournamentUser
+ * @class TournamentUserUpdate
  * @extends Tournament
  * @static
  */
@@ -21,7 +21,7 @@ session_start();
  * @param leave {Boolean} Whether delete the user from the tournament (is_league_manager = false, is_player = false). (optional)
  * @param join {Boolean} Whether joining the tournament (is_league_manager = false, is_player = true). (optional)
  */
-class UpdateTournamentUser extends Tournament
+class TournamentUserUpdate extends Tournament
 {
 	/**
 	 * SQL query string for updating the user in the tournament.
@@ -141,6 +141,6 @@ SQL;
 	}
 }
 
-UpdateTournamentUser::init();
+TournamentUserUpdate::init();
 
 ?>

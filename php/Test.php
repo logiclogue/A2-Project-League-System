@@ -7,7 +7,7 @@ require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UpdateUser.php');
 require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
 require_once(dirname(__DIR__) . '/models/UserGet.php');
-require_once(dirname(__DIR__) . '/models/UpdateTournamentUser.php');
+require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentGet.php');
 
 
@@ -74,13 +74,13 @@ class Test
 
 		self::echo_n(UserGet::call(array('id' => 1)));
 
-		self::echo_n(UpdateTournamentUser::call(array(
+		self::echo_n(TournamentUserUpdate::call(array(
 			'user_id' => 1,
 			'tournament_id' => 1,
 			'is_league_manager' => true,
 			'is_player' => true
 		)));
-		/*self::echo_n(UpdateTournamentUser::call(array(
+		/*self::echo_n(TournamentUserUpdate::call(array(
 			'user_id' => 1,
 			'tournament_id' => 1,
 			'is_league_manager' => false,

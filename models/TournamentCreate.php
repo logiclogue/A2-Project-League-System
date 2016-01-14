@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__DIR__) . '/models/Tournament.php');
-require_once(dirname(__DIR__) . '/models/UpdateTournamentUser.php');
+require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
 
 session_start();
 
@@ -48,7 +48,7 @@ SQL;
 	 * @private
 	 */
 	private static function attachLeagueManager() {
-		if (!UpdateTournamentUser::call(array(
+		if (!TournamentUserUpdate::call(array(
 			'user_id' => $_SESSION['user']['id'],
 			'tournament_id' => Database::$conn->lastInsertId(),
 			'is_league_manager' => true,
