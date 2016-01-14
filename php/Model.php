@@ -33,16 +33,16 @@ class Model
 	 * @type Array
 	 * @protected
 	 */
-	protected static $return_data = array();
+	protected static $return_data;
 
 	/**
 	 * Whether model executed successfully.
 	 *
 	 * @property success
-	 * @type Boolean
+	 * @type {Boolean} Default true.
 	 * @protected
 	 */
-	protected static $success = true;
+	protected static $success;
 
 	/**
 	 * Error message string, if error.
@@ -51,7 +51,7 @@ class Model
 	 * @type String
 	 * @protected
 	 */
-	protected static $error_msg = '';
+	protected static $error_msg;
 
 
 	/**
@@ -62,12 +62,18 @@ class Model
 	 * @return {Array} Return object.
 	 */
 	private static function returnObj() {
-		 $obj = self::$return_data;
+		$obj = array();
 
-		 $obj['success'] = self::$success;
-		 $obj['error_msg'] = self::$error_msg;
+		if (self::$success) {
+			$obj = self::$return_data;
+		}
+		else {
+			$obj['error_msg'] = self::$error_msg;
+		}
 
-		 return $obj;
+		$obj['success'] = self::$success;
+
+		return $obj;
 	}
 
 	/**
@@ -94,6 +100,18 @@ class Model
 		return isset($_POST[self::$name]);
 	}
 
+	/**
+	 * Resets variables when model is called.
+	 *
+	 * @method setVars
+	 * @private
+	 */
+	private static function setVars() {
+		self::$return_data = array();
+		self::$success = true;
+		self::$error_msg = '';
+	}
+
 
 	/**
 	 * Call allows PHP to pass data into the model.
@@ -101,11 +119,12 @@ class Model
 	 * @method call
 	 * @public
 	 * @param {Object} Data object to interact with the model.
-	 * @return {} The return of child @method main.
+	 * @return {Object} Return data.
 	 */
 	public static function call($data) {
 		self::$data = $data;
 
+		self::setVars();
 		static::main();
 
 		return self::returnObj();
@@ -121,6 +140,7 @@ class Model
 		if (self::isPost()) {
 			self::$data = self::decodePost();
 
+			self::setVars();
 			static::main();
 
 			echo json_encode(self::returnObj());
