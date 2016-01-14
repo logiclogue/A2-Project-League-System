@@ -10,6 +10,7 @@ require_once(dirname(__DIR__) . '/models/UserGet.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentGet.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserAttach.php');
+require_once(dirname(__DIR__) . '/models/TournamentPlayerAdd.php');
 
 
 /**
@@ -45,6 +46,12 @@ class Test
 		self::echo_n(TournamentCreate::call(array(
 			'name' => 'Premier League',
 			'description' => 'The top tier of the Primrose Squash leagues'
+		)));
+
+		echo 'Add player in tournament: ';
+		self::echo_n(TournamentPlayerAdd::call(array(
+			'user_id' => 1,
+			'tournament_id' => 1
 		)));
 	}
 }
