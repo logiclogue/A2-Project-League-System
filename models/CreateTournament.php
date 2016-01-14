@@ -16,8 +16,6 @@ session_start();
 /**
  * @param name {String} The name of the tournament.
  * @param description {String} The description of the tournament.
- *
- * @return {Boolean} Whether successful in updating the user in the tournament.
  */
 class CreateTournament extends Tournament
 {
@@ -48,15 +46,16 @@ SQL;
 	 *
 	 * @method attachLeagueManager
 	 * @private
-	 * @return {Boolean} Whether successfully attached the current user as a league manager.
 	 */
 	private static function attachLeagueManager() {
-		return UpdateTournamentUser::call(array(
+		if (!UpdateTournamentUser::call(array(
 			'user_id' => $_SESSION['user']['id'],
 			'tournament_id' => Database::$conn->lastInsertId(),
 			'is_league_manager' => true,
 			'is_player' => false
-		));
+		))['success']) {
+			self::$success = false;
+		}
 	}
 
 	/**
@@ -64,7 +63,6 @@ SQL;
 	 *
 	 * @method create
 	 * @private
-	 * @return {Boolean} Whether success of creating a tournament.
 	 */
 	private static function create() {
 		self::$stmt = Database::$conn->prepare(self::$query);
@@ -72,7 +70,9 @@ SQL;
 		self::$stmt->bindParam(':name', self::$data['name']);
 		self::$stmt->bindParam(':description', self::$data['description']);
 
-		return self::$stmt->execute();
+		if (!self::$stmt->execute()) {
+			self::$success = false;
+		}
 	}
 
 	/**
@@ -80,14 +80,14 @@ SQL;
 	 *
 	 * @method main
 	 * @protected
-	 * @return {Boolean} @method create.
 	 */
 	protected static function main() {
 		if (isset($_SESSION['user'])) {
-			return self::create() && self::attachLeagueManager();
+			self::create();
+			self::attachLeagueManager();
 		}
 		else {
-			return false;
+			self::$success = false;
 		}
 	}
 }

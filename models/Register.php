@@ -18,8 +18,6 @@ session_start();
  * @param first_name {String} The first name of the user.
  * @param last_name {String} The last name of the user.
  * @param password {String} The password of the user.
- *
- * @return {Boolean} Whether successfully registered.
  */
 class Register extends Model
 {
@@ -28,6 +26,7 @@ class Register extends Model
 	 *
 	 * @property query
 	 * @type String
+	 * @private
 	 */
 	private static $query = <<<SQL
 		INSERT INTO users (email, first_name, last_name, hash)
@@ -39,13 +38,15 @@ SQL;
 	 *
 	 * @property result
 	 * @type Object
+	 * @private
 	 */
-	private static $result;
+	private static $stmt;
 	/**
 	 * Hash of the password entered.
 	 *
 	 * @property hash
 	 * @type String
+	 * @private
 	 */
 	private static $hash;
 
@@ -55,12 +56,13 @@ SQL;
 	 * Data inputted by user is bound.
 	 *
 	 * @method bindParams
+	 * @private
 	 */
 	private static function bindParams() {
-		self::$result->bindParam(':email', self::$data['email']);
-		self::$result->bindParam(':first_name', self::$data['first_name']);
-		self::$result->bindParam(':last_name', self::$data['last_name']);
-		self::$result->bindParam(':hash', self::$hash);
+		self::$stmt->bindParam(':email', self::$data['email']);
+		self::$stmt->bindParam(':first_name', self::$data['first_name']);
+		self::$stmt->bindParam(':last_name', self::$data['last_name']);
+		self::$stmt->bindParam(':hash', self::$hash);
 	}
 
 	/**
@@ -69,19 +71,16 @@ SQL;
 	 * Executes query.
 	 *
 	 * @method main
-	 * @return {Boolean} On successfully registered.
+	 * @public
 	 */
 	public static function main() {
-		self::$result = Database::$conn->prepare(self::$query);
+		self::$stmt = Database::$conn->prepare(self::$query);
 		self::$hash = password_hash(self::$data['password'], PASSWORD_BCRYPT);
 
 		self::bindParams();
 		
-		if (self::$result->execute()) {
-			return true;
-		}
-		else {
-			return false;
+		if (!self::$stmt->execute()) {
+			self::$success = false;
 		}
 	}
 }

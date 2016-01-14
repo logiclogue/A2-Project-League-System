@@ -18,8 +18,6 @@ session_start();
  * @param last_name {String} The new last name of the user.
  * @param home_phone {String} The new home phone number of the user.
  * @param mobile_phone {String} THe new mobile phone number of the user.
- *
- * @return {Boolean} Whether successfully updated the user.
  */
 class UpdateUser extends Model
 {
@@ -55,7 +53,6 @@ SQL;
 	 *
 	 * @method update
 	 * @private
-	 * @return {Boolean} Whether successfully updated.
 	 */
 	private static function update() {
 		self::$stmt = Database::$conn->prepare(self::$query);
@@ -66,7 +63,9 @@ SQL;
 		self::$stmt->bindParam(':home_phone', self::$data['home_phone']);
 		self::$stmt->bindParam(':mobile_phone', self::$data['mobile_phone']);
 
-		return self::$stmt->execute();
+		if (!self::$stmt->execute()) {
+			self::$success = false;
+		}
 	}
 
 	/**
@@ -75,14 +74,13 @@ SQL;
 	 *
 	 * @method main
 	 * @protected
-	 * @return {Boolean} Whether successfully updated.
 	 */
 	protected static function main() {
 		if (isset($_SESSION['user'])) {
-			return self::update();
+			self::update();
 		}
 		else {
-			return false;
+			self::$success = false;
 		}
 	}
 }

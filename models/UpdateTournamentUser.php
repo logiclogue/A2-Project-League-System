@@ -20,8 +20,6 @@ session_start();
  * @param is_player {Boolean} Whether the user is now a player in the tournament.
  * @param leave {Boolean} Whether delete the user from the tournament (is_league_manager = false, is_player = false). (optional)
  * @param join {Boolean} Whether joining the tournament (is_league_manager = false, is_player = true). (optional)
- *
- * @return {Boolean} Whether successfully updated the user in the tournament.
  */
 class UpdateTournamentUser extends Tournament
 {
@@ -107,23 +105,24 @@ SQL;
 	}
 
 	/**
-	 * Main method for executing the database statment.
+	 * Main method for executing the database statement.
 	 * Updating the user.
 	 *
 	 * @method update
 	 * @private
-	 * @return {Boolean} Whether successfully updated.
 	 */
 	private static function update() {
 		self::$stmt = Database::$conn->prepare(self::$query);
 
 		if (!self::bindParams()) {
-			return false;
+			self::$success = false;
 		}
 
 		self::checkCommand();
 
-		return self::$stmt->execute();
+		if (!self::$stmt->execute()) {
+			self::$success = false;
+		}
 	}
 
 	/**
@@ -131,14 +130,13 @@ SQL;
 	 *
 	 * @method main
 	 * @protected
-	 * @return {Boolean} Whether successfully updated.
 	 */
 	protected static function main() {
 		if (isset($_SESSION['user'])) {
-			return self::update();
+			self::update();
 		}
 		else {
-			return false;
+			self::$success = false;
 		}
 	}
 }

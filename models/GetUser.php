@@ -40,7 +40,6 @@ SQL;
 	 *
 	 * @method main
 	 * @protected
-	 * @return {Array} User data.
 	 */
 	protected static function main() {
 		$stmt = Database::$conn->prepare(self::$query);
@@ -48,10 +47,10 @@ SQL;
 		$stmt->bindParam(':id', self::$data['id']);
 
 		if ($stmt->execute()) {
-			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+			self::$return_data = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 		}
 		else {
-			return false;
+			self::$success = false;
 		}
 	}
 }

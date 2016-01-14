@@ -64,49 +64,21 @@ SQL;
 		WHERE tu.tournament_id = :id AND tu.is_league_manager = true
 SQL;
 
-	/**
-	 * Array to be returned containing all tournament data.
-	 *
-	 * @property tournament
-	 * @type Array
-	 * @private
-	 */
-	private static $tournament = array();
-
-
-	/**
-	 * Method for executing queries and retrieving data.
-	 *
-	 * @method getData
-	 * @private
-	 * @param query {String} Query string to be executed.
-	 * @param variable {Array} Array to hold result from query.
-	 * @return {Boolean} Whether successfully executes query.
-	 */
-	private static function getData($query, &$variable) {
-		$stmt = Database::$conn->prepare($query);
-
-		$stmt->bindParam(':id', self::$data['id']);
-
-		if ($stmt->execute()) {
-			$variable = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 
 	/**
 	 * Method that queries players in the tournament.
 	 *
 	 * @method getPlayers
 	 * @private
-	 * @return {Boolean} Whether successfully retrieved data.
 	 */
 	private static function getPlayers() {
-		return self::getData(self::$query_players, self::$tournament['players']);
+		$stmt = Database::$conn->prepare($query_players);
+
+		$stmt->bindParam(':id', $data['id']);
+
+		if ($stmt->execute()) {
+			self::$return_data['players'] = self::$stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
 	}
 
 	/**
@@ -114,10 +86,18 @@ SQL;
 	 *
 	 * @method getLeagueManagers
 	 * @private
-	 * @return {Boolean} Whether successfully retrieved data.
 	 */
 	private static function getLeagueManagers() {
-		return self::getData(self::$query_league_managers, self::$tournament['league_managers']);
+		$stmt = Database::$conn->prepare(self::$query_league_managers);
+
+		$stmt->bindParam(':id', self::$data['id']);
+
+		if ($stmt->execute()) {
+			self::$return_data['league_managers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			self::$success = false;
+		}
 	}
 
 	/**
@@ -125,15 +105,18 @@ SQL;
 	 *
 	 * @method getTournamentData
 	 * @private
-	 * @return {Boolean} Whether successfully retrieved data.
 	 */
 	private static function getTournamentData() {
-		$is_success = self::getData(self::$query, self::$tournament);
+		$stmt = Database::$conn->prepare(self::$query);
 
-		// only one tournament, so set it equal to first result.
-		self::$tournament = self::$tournament[0];
+		$stmt->bindParam(':id', self::$data['id']);
 
-		return $is_success;
+		if ($stmt->execute()) {
+			self::$return_data = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+		}
+		else {
+			self::$success = false;
+		}
 	}
 
 	/**
@@ -144,12 +127,9 @@ SQL;
 	 * @return {Array} Tournament data.
 	 */
 	protected static function main() {
-		if (self::getTournamentData() && self::getPlayers() && self::getLeagueManagers()) {
-			return self::$tournament;
-		}
-		else {
-			return false;
-		}
+		self::getTournamentData();
+		self::getPlayers();
+		self::getLeagueManagers();
 	}
 }
 

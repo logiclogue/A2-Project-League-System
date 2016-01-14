@@ -13,7 +13,6 @@ session_start();
  * @static
  */
 /**
- * @return {Boolean} Whether successfully logged out.
  */
 class Logout extends Model
 {
@@ -22,13 +21,10 @@ class Logout extends Model
 	 *
 	 * @method main
 	 * @protected
-	 * @return {Boolean} True.
 	 */
 	protected static function main() {
 		session_unset();
 		session_destroy();
-
-		return true;
 	}
 }
 
