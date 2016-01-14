@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__DIR__) . '/models/Tournament.php');
-require_once(dirname(__DIR__) . '/models/GetTournament.php');
+require_once(dirname(__DIR__) . '/models/TournamentGet.php');
 
 session_start();
 

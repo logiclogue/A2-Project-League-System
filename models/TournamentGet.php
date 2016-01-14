@@ -7,7 +7,7 @@ require_once(dirname(__DIR__) . '/php/Database.php');
 /**
  * Model that fetches tournament data based on id.
  *
- * @class GetTournament
+ * @class TournamentGet
  * @extends Model
  * @static
  */
@@ -21,7 +21,7 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  * @return players {Array} Array of players in the tournament.
  *  @return players[] {Object} Result of @class GetUser for each player.
  */
-class GetTournament extends Model
+class TournamentGet extends Model
 {
 	/**
 	 * SQL query string for fetching tournament data.
