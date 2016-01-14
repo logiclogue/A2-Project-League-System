@@ -5,7 +5,7 @@ require_once(dirname(__DIR__) . '/models/Register.php');
 require_once(dirname(__DIR__) . '/models/Status.php');
 require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UpdateUser.php');
-require_once(dirname(__DIR__) . '/models/CreateTournament.php');
+require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
 require_once(dirname(__DIR__) . '/models/GetUser.php');
 require_once(dirname(__DIR__) . '/models/UpdateTournamentUser.php');
 require_once(dirname(__DIR__) . '/models/GetTournament.php');
@@ -67,7 +67,7 @@ class Test
 		self::echo_n($_SESSION);
 
 		echo 'Create tournament: ';
-		self::echo_n(CreateTournament::call(array(
+		self::echo_n(TournamentCreate::call(array(
 			'name' => 'Premier League',
 			'description' => 'The top tier of the Primrose Squash leagues'
 		)));

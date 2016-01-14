@@ -9,7 +9,7 @@ session_start();
 /**
  * Model for users to create tournaments.
  *
- * @class CreateTournament
+ * @class TournamentCreate
  * @extends Tournament
  * @static
  */
@@ -17,7 +17,7 @@ session_start();
  * @param name {String} The name of the tournament.
  * @param description {String} The description of the tournament.
  */
-class CreateTournament extends Tournament
+class TournamentCreate extends Tournament
 {
 	/**
 	 * SQL query string for creating a tournament.
@@ -92,6 +92,6 @@ SQL;
 	}
 }
 
-CreateTournament::init();
+TournamentCreate::init();
 
 ?>
