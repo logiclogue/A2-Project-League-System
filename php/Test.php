@@ -6,7 +6,7 @@ require_once(dirname(__DIR__) . '/models/Status.php');
 require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UpdateUser.php');
 require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
-require_once(dirname(__DIR__) . '/models/GetUser.php');
+require_once(dirname(__DIR__) . '/models/UserGet.php');
 require_once(dirname(__DIR__) . '/models/UpdateTournamentUser.php');
 require_once(dirname(__DIR__) . '/models/TournamentGet.php');
 
@@ -72,7 +72,7 @@ class Test
 			'description' => 'The top tier of the Primrose Squash leagues'
 		)));
 
-		self::echo_n(GetUser::call(array('id' => 1)));
+		self::echo_n(UserGet::call(array('id' => 1)));
 
 		self::echo_n(UpdateTournamentUser::call(array(
 			'user_id' => 1,

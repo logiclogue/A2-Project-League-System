@@ -17,9 +17,9 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  * @return name {String} Name of the tournament.
  * @return description {String} Description of the tournament.
  * @return league_managers {Array} Array of league managers.
- *  @return league_managers[] {Object} Result of @class GetUser for each league manager.
+ *  @return league_managers[] {Object} Result of @class UserGet for each league manager.
  * @return players {Array} Array of players in the tournament.
- *  @return players[] {Object} Result of @class GetUser for each player.
+ *  @return players[] {Object} Result of @class UserGet for each player.
  */
 class TournamentGet extends Model
 {

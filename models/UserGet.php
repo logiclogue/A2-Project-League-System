@@ -9,7 +9,7 @@ session_start();
 /**
  * Model for querying a user based on the id.
  *
- * @class GetUser
+ * @class UserGet
  * @extends Model
  * @static
  */
@@ -19,7 +19,7 @@ session_start();
  * @return first_name {String} First name of the user.
  * @return last_name {String} Last name of the user.
  */
-class GetUser extends Model
+class UserGet extends Model
 {
 	/**
 	 * SQL query string for fetching the user's data.
@@ -55,6 +55,6 @@ SQL;
 	}
 }
 
-GetUser::init();
+UserGet::init();
 
 ?>
