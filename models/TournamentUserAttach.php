@@ -2,7 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Database.php');
 require_once(dirname(__DIR__) . '/php/Model.php');
-require_once(dirname(__DIR__) . '/php/Tournament.php');
+require_once(dirname(__DIR__) . '/models/Tournament.php');
 
 session_start();
 
@@ -41,14 +41,12 @@ SQL;
 		$is_league_manager = self::isLeagueManager($_SESSION['user']['id'], self::$data['tournament_id']);
 		$is_player = self::isPlayer($_SESSION['user']['id'], self::$data['tournament_id']);
 
-		if ($_SESSION['user']['id'] == self::$data['user_id']) {
-			$stmt->bindParam(':user_id', self::$data['user_id']);
-		}
-
-
+		$stmt->bindParam(':user_id', self::$data['user_id']);
 		$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
-		$stmt->bindParam(':is_player', self::$data['is_player']);
-		$stmt->bindParam(':is_league_manager', self::$data['is_league_manager']);
+
+		if (!$is_league_manager && self::$data['user_id'] != $_SESSION['user']['id']) {
+			self::$success = false;
+		}
 
 		if (!$stmt->execute()) {
 			self::$success = false;

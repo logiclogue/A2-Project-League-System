@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `results` (
   `tournament_id` mediumint(8) unsigned NOT NULL,
   `date` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `tournaments` (
   `name` varchar(20) NOT NULL,
   `description` tinytext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 
@@ -54,9 +54,5 @@ CREATE TABLE IF NOT EXISTS `users` (
   `home_phone` varchar(20) DEFAULT NULL,
   `mobile_phone` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
-
-INSERT INTO `users` (`id`, `email`, `first_name`, `last_name`, `hash`, `home_phone`, `mobile_phone`) VALUES
-(1, 'test', 'Jordan', 'Lord', '$2y$10$APlS.VOXfFn3ANvZPHtvJuy9zeyLQ96fEjbDQuJLdDV2mep.sP.OG', NULL, NULL);
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
