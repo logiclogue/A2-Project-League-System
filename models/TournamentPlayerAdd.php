@@ -21,6 +21,13 @@ session_start();
  */
 class TournamentPlayerAdd extends Tournament
 {
+	/**
+	 * SQL query string for changing a user to a player.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
 	private static $query = <<<SQL
 		UPDATE tournament_user_maps
 		SET is_player = true
@@ -29,25 +36,51 @@ class TournamentPlayerAdd extends Tournament
 		tournament_id = :tournament_id
 SQL;
 
+	/**
+	 * Database object for executing @property query.
+	 *
+	 * @property stmt
+	 * @type Object
+	 * @private
+	 */
+	private static $stmt;
+
 
 	/**
-	 * Main method for making the user a player in the tournament
+	 * Checks any faults and executes query.
+	 *
+	 * @method executeQuery
+	 * @private
+	 */
+	private static function executeQuery() {
+		if (!self::$stmt->execute() || self::$stmt->rowCount() != 1) {
+			self::$success = false;
+		}
+	}
+
+	/**
+	 * Main method for making the user a player in the tournament.
 	 *
 	 * @method add
 	 * @private
 	 */
 	private static function add() {
+		// Attach user if not already.
 		TournamentUserAttach::call(array(
 			'user_id' => self::$data['user_id'],
 			'tournament_id' => self::$data['tournament_id']
 		));
 
-		$stmt = Database::$conn->prepare(self::$query);
+		self::$stmt = Database::$conn->prepare(self::$query);
 
-		$stmt->bindParam(':user_id', self::$data['user_id']);
-		$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
+		self::$stmt->bindParam(':user_id', self::$data['user_id']);
+		self::$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
 
-		if (!$stmt->execute() || $stmt->rowCount() != 1) {
+		// Verify whether the user can carry out the action.
+		if (self::$data['user_id'] == $_SESSION['user']['id'] || self::isLeagueManager($_SESSION['user']['id'])) {
+			self::executeQuery();
+		}
+		else {
 			self::$success = false;
 		}
 	}

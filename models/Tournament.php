@@ -118,7 +118,7 @@ SQL;
 		$stmt->bindParam(':tournament_id', $tournament_id);
 
 		if ($stmt->execute()) {
-			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == "1") {
+			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
 				return true;
 			}
 			else {
