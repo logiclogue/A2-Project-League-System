@@ -82,7 +82,7 @@ SQL;
 	private static $query_tournament_count = <<<SQL
 		SELECT COUNT(*)
 		FROM tournaments
-		WHERE tournament_id = :id
+		WHERE id = :id
 SQL;
 
 
@@ -150,7 +150,7 @@ SQL;
 	 * @param id {Integer} Id of the tournament.
 	 * @return {Boolean} Whether the tournament exists.
 	 */
-	protected static function isTournament($id) {
+	public static function isTournament($id) {
 		$stmt = Database::$conn->prepare(self::$query_tournament_count);
 
 		$stmt->bindParam(':id', $id);

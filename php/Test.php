@@ -53,6 +53,9 @@ class Test
 			'user_id' => 1,
 			'tournament_id' => 2
 		)));
+
+		echo 'Is tournament: ';
+		self::echo_n(Tournament::isTournament(1));
 	}
 }
 
