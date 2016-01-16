@@ -72,6 +72,18 @@ SQL;
 		user_id = :user_id AND
 		is_league_manager = 1
 SQL;
+	/**
+	 * SQL query string for checking whether a tournament exists.
+	 *
+	 * @property query_tournament_count
+	 * @type String
+	 * @private
+	 */
+	private static $query_tournament_count = <<<SQL
+		SELECT COUNT(*)
+		FROM tournaments
+		WHERE tournament_id = :id
+SQL;
 
 
 	/**
@@ -116,6 +128,32 @@ SQL;
 
 		$stmt->bindParam(':user_id', $user_id);
 		$stmt->bindParam(':tournament_id', $tournament_id);
+
+		if ($stmt->execute()) {
+			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Method for checking whether a tournament exists
+	 *
+	 * @method isTournament
+	 * @protected
+	 * @param id {Integer} Id of the tournament.
+	 * @return {Boolean} Whether the tournament exists.
+	 */
+	protected static function isTournament($id) {
+		$stmt = Database::$conn->prepare(self::$query_tournament_count);
+
+		$stmt->bindParam(':id', $id);
 
 		if ($stmt->execute()) {
 			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {

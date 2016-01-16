@@ -46,6 +46,8 @@ SQL;
 
 		if (!$is_league_manager && self::$data['user_id'] != $_SESSION['user']['id']) {
 			self::$success = false;
+
+			return;
 		}
 
 		if (!$stmt->execute()) {
