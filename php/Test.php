@@ -51,11 +51,8 @@ class Test
 		echo 'Add player in tournament: ';
 		self::echo_n(TournamentPlayerAdd::call(array(
 			'user_id' => 1,
-			'tournament_id' => 2
+			'tournament_id' => 1
 		)));
-
-		echo 'Is tournament: ';
-		self::echo_n(Tournament::isTournament(1));
 	}
 }
 

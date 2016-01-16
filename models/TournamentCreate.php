@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__DIR__) . '/models/Tournament.php');
-require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
+require_once(dirname(__DIR__) . '/models/TournamentUserAttach.php');
 
 session_start();
 
