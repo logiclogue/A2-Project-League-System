@@ -79,10 +79,21 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_tournament_count = <<<SQL
+	protected static $query_tournament_count = <<<SQL
 		SELECT COUNT(*)
 		FROM tournaments
 		WHERE id = :id
+SQL;
+	/**
+	 * SQL query for attaching a user to a tournament.
+	 *
+	 * @property query_attach
+	 * @type String
+	 * @private
+	 */
+	private static $query_attach = <<<SQL
+		INSERT INTO tournament_user_maps (tournament_id, user_id, is_player, is_league_manager)
+		VALUES (:tournament_id, :user_id, FALSE, FALSE)
 SQL;
 
 
@@ -102,7 +113,7 @@ SQL;
 		$stmt->bindParam(':tournament_id', $tournament_id);
 
 		if ($stmt->execute()) {
-			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == "1") {
+			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
 				return true;
 			}
 			else {
@@ -150,7 +161,7 @@ SQL;
 	 * @param id {Integer} Id of the tournament.
 	 * @return {Boolean} Whether the tournament exists.
 	 */
-	public static function isTournament($id) {
+	protected static function isTournament($id) {
 		$stmt = Database::$conn->prepare(self::$query_tournament_count);
 
 		$stmt->bindParam(':id', $id);
@@ -162,6 +173,29 @@ SQL;
 			else {
 				return false;
 			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Attaches a user to a tournament.
+	 *
+	 * @method attachUser
+	 * @protected
+	 * @param tournament_id {Integer} Id of the tournament.
+	 * @param user_id {Integer} Id of the user.
+	 * @return {Boolean} Whether successful.
+	 */
+	protected static function attachUser($tournament_id, $user_id) {
+		$stmt = Database::$conn->prepare(self::$query_attach);
+
+		$stmt->bindParam(':tournament_id', $tournament_id);
+		$stmt->bindParam(':user_id', $user_id);
+
+		if ($stmt->execute()) {
+			return true;
 		}
 		else {
 			return false;
