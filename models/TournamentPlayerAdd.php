@@ -74,7 +74,7 @@ SQL;
 	private static function verify() {
 		$is_league_manager = self::isLeagueManager($_SESSION['user']['id']);
 
-		if ($is_league_manager || self::$data['user_id'] == self:: $_SESSION['user']['id']) {
+		if ($is_league_manager || self::$data['user_id'] == $_SESSION['user']['id']) {
 			self::$error_msg = "You don't have permission to do that";
 
 			return false;
