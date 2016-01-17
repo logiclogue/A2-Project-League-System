@@ -73,8 +73,14 @@ SQL;
 	 */
 	private static function verify() {
 		$is_league_manager = self::isLeagueManager($_SESSION['user']['id'], self::$data['tournament_id']);
+		$does_tournament_exist = self::tournamentExists();
 
-		if ($is_league_manager || self::$data['user_id'] == $_SESSION['user']['id']) {
+		if (!$does_tournament_exist) {
+			self::$error_msg = "Tournament doesn't exist";
+
+			return false;
+		}
+		else if ($is_league_manager || self::$data['user_id'] == $_SESSION['user']['id']) {
 			return true;
 		}
 		else {

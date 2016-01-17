@@ -66,13 +66,8 @@ SQL;
 
 		$stmt->bindParam(':user_id', self::$data['user_id']);
 
-		if ($stmt->execute()) {
-			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
-				return true;
-			}
-			else {
-				return false;
-			}
+		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
+			return true;
 		}
 		else {
 			return false;
@@ -110,6 +105,11 @@ SQL;
 
 		if (self::isAttached()) {
 			self::$error_msg = 'Already attached to the tournament';
+
+			return false;
+		}
+		else if (!self::tournamentExists()) {
+			self::$error_msg = "Tournament doesn't exist";
 
 			return false;
 		}

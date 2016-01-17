@@ -79,7 +79,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	protected static $query_tournament_count = <<<SQL
+	private static $query_tournament_count = <<<SQL
 		SELECT COUNT(*)
 		FROM tournaments
 		WHERE id = :id
@@ -195,6 +195,26 @@ SQL;
 		$stmt->bindParam(':user_id', $user_id);
 
 		if ($stmt->execute()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks whether a tournament exists.
+	 *
+	 * @method tournamentExists
+	 * @protected
+	 * @return {Boolean} Whether tournament exists.
+	 */
+	protected static function tournamentExists() {
+		$stmt = Database::$conn->prepare(self::$query_tournament_count);
+
+		$stmt->bindParam(':id', self::$data['tournament_id']);
+
+		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
 			return true;
 		}
 		else {
