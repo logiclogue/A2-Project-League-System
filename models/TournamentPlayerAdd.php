@@ -54,7 +54,33 @@ SQL;
 	 */
 	private static function executeQuery() {
 		if (!self::$stmt->execute() || self::$stmt->rowCount() != 1) {
+			self::$error_msg = "Failed to execute query";
+
 			self::$success = false;
+		}
+	}
+
+	/**
+	 * Method for verifying whether the user can carry out the task.
+	 * Returns false if:
+	 * - Either:
+	 *   - Not a league manager.
+	 *   - Attaching someone else.
+	 *
+	 * @method verify
+	 * @private
+	 * @return {Boolean} Whether can.
+	 */
+	private static function verify() {
+		$is_league_manager = self::isLeagueManager($_SESSION['user']['id']);
+
+		if ($is_league_manager || self::$data['user_id'] == self:: $_SESSION['user']['id']) {
+			self::$error_msg = "You don't have permission to do that";
+
+			return false;
+		}
+		else {
+			return true;
 		}
 	}
 
@@ -66,10 +92,7 @@ SQL;
 	 */
 	private static function add() {
 		// Attach user if not already.
-		TournamentUserAttach::call(array(
-			'user_id' => self::$data['user_id'],
-			'tournament_id' => self::$data['tournament_id']
-		));
+		self::attachUser(self::$data['user_id'], self::$data['tournament_id']);
 
 		self::$stmt = Database::$conn->prepare(self::$query);
 
@@ -77,7 +100,7 @@ SQL;
 		self::$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
 
 		// Verify whether the user can carry out the action.
-		if (self::$data['user_id'] == $_SESSION['user']['id'] || self::isLeagueManager($_SESSION['user']['id'])) {
+		if (self::verify()) {
 			self::executeQuery();
 		}
 		else {
@@ -96,6 +119,8 @@ SQL;
 			self::add();
 		}
 		else {
+			self::$error_msg = "You must be logged in";
+
 			self::$success = false;
 		}
 	}
