@@ -72,15 +72,15 @@ SQL;
 	 * @return {Boolean} Whether can.
 	 */
 	private static function verify() {
-		$is_league_manager = self::isLeagueManager($_SESSION['user']['id']);
+		$is_league_manager = self::isLeagueManager($_SESSION['user']['id'], self::$data['tournament_id']);
 
 		if ($is_league_manager || self::$data['user_id'] == $_SESSION['user']['id']) {
+			return true;
+		}
+		else {
 			self::$error_msg = "You don't have permission to do that";
 
 			return false;
-		}
-		else {
-			return true;
 		}
 	}
 
