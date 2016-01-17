@@ -4,6 +4,7 @@ require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
 require_once(dirname(__DIR__) . '/models/Tournament.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserAttach.php');
+require_once(dirname(__DIR__) . '/models/UserGet.php');
 
 session_start();
 
@@ -55,7 +56,6 @@ SQL;
 	private static function executeQuery() {
 		if (!self::$stmt->execute() || self::$stmt->rowCount() != 1) {
 			self::$error_msg = "Failed to execute query";
-
 			self::$success = false;
 		}
 	}
@@ -63,6 +63,8 @@ SQL;
 	/**
 	 * Method for verifying whether the user can carry out the task.
 	 * Returns false if:
+	 * - User doesn't exist.
+	 * - Tournament doesn't exist.
 	 * - Either:
 	 *   - Not a league manager.
 	 *   - Attaching someone else.
@@ -74,6 +76,7 @@ SQL;
 	private static function verify() {
 		$is_league_manager = self::isLeagueManager($_SESSION['user']['id'], self::$data['tournament_id']);
 		$does_tournament_exist = self::tournamentExists();
+		$does_user_exist = UserGet::call(array('id' => self::$data['user_id']))['success'];
 
 		if (!$does_tournament_exist) {
 			self::$error_msg = "Tournament doesn't exist";
@@ -105,7 +108,7 @@ SQL;
 		// Verify whether the user can carry out the action.
 		if (self::verify()) {
 			// Attach user if not already.
-			self::attachUser(self::$data['user_id'], self::$data['tournament_id']);
+			self::attachUser(self::$data['tournament_id'], self::$data['user_id']);
 			// Execute query
 			self::executeQuery();
 		}

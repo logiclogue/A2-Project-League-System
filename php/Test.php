@@ -53,6 +53,9 @@ class Test
 			'user_id' => 1,
 			'tournament_id' => 1
 		)));
+
+		echo 'User data: ';
+		self::echo_n(UserGet::call(array('id' => 2)));
 	}
 }
 

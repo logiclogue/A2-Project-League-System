@@ -106,7 +106,7 @@ class Model
 	 * @method setVars
 	 * @private
 	 */
-	private static function setVars() {
+	protected static function setVars() {
 		self::$return_data = array();
 		self::$success = true;
 		self::$error_msg = '';
