@@ -48,11 +48,11 @@ class Test
 			'description' => 'The top tier of the Primrose Squash leagues'
 		)));
 
-		echo 'Add player in tournament: ';
+		/*echo 'Add player in tournament: ';
 		self::echo_n(TournamentPlayerAdd::call(array(
 			'user_id' => 1,
 			'tournament_id' => 1
-		)));
+		)));*/
 	}
 }
 

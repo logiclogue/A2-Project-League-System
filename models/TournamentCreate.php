@@ -30,6 +30,17 @@ class TournamentCreate extends Tournament
 		INSERT INTO tournaments (name, description)
 		VALUES (:name, :description)
 SQL;
+	/**
+	 * Query for making the creator of the league a league manager.
+	 *
+	 * @property query_add_league_manager
+	 * @type String
+	 * @private
+	 */
+	private static $query_add_league_manager = <<<SQL
+		INSERT INTO tournament_user_maps (tournament_id, user_id, is_league_manager, is_player)
+		VALUES (:tournament_id, :user_id, 1, 0)
+SQL;
 
 	/**
 	 * Statement object for executing @property query.
@@ -44,16 +55,18 @@ SQL;
 	/**
 	 * Method for attaching the current user as the league manager.
 	 *
-	 * @method attachLeagueManager
+	 * @method addLeagueManager
 	 * @private
 	 */
-	private static function attachLeagueManager() {
-		if (!TournamentUserUpdate::call(array(
-			'user_id' => $_SESSION['user']['id'],
-			'tournament_id' => Database::$conn->lastInsertId(),
-			'is_league_manager' => true,
-			'is_player' => false
-		))['success']) {
+	private static function addLeagueManager() {
+		$stmt = Database::$conn->prepare(self::$query_add_league_manager);
+
+		$stmt->bindParam(':user_id', $_SESSION['user']['id']);
+		// Bind the tournament id as the last insert id.
+		$stmt->bindParam(':tournament_id', Database::$conn->lastInsertId());
+
+		if (!$stmt->execute() || $stmt->rowCount() != 1) {
+			self::$error_msg = "Failed to add you as a league manager";
 			self::$success = false;
 		}
 	}
@@ -71,7 +84,12 @@ SQL;
 		self::$stmt->bindParam(':description', self::$data['description']);
 
 		if (!self::$stmt->execute()) {
+			self::$error_msg = "Failed to execute query";
 			self::$success = false;
+		}
+		else {
+			// Add league manager if didn't fail.
+			self::addLeagueManager();
 		}
 	}
 
@@ -84,9 +102,9 @@ SQL;
 	protected static function main() {
 		if (isset($_SESSION['user'])) {
 			self::create();
-			self::attachLeagueManager();
 		}
 		else {
+			self::$error_msg = "You must be logged in";
 			self::$success = false;
 		}
 	}

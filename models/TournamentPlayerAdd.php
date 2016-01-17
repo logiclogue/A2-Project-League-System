@@ -91,9 +91,6 @@ SQL;
 	 * @private
 	 */
 	private static function add() {
-		// Attach user if not already.
-		self::attachUser(self::$data['user_id'], self::$data['tournament_id']);
-
 		self::$stmt = Database::$conn->prepare(self::$query);
 
 		self::$stmt->bindParam(':user_id', self::$data['user_id']);
@@ -101,6 +98,9 @@ SQL;
 
 		// Verify whether the user can carry out the action.
 		if (self::verify()) {
+			// Attach user if not already.
+			self::attachUser(self::$data['user_id'], self::$data['tournament_id']);
+			// Execute query
 			self::executeQuery();
 		}
 		else {
