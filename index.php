@@ -15,6 +15,7 @@
 	<script src="app/callModel.js"></script>
 	<script src="controllers/LoginCtrl.js"></script>
 	<script src="controllers/HomeCtrl.js"></script>
+	<script src="controllers/NavCtrl.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,6 +28,19 @@
 </head>
 <body ng-app="computing-project">
 
+	<!-- Navbar -->
+	<div id="div-navbar" class="u-full-width" ng-controller="NavCtrl">
+		<div class="ten columns offset-by-one">
+			<a id="a-title">Computing Project</a>
+			<ul>
+				<li><a>Profile</a></li>
+				<li><a>Tournament</a></li>
+				<li><a>Home</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Main area for page -->
 	<div ng-view></div>
 
 </body>
