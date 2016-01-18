@@ -11,7 +11,11 @@ app.config(['$routeProvider', function ($routeProvider)
 
 	})
 	.when('/login', {
-		templateUrl: 'views/login.php',
+		templateUrl: 'views/login.html',
+		controller: 'LoginCtrl'
+	})
+	.when('/register', {
+		templateUrl: 'views/login.html',
 		controller: 'LoginCtrl'
 	})
 	.otherwise({
