@@ -4,7 +4,7 @@
  *
  * @controller LoginCtrl
  */
-app.controller('LoginCtrl', function ($scope, $http, $location)
+app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 {
 	/**
 	 * Method that logs the user in.
@@ -12,7 +12,13 @@ app.controller('LoginCtrl', function ($scope, $http, $location)
 	 * @method btnLoginClick
 	 */
 	$scope.btnLoginClick = function () {
-		console.log("Logging in!");
+		callModel.fetch('Login', {
+			email: $scope.inputEmailLogin,
+			password: $scope.inputPasswordLogin
+		},
+		function (response) {
+			console.log(response.data);
+		});
 	};
 
 	/**
@@ -21,6 +27,14 @@ app.controller('LoginCtrl', function ($scope, $http, $location)
 	 * @method btnRegisterClick
 	 */
 	$scope.btnRegisterClick = function () {
-		console.log("Registering!");
+		callModel.fetch('Register', {
+			first_name: $scope.inputFirstName,
+			last_name: $scope.inputLastName,
+			email: $scope.inputEmailRegister,
+			password: $scope.inputPasswordRegister
+		},
+		function (response) {
+			console.log(response.data);
+		});
 	};
 });
