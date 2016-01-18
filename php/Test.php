@@ -31,7 +31,7 @@ class Test
 		self::echo_n(Database::reset());
 
 		$reg = Register::call(array(
-			'email' => 'test',
+			'email' => 'me@email.com',
 			'password' => 'password',
 			'first_name' => 'Jordan',
 			'last_name' => 'Lord'
@@ -56,6 +56,8 @@ class Test
 
 		echo 'User data: ';
 		self::echo_n(UserGet::call(array('id' => 2)));
+
+		self::echo_n(Logout::call(array()));
 	}
 }
 

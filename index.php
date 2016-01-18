@@ -12,7 +12,9 @@
 
 	<script src="app/app.js"></script>
 	<script src="app/config.js"></script>
+	<script src="app/callModel.js"></script>
 	<script src="controllers/LoginCtrl.js"></script>
+	<script src="controllers/HomeCtrl.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
