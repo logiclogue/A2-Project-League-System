@@ -1,9 +1,9 @@
 /**
- * Home controller.
+ * Profile page controller.
  *
- * @method HomeCtrl
+ * @method ProfileCtrl
  */
-app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
+app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 {
 	/**
 	 * Variable for storing the name of the current subpage.

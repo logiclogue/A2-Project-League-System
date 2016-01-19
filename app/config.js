@@ -9,7 +9,7 @@ app.config(['$routeProvider', function ($routeProvider)
 	$routeProvider
 	.when('/', {
 		templateUrl: 'views/profile.html',
-		controller: 'HomeCtrl'
+		controller: 'ProfileCtrl'
 	})
 	.when('/login', {
 		templateUrl: 'views/login.html',
