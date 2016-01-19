@@ -5,6 +5,12 @@
  */
 app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
 {
+	/**
+	 * Variable for storing the name of the current subpage.
+	 *
+	 * @var currentSubPage
+	 * @type {String}
+	 */
 	var currentSubPage = 'results';
 
 
@@ -18,7 +24,7 @@ app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
 
 
 	/**
-	 * Method for view checking whether it can show a particular sub page.
+	 * Method for view checking whether it can show a particular subpage.
 	 *
 	 * @method $scope.isSubPage
 	 * @param pageName {String} Name of the page to query.
@@ -29,7 +35,7 @@ app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
 	};
 
 	/**
-	 * Method for returning the class for an active sub page button.
+	 * Method for returning the class for an active subpage button.
 	 *
 	 * @method subPageClass
 	 */
