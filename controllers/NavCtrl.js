@@ -27,8 +27,9 @@ app.controller('NavCtrl', function ($scope, $location, callModel)
 	 * @method $scope.btnLogout
 	 */
 	$scope.btnLogout = function () {
-		callModel.fetch('Logout', {}, function () {});
-		$location.path('/login');
+		callModel.fetch('Logout', {}, function () {
+			$location.path('/login');
+		});
 	};
 
 

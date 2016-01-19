@@ -16,6 +16,7 @@
 	<script src="controllers/LoginCtrl.js"></script>
 	<script src="controllers/ProfileCtrl.js"></script>
 	<script src="controllers/NavCtrl.js"></script>
+	<script src="controllers/HomeCtrl.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,9 +36,9 @@
 			<ul>
 				<li><a href="#/login" ng-hide="loggedIn">Login/Register</a></li>
 				<li><a href="#/" ng-show="loggedIn" ng-click="btnLogout()">Logout</a></li>
-				<li><a href="#/" ng-show="loggedIn">Profile</a></li>
-				<li><a href="#/" ng-show="loggedIn">Tournaments</a></li>
-				<li><a href="#/" ng-show="loggedIn">Home</a></li>
+				<li><a href="#/profile" ng-show="loggedIn">Profile</a></li>
+				<li><a href="#/tournament" ng-show="loggedIn">Tournaments</a></li>
+				<li><a href="#/">Home</a></li>
 			</ul>
 		</div>
 	</div>
