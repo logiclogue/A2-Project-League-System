@@ -3,69 +3,80 @@
 	<div class="box-container seven columns">
 		<h1>Jordan Lord</h1>
 
+
+		<!-- Mini navigation -->
 		<ul class="nav mini">
-			<li><a class="active">Results</a></li>
-			<li><a>Fixtures</a></li>
-			<li><a>Progress</a></li>
+			<li><a ng-click="btnChangeMiniPage('results')" class="active">Results</a></li>
+			<li><a ng-click="btnChangeMiniPage('fixtures')">Fixtures</a></li>
+			<li><a ng-click="btnChangeMiniPage('progress')">Progress</a></li>
 		</ul>
 
-		<div class="result">
-			<div class="head">
-				<span>FRI 11 NOV 2015</span>
-				<a class="u-pull-right">Premier League</a><br>
+
+		<!-- Mini pages -->
+
+		<!-- Results = mini page -->
+		<div ng-show="miniPage('results')">
+			<div class="result">
+				<div class="head">
+					<span>FRI 11 NOV 2015</span>
+					<a class="u-pull-right">Premier League</a><br>
+				</div>
+
+				<div class="body">
+					<span class="score win">3-1</span>
+					<span>vs <a>John Doe</a> (1234)</span>
+					<span class="u-pull-right">+23</span>
+				</div>
 			</div>
 
-			<div class="body">
-				<span class="score win">3-1</span>
-				<span>vs <a>John Doe</a> (1234)</span>
-				<span class="u-pull-right">+23</span>
-			</div>
-		</div>
+			<div class="result">
+				<div class="head">
+					<span>TUE 03 NOV 2015</span>
+					<a class="u-pull-right">Premier League</a><br>
+				</div>
 
-		<div class="result">
-			<div class="head">
-				<span>TUE 03 NOV 2015</span>
-				<a class="u-pull-right">Premier League</a><br>
-			</div>
-
-			<div class="body">
-				<span class="score loss">2-3</span>
-				<span>vs <a>John Doe</a> (1203)</span>
-				<span class="u-pull-right">-31</span>
-			</div>
-		</div>
-
-		<hr>
-
-		<div class="result">
-			<div class="head">
-				<a>ENTER RESULT</a>
-				<a class="u-pull-right">Premier League</a><br>
-			</div>
-
-			<div class="body">
-				<span>vs <a>Shane Washington</a> (1300)</span>
-				<span class="u-pull-right">%56</span>
+				<div class="body">
+					<span class="score loss">2-3</span>
+					<span>vs <a>John Doe</a> (1203)</span>
+					<span class="u-pull-right">-31</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="result">
-			<div class="head">
-				<a>ENTER RESULT</a>
-				<a class="u-pull-right">Premier League</a><br>
+
+		<!-- Fixtues = mini page -->
+		<div ng-show="miniPage('fixtures')">
+			<div class="result">
+				<div class="head">
+					<a>ENTER RESULT</a>
+					<a class="u-pull-right">Premier League</a><br>
+				</div>
+
+				<div class="body">
+					<span>vs <a>Shane Washington</a> (1300)</span>
+					<span class="u-pull-right">%56</span>
+				</div>
 			</div>
 
-			<div class="body">
-				<span>vs <a>Sylvester Briggs</a> (1300)</span>
-				<span class="u-pull-right">%56</span>
+			<div class="result">
+				<div class="head">
+					<a>ENTER RESULT</a>
+					<a class="u-pull-right">Premier League</a><br>
+				</div>
+
+				<div class="body">
+					<span>vs <a>Sylvester Briggs</a> (1300)</span>
+					<span class="u-pull-right">%56</span>
+				</div>
 			</div>
 		</div>
 
-		<hr>
 
-		<img width="u-full-width" height="500">
+		<!-- Progress = mini page -->
+		<img ng-show="miniPage('progress')" width="u-full-width" height="500">
 	</div>
 
+	<!-- Side bar -->
 	<div class="five columns">
 		<div class="box-container side">
 			<h2>Rating</h2>

@@ -33,8 +33,8 @@
 		<div class="ten columns offset-by-one">
 			<a id="a-title">Computing Project</a>
 			<ul>
-				<li><a href="" ng-show="loggedIn" ng-click="btnLogout()">Logout</a></li>
 				<li><a href="#/login" ng-hide="loggedIn">Login/Register</a></li>
+				<li><a href="#/" ng-show="loggedIn" ng-click="btnLogout()">Logout</a></li>
 				<li><a href="#/" ng-show="loggedIn">Profile</a></li>
 				<li><a href="#/" ng-show="loggedIn">Tournaments</a></li>
 				<li><a href="#/" ng-show="loggedIn">Home</a></li>
