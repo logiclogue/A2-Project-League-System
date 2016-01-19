@@ -29,6 +29,20 @@ app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
 	};
 
 	/**
+	 *
+	 *
+	 *
+	 */
+	$scope.miniPageClass = function (pageName) {
+		if (currentPage === pageName) {
+			return 'active';
+		}
+		else {
+			return '';
+		}
+	}
+
+	/**
  	 * Method for changing the current mini page.
  	 *
  	 * @method btnChangeMiniPage
