@@ -5,7 +5,7 @@
  */
 app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
 {
-	var currentPage = 'results';
+	var currentSubPage = 'results';
 
 
 	/* 
@@ -18,23 +18,23 @@ app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
 
 
 	/**
-	 * Method for view checking whether it can show a particular mini page.
+	 * Method for view checking whether it can show a particular sub page.
 	 *
-	 * @method $scope.miniPage
+	 * @method $scope.isSubPage
 	 * @param pageName {String} Name of the page to query.
 	 * @return {Boolean} Whether that page is visible.
 	 */
-	$scope.miniPage = function (pageName) {
-		return currentPage === pageName;
+	$scope.isSubPage = function (pageName) {
+		return currentSubPage === pageName;
 	};
 
 	/**
+	 * Method for returning the class for an active sub page button.
 	 *
-	 *
-	 *
+	 * @method subPageClass
 	 */
-	$scope.miniPageClass = function (pageName) {
-		if (currentPage === pageName) {
+	$scope.subPageClass = function (pageName) {
+		if (currentSubPage === pageName) {
 			return 'active';
 		}
 		else {
@@ -43,12 +43,12 @@ app.controller('HomeCtrl', function ($scope, $http, $location, callModel)
 	}
 
 	/**
- 	 * Method for changing the current mini page.
+ 	 * Method for changing the current subs page.
  	 *
- 	 * @method btnChangeMiniPage
+ 	 * @method btnChangeSubPage
  	 * @param pageName {String} Name of page to switch to.
  	 */
-	$scope.btnChangeMiniPage = function (pageName) {
-		currentPage = pageName;
+	$scope.btnChangeSubPage = function (pageName) {
+		currentSubPage = pageName;
 	};
 });

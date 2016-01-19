@@ -6,16 +6,16 @@
 
 		<!-- Mini navigation -->
 		<ul class="nav mini">
-			<li><a ng-click="btnChangeMiniPage('results')" ng-class="miniPageClass('results')">Results</a></li>
-			<li><a ng-click="btnChangeMiniPage('fixtures')" ng-class="miniPageClass('fixtures')">Fixtures</a></li>
-			<li><a ng-click="btnChangeMiniPage('progress')" ng-class="miniPageClass('progress')">Progress</a></li>
+			<li><a ng-click="btnChangeSubPage('results')" ng-class="subPageClass('results')">Results</a></li>
+			<li><a ng-click="btnChangeSubPage('fixtures')" ng-class="subPageClass('fixtures')">Fixtures</a></li>
+			<li><a ng-click="btnChangeSubPage('progress')" ng-class="subPageClass('progress')">Progress</a></li>
 		</ul>
 
 
 		<!-- Mini pages -->
 
 		<!-- Results = mini page -->
-		<div ng-show="miniPage('results')">
+		<div ng-show="isSubPage('results')">
 			<div class="result">
 				<div class="head">
 					<span>FRI 11 NOV 2015</span>
@@ -45,7 +45,7 @@
 
 
 		<!-- Fixtues = mini page -->
-		<div ng-show="miniPage('fixtures')">
+		<div ng-show="isSubPage('fixtures')">
 			<div class="result">
 				<div class="head">
 					<a>ENTER RESULT</a>
@@ -73,7 +73,7 @@
 
 
 		<!-- Progress = mini page -->
-		<img ng-show="miniPage('progress')" width="u-full-width" height="500">
+		<img ng-show="isSubPage('progress')" width="u-full-width" height="500">
 	</div>
 
 	<!-- Side bar -->
