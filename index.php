@@ -34,7 +34,7 @@
 			<a id="a-title">Computing Project</a>
 			<ul>
 				<li><a>Profile</a></li>
-				<li><a>Tournament</a></li>
+				<li><a>Tournaments</a></li>
 				<li><a>Home</a></li>
 			</ul>
 		</div>
