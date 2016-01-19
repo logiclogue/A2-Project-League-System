@@ -35,7 +35,6 @@ app.factory('callModel', function ($http, $location)
 		 */
 		ifLoggedIn: function (callbackTrue, callbackFalse) {
 			this.fetch('Status', {}, function (response) {
-				console.log(response.data);
 				if (response.data.logged_in) {
 					callbackTrue();
 				}

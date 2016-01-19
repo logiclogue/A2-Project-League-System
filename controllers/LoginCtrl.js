@@ -6,17 +6,13 @@
  */
 app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 {
-	/**
-	 *
-	 *
-	 *
+	/*
+	 * If user is logged in, redirects to home page.
 	 */
 	 callModel.ifLoggedIn(function () {
-	 	callModel.fetch('Logout', {}, function () {});
+	 	$location.path('/');
 	 },
-	 function () {
-
-	 });
+	 function () {});
 
 
 	/**
