@@ -33,9 +33,10 @@
 		<div class="ten columns offset-by-one">
 			<a id="a-title">Computing Project</a>
 			<ul>
-				<li><a>Profile</a></li>
-				<li><a>Tournaments</a></li>
-				<li><a>Home</a></li>
+				<li><a href="#/login" ng-bind="aLoginLogout">Login/Register</a></li>
+				<li><a href="#/">Profile</a></li>
+				<li><a href="#/">Tournaments</a></li>
+				<li><a href="#/">Home</a></li>
 			</ul>
 		</div>
 	</div>

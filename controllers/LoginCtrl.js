@@ -7,6 +7,19 @@
 app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 {
 	/**
+	 *
+	 *
+	 *
+	 */
+	 callModel.ifLoggedIn(function () {
+	 	callModel.fetch('Logout', {}, function () {});
+	 },
+	 function () {
+
+	 });
+
+
+	/**
 	 * Method that logs the user in.
 	 *
 	 * @method btnLoginClick
@@ -17,7 +30,7 @@ app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 			password: $scope.inputPasswordLogin
 		},
 		function (response) {
-			console.log(response.data);
+			$location.path('/');
 		});
 	};
 
