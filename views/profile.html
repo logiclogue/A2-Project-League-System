@@ -5,7 +5,7 @@
 
 
 		<!-- Mini navigation -->
-		<ul class="nav mini">
+		<ul class="nav sub">
 			<li><a ng-click="btnChangeSubPage('results')" ng-class="subPageClass('results')">Results</a></li>
 			<li><a ng-click="btnChangeSubPage('fixtures')" ng-class="subPageClass('fixtures')">Fixtures</a></li>
 			<li><a ng-click="btnChangeSubPage('progress')" ng-class="subPageClass('progress')">Progress</a></li>
@@ -14,7 +14,7 @@
 
 		<!-- Mini pages -->
 
-		<!-- Results = mini page -->
+		<!-- Results = subpage -->
 		<div ng-show="isSubPage('results')">
 			<div class="result">
 				<div class="head">
@@ -44,7 +44,7 @@
 		</div>
 
 
-		<!-- Fixtues = mini page -->
+		<!-- Fixtues = subpage -->
 		<div ng-show="isSubPage('fixtures')">
 			<div class="result">
 				<div class="head">
@@ -72,7 +72,7 @@
 		</div>
 
 
-		<!-- Progress = mini page -->
+		<!-- Progress = subpage -->
 		<img ng-show="isSubPage('progress')" width="u-full-width" height="500">
 	</div>
 

@@ -61,7 +61,7 @@ hr {
 	float: left;
 }
 
-.nav.mini a {
+.nav.sub a {
 	color: #999;
 
 	padding: 1rem;
@@ -71,7 +71,7 @@ hr {
 	border-color: #E9E9E9;
 }
 
-.nav.mini a.active {
+.nav.sub a.active {
 	color: #1EAEDB;
 
 	border-color: #1EAEDB;

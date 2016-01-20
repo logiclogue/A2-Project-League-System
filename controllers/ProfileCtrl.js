@@ -36,10 +36,10 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 				console.log(response);
 				$scope.data = response;
 
-				$scope.full_name = response.first_name + ' ' + response.last_name;
+				$scope.data.full_name = response.first_name + ' ' + response.last_name;
 			},
 			fail: function (response) {
-				alert(response.error_msg); // !!!! UPDATE ALL 'callModel' calls!
+				alert(response.error_msg);
 
 				$location.path('/');
 			}
