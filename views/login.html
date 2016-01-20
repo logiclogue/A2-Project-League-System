@@ -5,6 +5,12 @@
 		<div class="row box-container six columns">
 			<h1>Login</h1>
 
+			<div class="error-container" ng-hide="response.success">
+				<ul>
+					<li ng-bind="response.error_msg">Incorrect username or password</li>
+				</ul>
+			</div>
+
 			<!-- Email address field -->
 			<div class="u-full-width">
 				<label>Email Address</label>

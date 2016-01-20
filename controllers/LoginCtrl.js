@@ -6,6 +6,10 @@
  */
 app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 {
+	$scope.response = {
+		success: true
+	};
+
 	/*
 	 * If user is logged in, redirects to home page.
 	 */
@@ -27,6 +31,9 @@ app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 		}, {
 			success: function (response) {
 				$location.path('/');
+			},
+			fail: function (response) {
+				$scope.response = response;
 			}
 		});
 	};

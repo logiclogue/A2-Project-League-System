@@ -81,6 +81,7 @@ SQL;
 		}
 		else {
 			self::$success = false;
+			self::$error_msg = 'Incorrect username or password';
 		}
 	}
 
@@ -103,6 +104,7 @@ SQL;
 		}
 		else {
 			self::$success = false;
+			self::$error_msg = 'Failed to execute query';
 		}
 	}
 }

@@ -162,6 +162,28 @@ hr {
 }
 
 
+.error-container {
+	background-color: #FFD4CC;
+	color: #DD381D;
+
+	border-radius: 1rem;
+
+	padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+
+	margin-bottom: 1rem;
+}
+
+.error-container ul {
+	margin: 0;
+
+	list-style: none;
+}
+
+.error-container li {
+	margin: 0;
+}
+
+
 .result {
 	margin-bottom: 2rem;
 }
