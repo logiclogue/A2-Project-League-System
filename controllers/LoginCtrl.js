@@ -24,9 +24,10 @@ app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 		callModel.fetch('Login', {
 			email: $scope.inputEmailLogin,
 			password: $scope.inputPasswordLogin
-		},
-		function (response) {
-			$location.path('/');
+		}, {
+			success: function (response) {
+				$location.path('/');
+			}
 		});
 	};
 

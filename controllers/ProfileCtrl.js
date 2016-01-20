@@ -22,6 +22,30 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 		$location.path('/login');
 	});
 
+	/*
+	 * Method that gets user data from UserGet model.
+	 *
+	 * @method getUser
+	 */
+	function getUser() {
+		callModel.fetch('UserGet', {
+			id: 1
+		},
+		{
+			success: function (response) {
+				console.log(response);
+				$scope.data = response;
+
+				$scope.full_name = response.first_name + ' ' + response.last_name;
+			},
+			fail: function (response) {
+				alert(response.error_msg); // !!!! UPDATE ALL 'callModel' calls!
+
+				$location.path('/');
+			}
+		});
+	}
+
 
 	/**
 	 * Method for view checking whether it can show a particular subpage.
@@ -57,4 +81,10 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 	$scope.btnChangeSubPage = function (pageName) {
 		currentSubPage = pageName;
 	};
+
+
+	/*
+	 * Standard controller calls.
+	 */
+	getUser();
 });

@@ -13,16 +13,30 @@ app.factory('callModel', function ($http, $location)
 		 * @method fetch
 		 * @param modelName {String} Name of the model to call.
 		 * @param data {Object} Data to pass to the model.
-		 * @param callback {Function} Function that gets called when receives response from model.
+		 * @param callbacks {Object} Collection of functions that will be called depending on the result.
+		 *   @param success {Function} Function that is called on success.
+		 *   @param fail {Function} Function that is called on fail.
+		 *   @param normal {Function} Function that is called regardless.
 		 */
-		fetch: function (modelName, data, callback) {
+		fetch: function (modelName, data, callbacks) {
 			$http({
 				url: 'models/' + modelName + '.php',
 				method: 'POST',
 				data: 'JSON=' + encodeURIComponent(JSON.stringify(data)),
 				headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 			})
-			.then(callback);
+			.then(function (response) {
+				if (response.data.success && typeof callbacks.success == 'function') {
+					callbacks.success(response.data);
+				}
+				else if (!response.data.success && typeof callbacks.fail == 'function') {
+					callbacks.fail(response.data);
+				}
+
+				if (typeof callbacks.normal == 'function') {
+					callbacks.normal(response.data);
+				}
+			});
 		},
 		/**
 		 * Method that accepts two functions.
@@ -34,12 +48,14 @@ app.factory('callModel', function ($http, $location)
 		 * @param callbackFalse {Function} Called if not logged in.
 		 */
 		ifLoggedIn: function (callbackTrue, callbackFalse) {
-			this.fetch('Status', {}, function (response) {
-				if (response.data.logged_in) {
-					callbackTrue();
-				}
-				else {
-					callbackFalse();
+			this.fetch('Status', {}, {
+				success: function (response) {
+					if (response.logged_in) {
+						callbackTrue();
+					}
+					else {
+						callbackFalse();
+					}
 				}
 			});
 		}
