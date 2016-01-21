@@ -14,7 +14,6 @@ session_start();
  *
  * @class TournamentPlayerAdd
  * @extends Tournament
- * @static
  */
 /**
  * @param user_id {Integer} Id of the user to be added to the tournament.
@@ -29,7 +28,7 @@ class TournamentPlayerAdd extends Tournament
 	 * @type String
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		UPDATE tournament_user_maps
 		SET is_player = true
 		WHERE
@@ -44,7 +43,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 
 
 	/**
@@ -53,10 +52,10 @@ SQL;
 	 * @method executeQuery
 	 * @private
 	 */
-	private static function executeQuery() {
-		if (!self::$stmt->execute() || self::$stmt->rowCount() != 1) {
-			self::$error_msg = "Failed to execute query";
-			self::$success = false;
+	private function executeQuery() {
+		if (!$this->stmt->execute() || $this->stmt->rowCount() != 1) {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
 		}
 	}
 
@@ -73,21 +72,21 @@ SQL;
 	 * @private
 	 * @return {Boolean} Whether can.
 	 */
-	private static function verify() {
-		$is_league_manager = self::isLeagueManager($_SESSION['user']['id'], self::$data['tournament_id']);
-		$does_tournament_exist = self::tournamentExists();
-		$does_user_exist = UserGet::call(array('id' => self::$data['user_id']))['success'];
+	private function verify() {
+		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
+		$does_tournament_exist = $this->tournamentExists();
+		$does_user_exist = $UserGet->call(array('id' => $this->data['user_id']))['success'];
 
 		if (!$does_tournament_exist) {
-			self::$error_msg = "Tournament doesn't exist";
+			$this->error_msg = "Tournament doesn't exist";
 
 			return false;
 		}
-		else if ($is_league_manager || self::$data['user_id'] == $_SESSION['user']['id']) {
+		else if ($is_league_manager || $this->data['user_id'] == $_SESSION['user']['id']) {
 			return true;
 		}
 		else {
-			self::$error_msg = "You don't have permission to do that";
+			$this->error_msg = "You don't have permission to do that";
 
 			return false;
 		}
@@ -99,21 +98,21 @@ SQL;
 	 * @method add
 	 * @private
 	 */
-	private static function add() {
-		self::$stmt = Database::$conn->prepare(self::$query);
+	private function add() {
+		$this->stmt = Database::$conn->prepare($this->query);
 
-		self::$stmt->bindParam(':user_id', self::$data['user_id']);
-		self::$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
+		$this->stmt->bindParam(':user_id', $this->data['user_id']);
+		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
 
 		// Verify whether the user can carry out the action.
-		if (self::verify()) {
+		if ($this->verify()) {
 			// Attach user if not already.
-			self::attachUser(self::$data['tournament_id'], self::$data['user_id']);
+			$this->attachUser($this->data['tournament_id'], $this->data['user_id']);
 			// Execute query
-			self::executeQuery();
+			$this->executeQuery();
 		}
 		else {
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 
@@ -123,16 +122,18 @@ SQL;
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
+	protected function main() {
 		if (isset($_SESSION['user'])) {
-			self::add();
+			$this->add();
 		}
 		else {
-			self::$error_msg = "You must be logged in";
+			$this->error_msg = "You must be logged in";
 
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 }
+
+$TournamentPlayerAdd = new TournamentPlayerAdd();
 
 ?>
