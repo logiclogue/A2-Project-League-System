@@ -9,7 +9,6 @@ require_once(dirname(__DIR__) . '/php/Model.php');
  *
  * @class Tournament
  * @extends Model
- * @static
  */
 class Tournament extends Model
 {
@@ -20,7 +19,7 @@ class Tournament extends Model
 	 * @type String
 	 * @protected
 	 */
-	protected static $query_players = <<<SQL
+	protected $query_players = <<<SQL
 		SELECT u.id, u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
@@ -34,7 +33,7 @@ SQL;
 	 * @type String
 	 * @protected
 	 */
-	protected static $query_league_managers = <<<SQL
+	protected $query_league_managers = <<<SQL
 		SELECT u.id, u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
@@ -49,7 +48,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_player_count = <<<SQL
+	private $query_player_count = <<<SQL
 		SELECT COUNT(*)
 		FROM tournament_user_maps
 		WHERE
@@ -64,7 +63,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_league_manager_count = <<<SQL
+	private $query_league_manager_count = <<<SQL
 		SELECT COUNT(*)
 		FROM tournament_user_maps
 		WHERE
@@ -79,7 +78,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_tournament_count = <<<SQL
+	private $query_tournament_count = <<<SQL
 		SELECT COUNT(*)
 		FROM tournaments
 		WHERE id = :id
@@ -91,7 +90,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_attach = <<<SQL
+	private $query_attach = <<<SQL
 		INSERT INTO tournament_user_maps (tournament_id, user_id, is_player, is_league_manager)
 		VALUES (:tournament_id, :user_id, FALSE, FALSE)
 SQL;
@@ -106,8 +105,8 @@ SQL;
 	 * @param tournament_id {Integer} Id of the tournament to query.
 	 * @return {Boolean} Whether the user is a player in that tournament.
 	 */
-	protected static function isPlayer($user_id, $tournament_id) {
-		$stmt = Database::$conn->prepare(self::$query_player_count);
+	protected function isPlayer($user_id, $tournament_id) {
+		$stmt = Database::$conn->prepare($this->query_player_count);
 
 		$stmt->bindParam(':user_id', $user_id);
 		$stmt->bindParam(':tournament_id', $tournament_id);
@@ -134,8 +133,8 @@ SQL;
 	 * @param tournament_id {Integer} Id of the tournament to query.
 	 * @return {Boolean} Whether the user is a league manager in that tournament.
 	 */
-	protected static function isLeagueManager($user_id, $tournament_id) {
-		$stmt = Database::$conn->prepare(self::$query_league_manager_count);
+	protected function isLeagueManager($user_id, $tournament_id) {
+		$stmt = Database::$conn->prepare($this->query_league_manager_count);
 
 		$stmt->bindParam(':user_id', $user_id);
 		$stmt->bindParam(':tournament_id', $tournament_id);
@@ -161,8 +160,8 @@ SQL;
 	 * @param id {Integer} Id of the tournament.
 	 * @return {Boolean} Whether the tournament exists.
 	 */
-	protected static function isTournament($id) {
-		$stmt = Database::$conn->prepare(self::$query_tournament_count);
+	protected function isTournament($id) {
+		$stmt = Database::$conn->prepare($this->query_tournament_count);
 
 		$stmt->bindParam(':id', $id);
 
@@ -188,8 +187,8 @@ SQL;
 	 * @param user_id {Integer} Id of the user.
 	 * @return {Boolean} Whether successful.
 	 */
-	protected static function attachUser($tournament_id, $user_id) {
-		$stmt = Database::$conn->prepare(self::$query_attach);
+	protected function attachUser($tournament_id, $user_id) {
+		$stmt = Database::$conn->prepare($this->query_attach);
 
 		$stmt->bindParam(':tournament_id', $tournament_id);
 		$stmt->bindParam(':user_id', $user_id);
@@ -209,10 +208,10 @@ SQL;
 	 * @protected
 	 * @return {Boolean} Whether tournament exists.
 	 */
-	protected static function tournamentExists() {
-		$stmt = Database::$conn->prepare(self::$query_tournament_count);
+	protected function tournamentExists() {
+		$stmt = Database::$conn->prepare($this->query_tournament_count);
 
-		$stmt->bindParam(':id', self::$data['tournament_id']);
+		$stmt->bindParam(':id', $this->data['tournament_id']);
 
 		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
 			return true;
@@ -222,5 +221,7 @@ SQL;
 		}
 	}
 }
+
+$Tournament = new Tournament();
 
 ?>
