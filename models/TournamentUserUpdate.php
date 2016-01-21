@@ -11,7 +11,6 @@ session_start();
  *
  * @class TournamentUserUpdate
  * @extends Tournament
- * @static
  */
 /**
  * @param user_id {Integer} Id of user to update.
@@ -30,7 +29,7 @@ class TournamentUserUpdate extends Tournament
 	 * @property query
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		REPLACE INTO tournament_user_maps (user_id, tournament_id, is_league_manager, is_player)
 		VALUES (:user_id, :tournament_id, :is_league_manager, :is_player)
 SQL;
@@ -42,7 +41,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 
 
 	/**
@@ -55,19 +54,19 @@ SQL;
 	 * @param is_player {Boolean} Whether the user is now a player in the tournament.
 	 * @return {Boolean} Whether able to update the user.
 	 */
-	private static function bindBools($is_league_manager, $is_player) {
-		$is_user_league_manager = self::isLeagueManager($_SESSION['user']['id'], $data['tournament_id']);
+	private function bindBools($is_league_manager, $is_player) {
+		$is_user_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $data['tournament_id']);
 		$league_managers_count = 0;
 
 		if ($is_user_league_manager || $league_managers_count) {
-			self::$stmt->bindParam(':is_league_manager', $is_league_manager);
+			$this->stmt->bindParam(':is_league_manager', $is_league_manager);
 		}
 		else {
 			return false;
 		}
 
 		if ($is_user_league_manager || $league_managers_count || $data['user_id'] == $_SESSION['user']['id']) {
-			self::$stmt->bindParam(':is_player', $is_player);
+			$this->stmt->bindParam(':is_player', $is_player);
 		}
 		else {
 			return false;
@@ -81,11 +80,11 @@ SQL;
 	 * @private
 	 * @return {Boolean} @method bindBools.
 	 */
-	private static function bindParams() {
-		self::$stmt->bindParam(':user_id', self::$data['user_id']);
-		self::$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
+	private function bindParams() {
+		$this->stmt->bindParam(':user_id', $this->data['user_id']);
+		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
 
-		return self::bindBools(self::$data['is_league_manager'], self::$data['is_player']);
+		return $this->bindBools($this->data['is_league_manager'], $this->data['is_player']);
 	}
 
 	/**
@@ -95,12 +94,12 @@ SQL;
 	 * @private
 	 * @return {Boolean} @method bindBools.
 	 */
-	private static function checkCommand() {
-		if (self::$data['join']) {
-			return self::bindBools(false, true);
+	private function checkCommand() {
+		if ($this->data['join']) {
+			return $this->bindBools(false, true);
 		}
-		else if (self::$data['leave']) {
-			return self::bindBools(false, false);
+		else if ($this->data['leave']) {
+			return $this->bindBools(false, false);
 		}
 	}
 
@@ -111,17 +110,17 @@ SQL;
 	 * @method update
 	 * @private
 	 */
-	private static function update() {
-		self::$stmt = Database::$conn->prepare(self::$query);
+	private function update() {
+		$this->stmt = Database::$conn->prepare($this->query);
 
-		if (!self::bindParams()) {
-			self::$success = false;
+		if (!$this->bindParams()) {
+			$this->success = false;
 		}
 
-		self::checkCommand();
+		$this->checkCommand();
 
-		if (!self::$stmt->execute()) {
-			self::$success = false;
+		if (!$this->stmt->execute()) {
+			$this->success = false;
 		}
 	}
 
@@ -131,16 +130,16 @@ SQL;
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
+	protected function main() {
 		if (isset($_SESSION['user'])) {
-			self::update();
+			$this->update();
 		}
 		else {
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 }
 
-TournamentUserUpdate::init();
+$TournamentUserUpdate = new TournamentUserUpdate();
 
 ?>
