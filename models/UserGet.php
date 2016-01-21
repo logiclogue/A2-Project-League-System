@@ -11,7 +11,6 @@ session_start();
  *
  * @class UserGet
  * @extends Model
- * @static
  */
 /**
  * @param id {Integer} Id of the user to be fetched.
@@ -29,7 +28,7 @@ class UserGet extends Model
 	 * @type String
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		SELECT first_name, last_name, id
 		FROM users
 		WHERE id = :id
@@ -42,7 +41,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 
 
 	/**
@@ -52,13 +51,13 @@ SQL;
 	 * @private
 	 * @return {Boolean} Whether the result matches request.
 	 */
-	private static function verifyResult() {
-		if (self::$return_data['id'] == self::$data['id']) {
+	private function verifyResult() {
+		if ($this->return_data['id'] == $this->data['id']) {
 			return true;
 		}
 		else {
-			self::$error_msg = "User doesn't exist";
-			self::$success = false;
+			$this->error_msg = "User doesn't exist";
+			$this->success = false;
 
 			return false;
 		}
@@ -71,15 +70,15 @@ SQL;
 	 * @private
 	 * @return {Boolean} Whether executed query successfully.
 	 */
-	private static function executeQuery() {
-		if (self::$stmt->execute()) {
-			self::$return_data = self::$stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+	private function executeQuery() {
+		if ($this->stmt->execute()) {
+			$this->return_data = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
 			return true;
 		}
 		else {
-			self::$error_msg = "Failed to execute query";
-			self::$success = false;
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
 
 			return false;
 		}
@@ -91,17 +90,17 @@ SQL;
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
-		self::$stmt = Database::$conn->prepare(self::$query);
+	protected function main() {
+		$this->stmt = Database::$conn->prepare($this->query);
 
-		self::$stmt->bindParam(':id', self::$data['id']);
+		$this->stmt->bindParam(':id', $this->data['id']);
 
-		if (self::executeQuery()) {
-			self::verifyResult();
+		if ($this->executeQuery()) {
+			$this->verifyResult();
 		}
 	}
 }
 
-UserGet::init();
+$UserGet = new UserGet();
 
 ?>
