@@ -5,7 +5,6 @@
  * It provides a foundation for all models.
  *
  * @class Model
- * @static
  */
 class Model
 {
@@ -15,7 +14,7 @@ class Model
 	 * @property name
 	 * @private
 	 */
-	private static $name = 'JSON';
+	private $name = 'JSON';
 
 	/**
 	 * The data object is used to store.
@@ -24,7 +23,7 @@ class Model
 	 * @type Array
 	 * @protected
 	 */
-	protected static $data = array();
+	protected $data = array();
 
 	/**
 	 * The object for holding all data that wants to be returned.
@@ -33,7 +32,7 @@ class Model
 	 * @type Array
 	 * @protected
 	 */
-	protected static $return_data;
+	protected $return_data;
 
 	/**
 	 * Whether model executed successfully.
@@ -42,7 +41,7 @@ class Model
 	 * @type {Boolean} Default true.
 	 * @protected
 	 */
-	protected static $success;
+	protected $success;
 
 	/**
 	 * Error message string, if error.
@@ -51,7 +50,7 @@ class Model
 	 * @type String
 	 * @protected
 	 */
-	protected static $error_msg;
+	protected $error_msg;
 
 
 	/**
@@ -61,17 +60,17 @@ class Model
 	 * @private
 	 * @return {Array} Return object.
 	 */
-	private static function returnObj() {
+	private function returnObj() {
 		$obj = array();
 
-		if (self::$success) {
-			$obj = self::$return_data;
+		if ($this->success) {
+			$obj = $this->return_data;
 		}
 		else {
-			$obj['error_msg'] = self::$error_msg;
+			$obj['error_msg'] = $this->error_msg;
 		}
 
-		$obj['success'] = self::$success;
+		$obj['success'] = $this->success;
 
 		return $obj;
 	}
@@ -83,9 +82,9 @@ class Model
 	 * @private
 	 * @return {Object} The decoded JSON.
 	 */
-	private static function decodePost() {
-		if (isset($_POST[self::$name])) {
-			return json_decode($_POST[self::$name], true);
+	private function decodePost() {
+		if (isset($_POST[$this->name])) {
+			return json_decode($_POST[$this->name], true);
 		}
 	}
 
@@ -96,8 +95,8 @@ class Model
 	 * @private
 	 * @return {Boolean} Whether it's set.
 	 */
-	private static function isPost() {
-		return isset($_POST[self::$name]);
+	private function isPost() {
+		return isset($_POST[$this->name]);
 	}
 
 	/**
@@ -106,10 +105,10 @@ class Model
 	 * @method setVars
 	 * @private
 	 */
-	protected static function setVars() {
-		self::$return_data = array();
-		self::$success = true;
-		self::$error_msg = '';
+	protected function setVars() {
+		$this->return_data = array();
+		$this->success = true;
+		$this->error_msg = '';
 	}
 
 
@@ -121,29 +120,29 @@ class Model
 	 * @param {Object} Data object to interact with the model.
 	 * @return {Object} Return data.
 	 */
-	public static function call($data) {
-		self::$data = $data;
+	public function call($data) {
+		$this->data = $data;
 
-		self::setVars();
-		static::main();
+		$this->setVars();
+		$this->main();
 
-		return self::returnObj();
+		return $this->returnObj();
 	}
 
 	/**
 	 * Function that is called to check if it is called with Post.
 	 *
-	 * @method init
+	 * @method __construct
 	 * @public
 	 */
-	public static function init() {
-		if (self::isPost()) {
-			self::$data = self::decodePost();
+	public function __construct() {
+		if ($this->isPost()) {
+			$this->data = $this->decodePost();
 
-			self::setVars();
-			static::main();
+			$this->setVars();
+			$this->main();
 
-			echo json_encode(self::returnObj());
+			echo json_encode($this->returnObj());
 		}
 	}
 }

@@ -75,7 +75,7 @@ SQL;
 	private function verify() {
 		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
 		$does_tournament_exist = $this->tournamentExists();
-		$does_user_exist = $UserGet->call(array('id' => $this->data['user_id']))['success'];
+		$does_user_exist = $UserGet->call(array('id' => $this->data['user_id']))['success']; //!!! NEEDS ATTENTION
 
 		if (!$does_tournament_exist) {
 			$this->error_msg = "Tournament doesn't exist";

@@ -27,37 +27,45 @@ class Test
 
 
 	public static function init() {
+		$Register = new Register();
+		$Login = new Login();
+		$TournamentCreate = new TournamentCreate();
+		$TournamentPlayerAdd = new TournamentPlayerAdd();
+		$UserGet = new UserGet();
+		$Logout = new Logout();
+		
+
 		echo 'Database reset: ';
 		self::echo_n(Database::reset());
 
-		$reg = Register::call(array(
+		self::echo_n($Register->call(array(
 			'email' => 'me@email.com',
 			'password' => 'password',
 			'first_name' => 'Jordan',
 			'last_name' => 'Lord'
-		));
+		)));
 
-		self::echo_n(Login::call(array(
-			'email' => 'test',
+		self::echo_n($Login->call(array(
+			'email' => 'me@email.com',
 			'password' => 'password'
 		)));
 
 		echo 'Create tournament: ';
-		self::echo_n(TournamentCreate::call(array(
+		self::echo_n($TournamentCreate->call(array(
 			'name' => 'Premier League',
 			'description' => 'The top tier of the Primrose Squash leagues'
 		)));
 
 		echo 'Add player in tournament: ';
-		self::echo_n(TournamentPlayerAdd::call(array(
+		self::echo_n($TournamentPlayerAdd->call(array(
 			'user_id' => 1,
 			'tournament_id' => 1
 		)));
 
 		echo 'User data: ';
-		self::echo_n(UserGet::call(array('id' => 2)));
+		self::echo_n($UserGet->call(array('id' => 2)));
 
-		self::echo_n(Logout::call(array()));
+		self::echo_n($Logout->call(array()));
 	}
 }
 
