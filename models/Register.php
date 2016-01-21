@@ -11,7 +11,6 @@ session_start();
  *
  * @class Register
  * @extends Model
- * @static
  */
 /**
  * @param email {String} The email of the user.
@@ -28,7 +27,7 @@ class Register extends Model
 	 * @type String
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		INSERT INTO users (email, first_name, last_name, hash)
 		VALUES (:email, :first_name, :last_name, :hash)
 SQL;
@@ -40,7 +39,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 	/**
 	 * Hash of the password entered.
 	 *
@@ -48,7 +47,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $hash;
+	private $hash;
 
 
 	/**
@@ -58,11 +57,11 @@ SQL;
 	 * @method bindParams
 	 * @private
 	 */
-	private static function bindParams() {
-		self::$stmt->bindParam(':email', self::$data['email']);
-		self::$stmt->bindParam(':first_name', self::$data['first_name']);
-		self::$stmt->bindParam(':last_name', self::$data['last_name']);
-		self::$stmt->bindParam(':hash', self::$hash);
+	private function bindParams() {
+		$this->stmt->bindParam(':email', $this->data['email']);
+		$this->stmt->bindParam(':first_name', $this->data['first_name']);
+		$this->stmt->bindParam(':last_name', $this->data['last_name']);
+		$this->stmt->bindParam(':hash', $this->hash);
 	}
 
 	/**
@@ -73,18 +72,18 @@ SQL;
 	 * @method main
 	 * @public
 	 */
-	public static function main() {
-		self::$stmt = Database::$conn->prepare(self::$query);
-		self::$hash = password_hash(self::$data['password'], PASSWORD_BCRYPT);
+	public function main() {
+		$this->stmt = Database::$conn->prepare($this->query);
+		$this->hash = password_hash($this->data['password'], PASSWORD_BCRYPT);
 
-		self::bindParams();
+		$this->bindParams();
 		
-		if (!self::$stmt->execute()) {
-			self::$success = false;
+		if (!$this->stmt->execute()) {
+			$this->success = false;
 		}
 	}
 }
 
-Register::init();
+$Register = new Register();
 
 ?>
