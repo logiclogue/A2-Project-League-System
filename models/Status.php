@@ -11,7 +11,6 @@ session_start();
  *
  * @class Status
  * @extends Model
- * @static
  */
 /**
  * @return logged_in {Boolean} Whether you are logged in.
@@ -30,8 +29,8 @@ class Status extends Model
 	 * @method logged_in
 	 * @private
 	 */
-	private static function logged_in() {
-		self::$return_data['user'] = $_SESSION['user'];
+	private function logged_in() {
+		$this->return_data['user'] = $_SESSION['user'];
 	}
 
 	/**
@@ -41,17 +40,17 @@ class Status extends Model
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
-		self::$return_data['logged_in'] = false;
+	protected function main() {
+		$this->return_data['logged_in'] = false;
 
 		// if logged in
 		if (isset($_SESSION['user'])) {
-			self::$return_data['logged_in'] = true;
-			self::logged_in();
+			$this->return_data['logged_in'] = true;
+			$this->logged_in();
 		}
 	}
 }
 
-Status::init();
+$Status = new Status();
 
 ?>
