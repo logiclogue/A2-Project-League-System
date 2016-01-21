@@ -10,7 +10,6 @@ session_start();
  *
  * @class Logout
  * @extends Model
- * @static
  */
 /**
  */
@@ -22,12 +21,12 @@ class Logout extends Model
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
+	protected function main() {
 		session_unset();
 		session_destroy();
 	}
 }
 
-Logout::init();
+$Logout = new Logout();
 
 ?>
