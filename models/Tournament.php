@@ -222,6 +222,4 @@ SQL;
 	}
 }
 
-$Tournament = new Tournament();
-
 ?>
