@@ -11,7 +11,6 @@ session_start();
  *
  * @class TournamentCreate
  * @extends Tournament
- * @static
  */
 /**
  * @param name {String} The name of the tournament.
@@ -26,7 +25,7 @@ class TournamentCreate extends Tournament
 	 * @type String
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		INSERT INTO tournaments (name, description)
 		VALUES (:name, :description)
 SQL;
@@ -37,7 +36,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_add_league_manager = <<<SQL
+	private $query_add_league_manager = <<<SQL
 		INSERT INTO tournament_user_maps (tournament_id, user_id, is_league_manager, is_player)
 		VALUES (:tournament_id, :user_id, 1, 0)
 SQL;
@@ -49,7 +48,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 
 
 	/**
@@ -58,16 +57,16 @@ SQL;
 	 * @method addLeagueManager
 	 * @private
 	 */
-	private static function addLeagueManager() {
-		$stmt = Database::$conn->prepare(self::$query_add_league_manager);
+	private function addLeagueManager() {
+		$stmt = Database::$conn->prepare($this->query_add_league_manager);
 
 		$stmt->bindParam(':user_id', $_SESSION['user']['id']);
 		// Bind the tournament id as the last insert id.
 		$stmt->bindParam(':tournament_id', Database::$conn->lastInsertId());
 
 		if (!$stmt->execute() || $stmt->rowCount() != 1) {
-			self::$error_msg = "Failed to add you as a league manager";
-			self::$success = false;
+			$this->error_msg = "Failed to add you as a league manager";
+			$this->success = false;
 		}
 	}
 
@@ -77,19 +76,19 @@ SQL;
 	 * @method create
 	 * @private
 	 */
-	private static function create() {
-		self::$stmt = Database::$conn->prepare(self::$query);
+	private function create() {
+		$this->stmt = Database::$conn->prepare($this->query);
 
-		self::$stmt->bindParam(':name', self::$data['name']);
-		self::$stmt->bindParam(':description', self::$data['description']);
+		$this->stmt->bindParam(':name', $this->data['name']);
+		$this->stmt->bindParam(':description', $this->data['description']);
 
-		if (!self::$stmt->execute()) {
-			self::$error_msg = "Failed to execute query";
-			self::$success = false;
+		if (!$this->stmt->execute()) {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
 		}
 		else {
 			// Add league manager if didn't fail.
-			self::addLeagueManager();
+			$this->addLeagueManager();
 		}
 	}
 
@@ -99,17 +98,17 @@ SQL;
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
+	protected function main() {
 		if (isset($_SESSION['user'])) {
-			self::create();
+			$this->create();
 		}
 		else {
-			self::$error_msg = "You must be logged in";
-			self::$success = false;
+			$this->error_msg = "You must be logged in";
+			$this->success = false;
 		}
 	}
 }
 
-TournamentCreate::init();
+$TournamentCreate = new TournamentCreate();
 
 ?>
