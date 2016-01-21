@@ -11,7 +11,6 @@ session_start();
  *
  * @class UserUpdate
  * @extends Model
- * @static
  */
 /**
  * @param first_name {String} The new first name of the user.
@@ -28,7 +27,7 @@ class UserUpdate extends Model
 	 * @type String
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		UPDATE users
 		SET
 		first_name = CASE WHEN :first_name IS NULL THEN first_name ELSE :first_name END,
@@ -45,7 +44,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 
 
 	/**
@@ -54,17 +53,17 @@ SQL;
 	 * @method update
 	 * @private
 	 */
-	private static function update() {
-		self::$stmt = Database::$conn->prepare(self::$query);
+	private function update() {
+		$this->stmt = Database::$conn->prepare($this->query);
 
-		self::$stmt->bindParam(':id', $_SESSION['user']['id']);
-		self::$stmt->bindParam(':first_name', self::$data['first_name']);
-		self::$stmt->bindParam(':last_name', self::$data['last_name']);
-		self::$stmt->bindParam(':home_phone', self::$data['home_phone']);
-		self::$stmt->bindParam(':mobile_phone', self::$data['mobile_phone']);
+		$this->stmt->bindParam(':id', $_SESSION['user']['id']);
+		$this->stmt->bindParam(':first_name', $this->data['first_name']);
+		$this->stmt->bindParam(':last_name', $this->data['last_name']);
+		$this->stmt->bindParam(':home_phone', $this->data['home_phone']);
+		$this->stmt->bindParam(':mobile_phone', $this->data['mobile_phone']);
 
-		if (!self::$stmt->execute()) {
-			self::$success = false;
+		if (!$this->stmt->execute()) {
+			$this->success = false;
 		}
 	}
 
@@ -75,16 +74,16 @@ SQL;
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
+	protected function main() {
 		if (isset($_SESSION['user'])) {
-			self::update();
+			$this->update();
 		}
 		else {
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 }
 
-UserUpdate::init();
+$UserUpdate = new UserUpdate();
 
 ?>
