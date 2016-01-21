@@ -12,7 +12,6 @@ session_start();
  *
  * @class TournamentUserAttach
  * @extends Tournament
- * @static
  */
 /**
  * @param user_id {Integer} Id of the user to attach.
@@ -27,7 +26,7 @@ class TournamentUserAttach extends Tournament
 	 * @type String
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		INSERT INTO tournament_user_maps (user_id, tournament_id, is_player, is_league_manager)
 		VALUES (:user_id, :tournament_id, FALSE, FALSE)
 SQL;
@@ -38,7 +37,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_is_attached = <<<SQL
+	private $query_is_attached = <<<SQL
 		SELECT COUNT(*)
 		FROM tournament_user_maps
 		WHERE user_id = :user_id
@@ -51,7 +50,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 
 
 	/**
@@ -61,10 +60,10 @@ SQL;
 	 * @private
 	 * @return {Boolean} Whether the user is attached to the tournament.
 	 */
-	private static function isAttached() {
-		$stmt = Database::$conn->prepare(self::$query_is_attached);
+	private function isAttached() {
+		$stmt = Database::$conn->prepare($this->query_is_attached);
 
-		$stmt->bindParam(':user_id', self::$data['user_id']);
+		$stmt->bindParam(':user_id', $this->data['user_id']);
 
 		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
 			return true;
@@ -80,11 +79,11 @@ SQL;
 	 * @method executeQuery
 	 * @private
 	 */
-	private static function executeQuery() {
-		if (!self::$stmt->execute()) {
-			self::$error_msg = "Failed to execute query";
+	private function executeQuery() {
+		if (!$this->stmt->execute()) {
+			$this->error_msg = "Failed to execute query";
 
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 
@@ -100,21 +99,21 @@ SQL;
 	 * @private
 	 * @return {Boolean} Whether can.
 	 */
-	private static function verify() {
-		$is_league_manager = self::isLeagueManager($_SESSION['user']['id'], self::$data['tournament_id']);
+	private function verify() {
+		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
 
-		if (self::isAttached()) {
-			self::$error_msg = 'Already attached to the tournament';
-
-			return false;
-		}
-		else if (!self::tournamentExists()) {
-			self::$error_msg = "Tournament doesn't exist";
+		if ($this->isAttached()) {
+			$this->error_msg = 'Already attached to the tournament';
 
 			return false;
 		}
-		else if (!$is_league_manager || self::$data['user_id'] == self::$_SESSION['user']['id']) {
-			self::$error_msg = "You don't have permission to do that";
+		else if (!$this->tournamentExists()) {
+			$this->error_msg = "Tournament doesn't exist";
+
+			return false;
+		}
+		else if (!$is_league_manager || $this->data['user_id'] == $this->_SESSION['user']['id']) {
+			$this->error_msg = "You don't have permission to do that";
 
 			return false;
 		}
@@ -129,14 +128,14 @@ SQL;
 	 * @method attach
 	 * @private
 	 */
-	private static function attach() {
-		self::$stmt = Database::$conn->prepare(self::$query);
+	private function attach() {
+		$this->stmt = Database::$conn->prepare($this->query);
 
-		self::$stmt->bindParam(':user_id', self::$data['user_id']);
-		self::$stmt->bindParam(':tournament_id', self::$data['tournament_id']);
+		$this->stmt->bindParam(':user_id', $this->data['user_id']);
+		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
 
-		if (self::verify()) {
-			self::executeQuery();
+		if ($this->verify()) {
+			$this->executeQuery();
 		}
 	}
 
@@ -146,16 +145,18 @@ SQL;
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
+	protected function main() {
 		if (isset($_SESSION['user'])) {
-			self::attach();
+			$this->attach();
 		}
 		else {
-			self::$error_msg = "You must be logged in";
+			$this->error_msg = "You must be logged in";
 
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 }
+
+$TournamentUserAttach = new TournamentUserAttach();
 
 ?>
