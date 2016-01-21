@@ -11,7 +11,6 @@ session_start();
  * 
  * @class Login
  * @extends Model
- * @static
  */
 /**
  * @param email {String} Email of the user.
@@ -26,7 +25,7 @@ class Login extends Model
 	 * @property query
 	 * @type String
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		SELECT id, email, first_name, last_name, hash
 		FROM users
 		WHERE email=:email
@@ -40,7 +39,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $stmt;
+	private $stmt;
 	/**
 	 * Stores result from database.
 	 * User data.
@@ -49,7 +48,7 @@ SQL;
 	 * @type Object
 	 * @private
 	 */
-	private static $user = array();
+	private $user = array();
 
 
 	/**
@@ -58,12 +57,12 @@ SQL;
 	 * @method storeSession
 	 * @private
 	 */
-	private static function storeSession() {
+	private function storeSession() {
 		$_SESSION['user'] = array();
-		$_SESSION['user']['id'] = self::$user['id'];
-		$_SESSION['user']['email'] = self::$user['email'];
-		$_SESSION['user']['first_name'] = self::$user['first_name'];
-		$_SESSION['user']['last_name'] = self::$user['last_name'];
+		$_SESSION['user']['id'] = $this->user['id'];
+		$_SESSION['user']['email'] = $this->user['email'];
+		$_SESSION['user']['first_name'] = $this->user['first_name'];
+		$_SESSION['user']['last_name'] = $this->user['last_name'];
 	}
 
 	/**
@@ -72,16 +71,16 @@ SQL;
 	 * @method verify
 	 * @private
 	 */
-	private static function verify() {
-		self::$user = self::$stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+	private function verify() {
+		$this->user = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 
 		// check if password matches
-		if (password_verify(self::$data['password'], self::$user['hash'])) {
-			self::storeSession();
+		if (password_verify($this->data['password'], $this->user['hash'])) {
+			$this->storeSession();
 		}
 		else {
-			self::$success = false;
-			self::$error_msg = 'Incorrect username or password';
+			$this->success = false;
+			$this->error_msg = 'Incorrect username or password';
 		}
 	}
 
@@ -93,22 +92,22 @@ SQL;
 	 * @method main
 	 * @protected
 	 */
-	protected static function main() {
-		self::$stmt = Database::$conn->prepare(self::$query);
+	protected function main() {
+		$this->stmt = Database::$conn->prepare($this->query);
 
-		self::$stmt->bindParam(':email', self::$data['email']);
+		$this->stmt->bindParam(':email', $this->data['email']);
 		
 		// check if query is successful
-		if (self::$stmt->execute()) {
-			self::verify();
+		if ($this->stmt->execute()) {
+			$this->verify();
 		}
 		else {
-			self::$success = false;
-			self::$error_msg = 'Failed to execute query';
+			$this->success = false;
+			$this->error_msg = 'Failed to execute query';
 		}
 	}
 }
 
-Login::init();
+$Login = new Login();
 
 ?>
