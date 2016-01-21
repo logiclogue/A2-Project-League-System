@@ -9,7 +9,6 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  *
  * @class TournamentGet
  * @extends Model
- * @static
  */
 /**
  * @param id {Integer} Id of the tournament.
@@ -30,7 +29,7 @@ class TournamentGet extends Model
 	 * @type String
 	 * @private
 	 */
-	private static $query = <<<SQL
+	private $query = <<<SQL
 		SELECT name, description
 		FROM tournaments
 		WHERE id = :id
@@ -42,7 +41,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_players = <<<SQL
+	private $query_players = <<<SQL
 		SELECT u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
@@ -56,7 +55,7 @@ SQL;
 	 * @type String
 	 * @private
 	 */
-	private static $query_league_managers = <<<SQL
+	private $query_league_managers = <<<SQL
 		SELECT u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
@@ -71,16 +70,16 @@ SQL;
 	 * @method getPlayers
 	 * @private
 	 */
-	private static function getPlayers() {
-		$stmt = Database::$conn->prepare(self::$query_players);
+	private function getPlayers() {
+		$stmt = Database::$conn->prepare($this->query_players);
 
-		$stmt->bindParam(':id', self::$data['id']);
+		$stmt->bindParam(':id', $this->data['id']);
 
 		if ($stmt->execute()) {
-			self::$return_data['players'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$this->return_data['players'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		}
 		else {
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 
@@ -90,16 +89,16 @@ SQL;
 	 * @method getLeagueManagers
 	 * @private
 	 */
-	private static function getLeagueManagers() {
-		$stmt = Database::$conn->prepare(self::$query_league_managers);
+	private function getLeagueManagers() {
+		$stmt = Database::$conn->prepare($this->query_league_managers);
 
-		$stmt->bindParam(':id', self::$data['id']);
+		$stmt->bindParam(':id', $this->data['id']);
 
 		if ($stmt->execute()) {
-			self::$return_data['league_managers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$this->return_data['league_managers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		}
 		else {
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 
@@ -109,16 +108,16 @@ SQL;
 	 * @method getTournamentData
 	 * @private
 	 */
-	private static function getTournamentData() {
-		$stmt = Database::$conn->prepare(self::$query);
+	private function getTournamentData() {
+		$stmt = Database::$conn->prepare($this->query);
 
-		$stmt->bindParam(':id', self::$data['id']);
+		$stmt->bindParam(':id', $this->data['id']);
 
 		if ($stmt->execute()) {
-			self::$return_data = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+			$this->return_data = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
 		}
 		else {
-			self::$success = false;
+			$this->success = false;
 		}
 	}
 
@@ -129,11 +128,13 @@ SQL;
 	 * @protected
 	 * @return {Array} Tournament data.
 	 */
-	protected static function main() {
-		self::getTournamentData();
-		self::getPlayers();
-		self::getLeagueManagers();
+	protected function main() {
+		$this->getTournamentData();
+		$this->getPlayers();
+		$this->getLeagueManagers();
 	}
 }
+
+$TournamentGet = new TournamentGet();
 
 ?>
