@@ -16,9 +16,9 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  * @return name {String} Name of the tournament.
  * @return description {String} Description of the tournament.
  * @return league_managers {Array} Array of league managers.
- *  @return league_managers[] {Object} Result of @class UserGet for each league manager.
+ *  @return league_managers[] {Object} id, first_name, and last_name of user.
  * @return players {Array} Array of players in the tournament.
- *  @return players[] {Object} Result of @class UserGet for each player.
+ *  @return players[] {Object} id, first_name, and last_name of user.
  */
 class TournamentGet extends Model
 {
@@ -42,7 +42,7 @@ SQL;
 	 * @private
 	 */
 	private $query_players = <<<SQL
-		SELECT u.first_name, u.last_name
+		SELECT u.id, u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
 		ON tu.user_id = u.id
@@ -56,7 +56,7 @@ SQL;
 	 * @private
 	 */
 	private $query_league_managers = <<<SQL
-		SELECT u.first_name, u.last_name
+		SELECT u.id, u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
 		ON tu.user_id = u.id

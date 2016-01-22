@@ -29,6 +29,7 @@ class Test
 	public static function init() {
 		$Register = new Register();
 		$Login = new Login();
+		$TournamentGet = new TournamentGet();
 		$TournamentCreate = new TournamentCreate();
 		$TournamentPlayerAdd = new TournamentPlayerAdd();
 		$UserGet = new UserGet();
@@ -54,6 +55,11 @@ class Test
 		self::echo_n($TournamentCreate->call(array(
 			'name' => 'Premier League',
 			'description' => 'The top tier of the Primrose Squash leagues'
+		)));
+
+		echo 'Tournament data: ';
+		self::echo_n($TournamentGet->call(array(
+			'id' => 1
 		)));
 
 		echo 'Add player in tournament: ';
