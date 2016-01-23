@@ -11,6 +11,7 @@ require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentGet.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserAttach.php');
 require_once(dirname(__DIR__) . '/models/TournamentPlayerAdd.php');
+require_once(dirname(__DIR__) . '/models/TournamentPlayerRemove.php');
 
 
 /**
@@ -32,6 +33,7 @@ class Test
 		$TournamentGet = new TournamentGet();
 		$TournamentCreate = new TournamentCreate();
 		$TournamentPlayerAdd = new TournamentPlayerAdd();
+		$TournamentPlayerRemove = new TournamentPlayerRemove();
 		$UserGet = new UserGet();
 		$Logout = new Logout();
 		
@@ -68,8 +70,11 @@ class Test
 			'tournament_id' => 1
 		)));
 
-		echo 'User data: ';
-		self::echo_n($UserGet->call(array('id' => 1)));
+		echo 'Remove player from touranment: ';
+		self::echo_n($TournamentPlayerRemove->call(array(
+			'user_id' => 1,
+			'tournament_id' => 1
+		)));
 
 		self::echo_n($Logout->call(array()));
 	}

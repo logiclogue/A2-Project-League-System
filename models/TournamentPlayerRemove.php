@@ -9,19 +9,19 @@ session_start();
 
 
 /**
- * Method for adding a user as a player to a tournament.
+ * Model for removing a player from a tournament.
  *
- * @class TournamentPlayerAdd
+ * @class TournamentPlayerRemove
  * @extends Tournament
  */
 /**
- * @param user_id {Integer} Id of the user to be added to the tournament.
+ * @param user_id {Integer} Id of the user to be removed from the tournament.
  * @param tournament_id {Integer} Id of the tournament.
  */
-class TournamentPlayerAdd extends Tournament
+class TournamentPlayerRemove extends Tournament
 {
 	/**
-	 * SQL query string for changing a user to a player.
+	 * SQL query string for removing a player.
 	 *
 	 * @property query
 	 * @type String
@@ -29,12 +29,12 @@ class TournamentPlayerAdd extends Tournament
 	 */
 	private $query = <<<SQL
 		UPDATE tournament_user_maps
-		SET is_player = TRUE
+		SET is_player = FALSE
 		WHERE
 		user_id = :user_id AND
 		tournament_id = :tournament_id
 SQL;
-
+	
 	/**
 	 * Database object for executing @property query.
 	 *
@@ -59,12 +59,12 @@ SQL;
 	}
 
 	/**
-	 * Main method for making the user a player in the tournament.
+	 * Main method for remove the player from the tournament.
 	 *
-	 * @method add
+	 * @method remove
 	 * @private
 	 */
-	private function add() {
+	private function remove() {
 		$this->stmt = Database::$conn->prepare($this->query);
 
 		$this->stmt->bindParam(':user_id', $this->data['user_id']);
@@ -72,8 +72,6 @@ SQL;
 
 		// Verify whether the user can carry out the action.
 		if ($this->verifyPlayer()) {
-			// Attach user if not already.
-			$this->attachUser($this->data['tournament_id'], $this->data['user_id']);
 			// Execute query
 			$this->executeQuery();
 		}
@@ -90,7 +88,7 @@ SQL;
 	 */
 	protected function main() {
 		if (isset($_SESSION['user'])) {
-			$this->add();
+			$this->remove();
 		}
 		else {
 			$this->error_msg = "You must be logged in";
@@ -100,6 +98,6 @@ SQL;
 	}
 }
 
-$TournamentPlayerAdd = new TournamentPlayerAdd();
+$TournamentPlayerRemove = new TournamentPlayerRemove();
 
 ?>
