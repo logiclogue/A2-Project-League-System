@@ -69,7 +69,7 @@ class Test
 		)));
 
 		echo 'User data: ';
-		self::echo_n($UserGet->call(array('id' => 2)));
+		self::echo_n($UserGet->call(array('id' => 1)));
 
 		self::echo_n($Logout->call(array()));
 	}
