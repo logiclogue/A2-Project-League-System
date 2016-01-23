@@ -80,7 +80,7 @@ SQL;
 		}
 		else {
 			$this->success = false;
-			$this->error_msg = 'Incorrect username or password';
+			$this->error_msg = 'Incorrect email or password';
 		}
 	}
 
