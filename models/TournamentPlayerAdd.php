@@ -7,7 +7,7 @@ session_start();
 
 
 /**
- * Method for adding a user as a player to a tournament.
+ * Model for adding a user as a player to a tournament.
  *
  * @class TournamentPlayerAdd
  * @extends Tournament
