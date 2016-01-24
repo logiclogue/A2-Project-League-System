@@ -3,19 +3,20 @@
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 require_once(dirname(__DIR__) . '/models/UserGet.php');
 
+
 session_start();
 
 
 /**
- * Parent class of classes that add or remove players.
+ * Parent class of classes that add or remove league managers.
  *
- * @class TournamentPlayerAlter
+ * @class TournamentManagerAlter
  * @extends Tournament
  */
-class TournamentPlayerAlter extends Tournament
+class TournamentManagerAlter extends Tournament
 {
 	/**
-	 * SQL query string for updating a player
+	 * SQL query string for changing league manager status.
 	 *
 	 * @property query
 	 * @type String
@@ -23,9 +24,24 @@ class TournamentPlayerAlter extends Tournament
 	 */
 	private $query = <<<SQL
 		UPDATE tournament_user_maps
-		SET is_player = :is_player
+		SET is_league_manager = :is_league_manager
 		WHERE
 		user_id = :user_id AND
+		tournament_id = :tournament_id
+SQL;
+
+	/**
+	 * SQL query string for counting the number of league managers.
+	 *
+	 * @property query_managers_count
+	 * @type String
+	 * @private
+	 */
+	private $query_managers_count = <<<SQL
+		SELECT COUNT(*)
+		FROM tournament_user_maps
+		WHERE
+		is_league_manager = TRUE AND
 		tournament_id = :tournament_id
 SQL;
 
@@ -38,6 +54,27 @@ SQL;
 	 */
 	private $stmt;
 
+
+	/**
+	 * Method for finding the number of league manager.
+	 *
+	 * @method noOfLeagueManagers
+	 * @private
+	 * @return {Integer} Number of league managers.
+	 */
+	private function noOfLeagueManagers() {
+		$stmt = Database::$conn->prepare($this->query_managers_count);
+
+		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+
+		if ($stmt->execute()) {
+			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
+		}
+		else {
+			// 1 - so can't claim league if error.
+			return 1;
+		}
+	}
 
 	/**
 	 * Checks any faults and executes query.
@@ -53,24 +90,27 @@ SQL;
 	}
 
 	/**
-	 * Method for verifying whether the user can carry out the task.
+	 * Verifies whether the user can carry out the task.
 	 * Returns false if:
 	 * - User doesn't exist.
 	 * - Tournament doesn't exist.
-	 * - Either:
-	 *   - Not a league manager.
-	 *   - Altering someone else.
+	 * - Not a league manager.
 	 *
-	 * @method verifyPlayer
+	 * @method verifyManager
 	 * @private
 	 * @return {Boolean} Whether can.
 	 */
-	private function verifyPlayer() {
+	private function verifyManager() {
 		$UserGet = new UserGet();
 
 		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
 		$does_tournament_exist = $this->tournamentExists();
 		$does_user_exist = $UserGet->call(array('id' => $this->data['user_id']))['success'];
+
+		// If there are no league managers, then the league is free to be claimed.
+		if ($this->noOfLeagueManagers() == 0) {
+			return true;
+		}
 
 		if (!$does_tournament_exist) {
 			$this->error_msg = "Tournament doesn't exist";
@@ -82,7 +122,7 @@ SQL;
 
 			return false;
 		}
-		else if ($is_league_manager || $this->data['user_id'] == $_SESSION['user']['id']) {
+		else if ($is_league_manager) {
 			return true;
 		}
 		else {
@@ -93,11 +133,8 @@ SQL;
 	}
 
 	/**
-	 * Method that creates database object.
-	 * Binds parameters.
-	 * Checks to see if able to execute query.
-	 * Then execute query.
-	 * 
+	 * Main method for making the user a league manager
+	 *
 	 * @method general
 	 * @private
 	 */
@@ -106,10 +143,10 @@ SQL;
 
 		$this->stmt->bindParam(':user_id', $this->data['user_id']);
 		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
-		$this->stmt->bindParam(':is_player', $this->is_player);
+		$this->stmt->bindParam(':is_league_manager', $this->is_league_manager);
 
 		// Verify whether the user can carry out the action.
-		if ($this->verifyPlayer()) {
+		if ($this->verifyManager()) {
 			// Attach user if not already.
 			$this->attachUser($this->data['tournament_id'], $this->data['user_id']);
 			// Execute query
@@ -121,8 +158,7 @@ SQL;
 	}
 
 	/**
-	 * Method that checks login.
-	 * Then calls @method general
+	 * Method that checks whether the user is logged in.
 	 *
 	 * @method subMain
 	 * @protected

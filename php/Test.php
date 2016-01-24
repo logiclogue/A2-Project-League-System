@@ -52,6 +52,13 @@ class Test
 			'last_name' => 'Lord'
 		)));
 
+		self::echo_n($Register->call(array(
+			'email' => 'new@email.com',
+			'password' => 'pass1',
+			'first_name' => 'New',
+			'last_name' => 'User'
+		)));
+
 		self::echo_n($Login->call(array(
 			'email' => 'me@email.com',
 			'password' => 'password'
@@ -74,19 +81,39 @@ class Test
 			'tournament_id' => 1
 		)));
 
-		echo 'Remove player from touranment: ';
+		/*echo 'Remove player from touranment: ';
 		self::echo_n($TournamentPlayerRemove->call(array(
 			'user_id' => 1,
 			'tournament_id' => 1
-		)));
+		)));*/
 
-		echo 'Add league manager: ';
-		self::echo_n($TournamentManagerAdd->call(array(
+		echo 'Remove league manager: ';
+		self::echo_n($TournamentManagerRemove->call(array(
 			'user_id' => 1,
 			'tournament_id' => 1
 		)));
 
+		/*echo 'Add league manager: ';
+		self::echo_n($TournamentManagerAdd->call(array(
+			'user_id' => 1,
+			'tournament_id' => 1
+		)));*/
+
+		echo 'Logout: ';
 		self::echo_n($Logout->call(array()));
+
+
+		echo 'Login as new user: ';
+		self::echo_n($Login->call(array(
+			'email' => 'new@email.com',
+			'password' => 'pass1'
+		)));
+
+		echo 'Add league_manager: ';
+		self::echo_n($TournamentManagerAdd->call(array(
+			'user_id' => 2,
+			'tournament_id' => 1
+		)));
 	}
 }
 
