@@ -57,12 +57,40 @@ SQL;
 
 	/**
 	 * Verifies whether the user can carry out the task.
+	 * Returns false if:
+	 * - User doesn't exist.
+	 * - Tournament doesn't exist.
+	 * - Not a league manager.
 	 *
 	 * @method verifyManager
 	 * @private
+	 * @return {Boolean} Whether can.
 	 */
 	private function verifyManager() {
-		// !!!!!!!!!!!!!!!!!!!
+		$UserGet = new UserGet();
+
+		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
+		$does_tournament_exist = $this->tournamentExists();
+		$does_user_exist = $UserGet->call(array('id' => $this->data['user_id']))['success'];
+
+		if (!$does_tournament_exist) {
+			$this->error_msg = "Tournament doesn't exist";
+
+			return false;
+		}
+		else if (!$does_user_exist) {
+			$this->error_msg = "User doesn't exist";
+
+			return false;
+		}
+		else if ($is_league_manager) {
+			return true;
+		}
+		else {
+			$this->error_msg = "You don't have permission to do that";
+
+			return false;
+		}
 	}
 
 	/**
@@ -85,6 +113,23 @@ SQL;
 			$this->executeQuery();
 		}
 		else {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method that checks whether the user is logged in.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if (isset($_SESSION['user'])) {
+			$this->add();
+		}
+		else {
+			$this->error_msg = "You must be logged in";
+
 			$this->success = false;
 		}
 	}
