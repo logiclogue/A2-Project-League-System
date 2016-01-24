@@ -9,10 +9,10 @@ session_start();
 /**
  *
  *
- * @class TournamentPlayer
+ * @class TournamentPlayerAlter
  * @extends Tournament
  */
-class TournamentPlayer extends Tournament
+class TournamentPlayerAlter extends Tournament
 {
 	/**
 	 * SQL query string for updating a player

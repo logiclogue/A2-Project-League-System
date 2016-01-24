@@ -1,19 +1,19 @@
 <?php
 
-require_once(dirname(__DIR__) . '/superclasses/TournamentPlayer.php');
+require_once(dirname(__DIR__) . '/superclasses/TournamentPlayerAlter.php');
 
 
 /**
  * Model for removing a player from a tournament.
  *
  * @class TournamentPlayerRemove
- * @extends TournamentPlayer
+ * @extends TournamentPlayerAlter
  */
 /**
  * @param user_id {Integer} Id of the user to be removed from the tournament.
  * @param tournament_id {Integer} Id of the tournament.
  */
-class TournamentPlayerRemove extends TournamentPlayer
+class TournamentPlayerRemove extends TournamentPlayerAlter
 {
 	/**
 	 * Player becomes false when removing a player.
