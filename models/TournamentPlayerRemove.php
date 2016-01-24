@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__DIR__) . '/models/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 require_once(dirname(__DIR__) . '/models/UserGet.php');
 
 session_start();

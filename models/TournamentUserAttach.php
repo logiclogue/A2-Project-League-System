@@ -2,7 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Database.php');
 require_once(dirname(__DIR__) . '/php/Model.php');
-require_once(dirname(__DIR__) . '/models/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 
 session_start();
 
