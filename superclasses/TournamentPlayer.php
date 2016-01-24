@@ -78,7 +78,10 @@ class TournamentPlayer extends Tournament
 	}
 
 	/**
-	 * Main method.
+	 * Method that creates database object.
+	 * Binds parameters.
+	 * Checks to see if able to execute query.
+	 * Then execute query.
 	 * 
 	 * @method general
 	 * @protected
@@ -97,6 +100,24 @@ class TournamentPlayer extends Tournament
 			$this->executeQuery();
 		}
 		else {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method that checks login.
+	 * Then calls @method general
+	 *
+	 * @method subMain
+	 * @protected
+	 */
+	protected function subMain() {
+		if (isset($_SESSION['user'])) {
+			$this->general();
+		}
+		else {
+			$this->error_msg = "You must be logged in";
+
 			$this->success = false;
 		}
 	}

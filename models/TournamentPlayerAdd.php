@@ -32,20 +32,13 @@ SQL;
 
 
 	/**
-	 * Method that checks whether the user is logged in.
+	 * Calls @method subMain.
 	 *
 	 * @method main
 	 * @protected
 	 */
 	protected function main() {
-		if (isset($_SESSION['user'])) {
-			$this->general();
-		}
-		else {
-			$this->error_msg = "You must be logged in";
-
-			$this->success = false;
-		}
+		$this->subMain();
 	}
 }
 
