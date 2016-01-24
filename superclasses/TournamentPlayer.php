@@ -15,6 +15,21 @@ session_start();
 class TournamentPlayer extends Tournament
 {
 	/**
+	 * SQL query string for updating a player
+	 *
+	 * @property query
+	 * @type String
+	 * @protected
+	 */
+	protected $query = <<<SQL
+		UPDATE tournament_user_maps
+		SET is_player = :is_player
+		WHERE
+		user_id = :user_id AND
+		tournament_id = :tournament_id
+SQL;
+
+	/**
 	 * Database object for executing @property query.
 	 *
 	 * @property stmt
@@ -91,6 +106,7 @@ class TournamentPlayer extends Tournament
 
 		$this->stmt->bindParam(':user_id', $this->data['user_id']);
 		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+		$this->stmt->bindParam(':is_player', $this->is_player);
 
 		// Verify whether the user can carry out the action.
 		if ($this->verifyPlayer()) {

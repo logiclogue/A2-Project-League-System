@@ -16,19 +16,12 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentPlayer.php');
 class TournamentPlayerRemove extends TournamentPlayer
 {
 	/**
-	 * SQL query string for removing a player.
+	 * Player becomes false when removing a player.
 	 *
-	 * @property query
-	 * @type String
+	 * @property is_player
 	 * @protected
 	 */
-	protected $query = <<<SQL
-		UPDATE tournament_user_maps
-		SET is_player = FALSE
-		WHERE
-		user_id = :user_id AND
-		tournament_id = :tournament_id
-SQL;
+	protected $is_player = false;
 
 
 	/**

@@ -16,19 +16,12 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentPlayer.php');
 class TournamentPlayerAdd extends TournamentPlayer
 {
 	/**
-	 * SQL query string for changing a user to a player.
+	 * Player becomes true when adding a player.
 	 *
-	 * @property query
-	 * @type String
+	 * @property is_player
 	 * @protected
 	 */
-	protected $query = <<<SQL
-		UPDATE tournament_user_maps
-		SET is_player = TRUE
-		WHERE
-		user_id = :user_id AND
-		tournament_id = :tournament_id
-SQL;
+	protected $is_player = true;
 
 
 	/**
