@@ -10,7 +10,7 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `results` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `tournament_id` mediumint(8) unsigned NOT NULL,
-  `date` date NOT NULL,
+  `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
