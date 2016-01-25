@@ -119,7 +119,11 @@ class Test
 
 		echo 'Input result: ';
 		self::echo_n($ResultEnter->call(array(
-			'tournament_id' => 1
+			'tournament_id' => 1,
+			'player1_id' => 1,
+			'player2_id' => 2,
+			'player1_score' => 1,
+			'player2_score' => 3
 		)));
 	}
 }
