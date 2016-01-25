@@ -14,6 +14,7 @@ require_once(dirname(__DIR__) . '/models/TournamentPlayerAdd.php');
 require_once(dirname(__DIR__) . '/models/TournamentPlayerRemove.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerAdd.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerRemove.php');
+require_once(dirname(__DIR__) . '/models/ResultEnter.php');
 
 
 /**
@@ -38,6 +39,7 @@ class Test
 		$TournamentPlayerRemove = new TournamentPlayerRemove();
 		$TournamentManagerAdd = new TournamentManagerAdd();
 		$TournamentManagerRemove = new TournamentManagerRemove();
+		$ResultEnter = new ResultEnter();
 		$UserGet = new UserGet();
 		$Logout = new Logout();
 		
@@ -93,13 +95,13 @@ class Test
 			'tournament_id' => 1
 		)));
 
-		/*echo 'Add league manager: ';
+		echo 'Add league manager: ';
 		self::echo_n($TournamentManagerAdd->call(array(
 			'user_id' => 1,
 			'tournament_id' => 1
-		)));*/
+		)));
 
-		echo 'Logout: ';
+		/*echo 'Logout: ';
 		self::echo_n($Logout->call(array()));
 
 
@@ -107,11 +109,16 @@ class Test
 		self::echo_n($Login->call(array(
 			'email' => 'new@email.com',
 			'password' => 'pass1'
-		)));
+		)));*/
 
 		echo 'Add league_manager: ';
 		self::echo_n($TournamentManagerAdd->call(array(
 			'user_id' => 2,
+			'tournament_id' => 1
+		)));
+
+		echo 'Input result: ';
+		self::echo_n($ResultEnter->call(array(
 			'tournament_id' => 1
 		)));
 	}
