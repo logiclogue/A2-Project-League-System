@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS `result_user_maps` (
   `user_id` mediumint(8) unsigned NOT NULL,
   `score` tinyint(3) unsigned NOT NULL,
   `rating` smallint(6) NOT NULL,
-  `rating_change` smallint(6) NOT NULL
+  `rating_change` smallint(6) NOT NULL,
+  PRIMARY KEY (`result_id`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
