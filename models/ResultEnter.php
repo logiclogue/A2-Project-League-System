@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 
 session_start();
 
@@ -10,7 +11,7 @@ session_start();
  * Model used for entering a result.
  *
  * @class ResultEnter
- * @extends Model
+ * @extends Tournament
  */
 /**
  * @param tournament_id {Integer} Id of the tournament.
@@ -19,7 +20,7 @@ session_start();
  * @param player1_score {Integer} Player 1's score.
  * @param player2_score {Integer} Player 2's score.
  */
-class ResultEnter extends Model
+class ResultEnter extends Tournament
 {
 	/**
 	 * SQL query string for inserting result info.
@@ -45,14 +46,6 @@ SQL;
 SQL;
 
 	/**
-	 * Database object for executing @property query_info
-	 *
-	 * @property stmt
-	 * @type Object
-	 * @private
-	 */
-	private $stmt;
-	/**
 	 * Id of the result that is being entered.
 	 *
 	 * @property id_of_result
@@ -61,6 +54,29 @@ SQL;
 	 */
 	private $id_of_result;
 
+
+	/**
+	 * Main validation method.
+	 *
+	 * @method validate
+	 * @private
+	 * @return {Boolean} Whether valid to enter result.
+	 */
+	private function validate() {
+		// Check if player is in league.
+		if (!$this->isPlayer($this->data['player1_id'], $this->data['tournament_id'])) {
+			$error_msg = "User not in the league";
+
+			return false; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		}
+		// - If not, then check is league manager.
+		// Check if opponent is in league.
+		// Check if opponent is not self.
+		// Check if result already exists.
+		// Check if score is valid.
+
+		return true;
+	}
 
 	/**
 	 * Method for inserting the score of a player.
@@ -85,13 +101,13 @@ SQL;
 	 * @private
 	 */
 	private function insertInfo() {
-		$this->stmt = Database::$conn->prepare($this->query_info);
+		$stmt = Database::$conn->prepare($this->query_info);
 
-		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
 		// date is format yymmdd_hhmmss
-		$this->stmt->bindParam(':date', date('ymdHis'));
+		$stmt->bindParam(':date', date('ymdHis'));
 
-		if ($this->stmt->execute()) {
+		if ($stmt->execute()) {
 			$this->id_of_result = Database::$conn->lastInsertId();
 		}
 		else {
@@ -100,18 +116,32 @@ SQL;
 		}
 	}
 
+	/**
+	 * Calls all general methods.
+	 *
+	 * @method general
+	 * @private
+	 */
+	private function general() {
+		if ($this->validate()) {
+			$this->insertInfo();
+			$this->insertScore($this->data['player1_id'], $this->data['player1_score']);
+			$this->insertScore($this->data['player2_id'], $this->data['player2_score']);
+		}
+		else {
+			$this->success = false;
+		}
+	}
 
 	/**
-	 * Checks login then calls @method enter.
+	 * Checks login.
 	 *
 	 * @method main
 	 * @protected
 	 */
 	protected function main() {
 		if (isset($_SESSION['user'])) {
-			$this->insertInfo();
-			$this->insertScore($this->data['player1_id'], $this->data['player1_score']);
-			$this->insertScore($this->data['player2_id'], $this->data['player2_score']);
+			$this->general();
 		}
 		else {
 			$this->success = false;

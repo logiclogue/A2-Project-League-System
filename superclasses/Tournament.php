@@ -17,30 +17,15 @@ class Tournament extends Model
 	 *
 	 * @property query_players
 	 * @type String
-	 * @protected
+	 * @private
 	 */
-	protected $query_players = <<<SQL
+	private $query_players = <<<SQL
 		SELECT u.id, u.first_name, u.last_name
 		FROM users u
 		INNER JOIN tournament_user_maps tu
 		ON tu.user_id = u.id
 		WHERE tu.tournament_id = :id AND tu.is_player = true
 SQL;
-	/**
-	 * SQL query string for fetching the league managers of the tournament.
-	 *
-	 * @property query_leauge_managers
-	 * @type String
-	 * @protected
-	 */
-	protected $query_league_managers = <<<SQL
-		SELECT u.id, u.first_name, u.last_name
-		FROM users u
-		INNER JOIN tournament_user_maps tu
-		ON tu.user_id = u.id
-		WHERE tu.tournament_id = :id AND tu.is_league_manager = true
-SQL;
-
 	/**
 	 * SQL query string for checking whether the user is a player in a particular league.
 	 *
@@ -138,32 +123,6 @@ SQL;
 
 		$stmt->bindParam(':user_id', $user_id);
 		$stmt->bindParam(':tournament_id', $tournament_id);
-
-		if ($stmt->execute()) {
-			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
-	}
-
-	/**
-	 * Method for checking whether a tournament exists
-	 *
-	 * @method isTournament
-	 * @protected
-	 * @param id {Integer} Id of the tournament.
-	 * @return {Boolean} Whether the tournament exists.
-	 */
-	protected function isTournament($id) {
-		$stmt = Database::$conn->prepare($this->query_tournament_count);
-
-		$stmt->bindParam(':id', $id);
 
 		if ($stmt->execute()) {
 			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
