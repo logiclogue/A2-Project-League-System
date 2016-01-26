@@ -89,7 +89,7 @@
 			<h2>Leagues</h2>
 			<ul>
 				<li ng-repeat="n in data.leagues_playing">
-					<a ng-bind="n.name"></a>
+					<a href="#/league/{{ n.id }}" ng-bind="n.name"></a>
 				</li>
 			</ul>
 
@@ -97,7 +97,7 @@
 			<h2>Managing</h2>
 			<ul>
 				<li ng-repeat="n in data.leagues_managing">
-					<a ng-bind="n.name"></a>
+					<a href="#/league/{{ n.id }}" ng-bind="n.name"></a>
 				</li>
 			</ul>
 

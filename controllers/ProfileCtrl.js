@@ -3,7 +3,7 @@
  *
  * @controller ProfileCtrl
  */
-app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
+app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, callModel)
 {
 	/**
 	 * Variable for storing the name of the current subpage.
@@ -14,7 +14,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 	var currentSubPage = 'results';
 
 
-	/* 
+	/*
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
 	 */
@@ -27,26 +27,35 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 	 *
 	 * @method getUser
 	 */
-	function getUser() {
-		callModel.fetch('Status', {}, {
+	function getUser(user_id) {
+		callModel.fetch('UserGet', {
+			id: user_id
+		},
+		{
 			success: function (response) {
-				callModel.fetch('UserGet', {
-					id: response.user.id
-				},
-				{
-					success: function (response) {
-						$scope.data = response;
+				$scope.data = response;
 
-						$scope.data.full_name = response.first_name + ' ' + response.last_name;
-					},
-					fail: function (response) {
-						alert(response.error_msg);
+				$scope.data.full_name = response.first_name + ' ' + response.last_name;
+			},
+			fail: function (response) {
+				alert(response.error_msg);
 
-						$location.path('/');
-					}
-				});
+				$location.path('/');
 			}
 		});
+	}
+
+	/**
+	 * Method the gets the id of the current user.
+	 *
+	 * @method getStatus
+	 */
+	function getStatus() {
+		callModel.fetch('Status', {}, {
+			success: function (response) {
+				getUser(response.user.id);
+			}
+		})
 	}
 
 
@@ -89,5 +98,10 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 	/*
 	 * Standard controller calls.
 	 */
-	getUser();
+	if ($routeParams.userId === undefined) {
+		getStatus();
+	}
+	else {
+		getUser($routeParams.userId);
+	}
 });
