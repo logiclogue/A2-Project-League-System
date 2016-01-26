@@ -13,6 +13,7 @@
 	<script src="app/app.js"></script>
 	<script src="app/config.js"></script>
 	<script src="app/callModel.js"></script>
+	<script src="app/callStatus.js"></script>
 	<script src="controllers/LoginCtrl.js"></script>
 	<script src="controllers/ProfileCtrl.js"></script>
 	<script src="controllers/NavCtrl.js"></script>

@@ -3,7 +3,7 @@
  *
  * @method ProfileCtrl
  */
-app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
+app.controller('ProfileCtrl', function ($scope, $http, $location, callModel, callStatus)
 {
 	/**
 	 * Variable for storing the name of the current subpage.
@@ -44,6 +44,8 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 				$location.path('/');
 			}
 		});
+
+		console.log(callStatus.data);
 	}
 
 
