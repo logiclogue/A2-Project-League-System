@@ -161,16 +161,17 @@ SQL;
 	}
 
 	/**
-	 * Checks whether a tournament exists.
+	 * Checks whether a tournament exists from parameter id.
 	 *
-	 * @method tournamentExists
+	 * @method tournamentExistsId
 	 * @protected
+	 * @param tournament_id {Integer} Id of tournament
 	 * @return {Boolean} Whether tournament exists.
 	 */
-	protected function tournamentExists() {
+	protected function tournamentExistsId($tournament_id) {
 		$stmt = Database::$conn->prepare($this->query_tournament_count);
 
-		$stmt->bindParam(':id', $this->data['tournament_id']);
+		$stmt->bindParam(':id', $tournament_id);
 
 		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
 			return true;
@@ -178,6 +179,17 @@ SQL;
 		else {
 			return false;
 		}
+	}
+
+	/**
+	 * Checks whether a tournament exists.
+	 *
+	 * @method tournamentExists
+	 * @protected
+	 * @return {Boolean} Whether tournament exists.
+	 */
+	protected function tournamentExists() {
+		$this->tournamentExistsId($this->data['tournament_id']);
 	}
 }
 

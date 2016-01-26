@@ -3,7 +3,7 @@
  *
  * @controller LeagueCtrl
  */
-app.controller('LeagueCtrl', function ($scope, $http, $location, callModel) {
+app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, callModel) {
 	/* 
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
@@ -20,10 +20,11 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, callModel) {
 	 */
 	function getLeague() {
 		callModel.fetch('TournamentGet', {
-			id: 1
+			id: $routeParams.leagueId
 		},
 		{
 			success: function (response) {
+				console.log(response);
 				$scope.data = response;
 			},
 			fail: function (response) {

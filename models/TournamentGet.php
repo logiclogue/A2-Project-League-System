@@ -1,14 +1,13 @@
 <?php
 
-require_once(dirname(__DIR__) . '/php/Model.php');
-require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 
 
 /**
  * Model that fetches tournament data based on id.
  *
  * @class TournamentGet
- * @extends Model
+ * @extends Tournament
  */
 /**
  * @param id {Integer} Id of the tournament.
@@ -24,7 +23,7 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  *  @return players[].first_name {String} First name of the player.
  *  @return players[].last_name {String} Last name of the player.
  */
-class TournamentGet extends Model
+class TournamentGet extends Tournament
 {
 	/**
 	 * SQL query string for fetching tournament data.
@@ -133,9 +132,15 @@ SQL;
 	 * @return {Array} Tournament data.
 	 */
 	protected function main() {
-		$this->getTournamentData();
-		$this->getPlayers();
-		$this->getLeagueManagers();
+		if ($this->tournamentExistsId($this->data['id'])) {
+			$this->getTournamentData();
+			$this->getPlayers();
+			$this->getLeagueManagers();
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = "Tournament doesn't exist";
+		}
 	}
 }
 
