@@ -4,7 +4,7 @@
  *
  * @controller LoginCtrl
  */
-app.controller('LoginCtrl', function ($scope, $http, $location, callModel, callStatus)
+app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 {
 	$scope.response = {
 		success: true
@@ -30,7 +30,6 @@ app.controller('LoginCtrl', function ($scope, $http, $location, callModel, callS
 			password: $scope.inputPasswordLogin
 		}, {
 			success: function (response) {
-				callStatus.update();
 				$location.path('/');
 			},
 			fail: function (response) {

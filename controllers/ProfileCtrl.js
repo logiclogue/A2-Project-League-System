@@ -3,7 +3,7 @@
  *
  * @method ProfileCtrl
  */
-app.controller('ProfileCtrl', function ($scope, $http, $location, callModel, callStatus)
+app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 {
 	/**
 	 * Variable for storing the name of the current subpage.
@@ -28,24 +28,26 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel, cal
 	 * @method getUser
 	 */
 	function getUser() {
-		callModel.fetch('UserGet', {
-			id: 1
-		},
-		{
+		callModel.fetch('Status', {}, {
 			success: function (response) {
-				console.log(response);
-				$scope.data = response;
+				callModel.fetch('UserGet', {
+					id: response.user.id
+				},
+				{
+					success: function (response) {
+						console.log(response);
+						$scope.data = response;
 
-				$scope.data.full_name = response.first_name + ' ' + response.last_name;
-			},
-			fail: function (response) {
-				alert(response.error_msg);
+						$scope.data.full_name = response.first_name + ' ' + response.last_name;
+					},
+					fail: function (response) {
+						alert(response.error_msg);
 
-				$location.path('/');
+						$location.path('/');
+					}
+				});
 			}
 		});
-
-		console.log(callStatus.data);
 	}
 
 
