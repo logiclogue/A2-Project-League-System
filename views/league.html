@@ -1,16 +1,27 @@
 <div class="container">
 
 	<div class="box-container seven columns">
-		<h1>Premier League<a class="u-pull-right">Edit</a></h1>
+		<!-- Name of the league -->
+		<h1 ng-bind="data.name">Premier League</h1>
 
-		<p>The top tier of the Primrose squash leagues</p>
+		<!-- Edit button -->
+		<a class="u-pull-right">Edit</a>
 
-		<ul class="nav mini">
+		<!-- Description of the league -->
+		<p ng-bind="data.description"></p>
+
+
+		<!-- Mini navigation -->
+		<ul class="nav sub">
 			<li><a class="active">Table</a></li>
 			<li><a>Results</a></li>
 			<li><a>Fixtures</a></li>
 		</ul>
 
+
+		<!-- Sub pages -->
+
+		<!-- League table = subpage -->
 		<table class="u-full-width">
 			<thead>
 				<tr>
@@ -76,8 +87,8 @@
 			</tbody>
 		</table>
 
-		<hr>
 
+		<!-- Results = subpage -->
 		<div class="result">
 			<div class="head">
 				<span>FRI 11 NOV 2015</span>
@@ -104,8 +115,8 @@
 			</div>
 		</div>
 
-		<hr>
-
+		
+		<!-- Fixutes = subpage -->
 		<div class="result">
 			<div class="head">
 				<a>ENTER RESULT</a>
@@ -133,19 +144,27 @@
 		</div>
 	</div>
 
+
+	<!-- Side bar -->
 	<div class="five columns">
 		<div class="box-container side">
+			<!-- Display all league managers -->
 			<h2>Managers</h2>
 
-			<span><a>Jordan Lord</a></span><br><br>
+			<ul>
+				<li ng-repeat="n in data.league_managers">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+				</li>
+			</ul>
 			
-			<h2>Members</h2>
+			<!-- Display all players -->
+			<h2>Players</h2>
 
-			<span><a>Jordan Lord</a></span><br>
-			<span><a>John Doe</a></span><br>
-			<span><a>Wilfred Morales</a></span><br>
-			<span><a>Shane Washington</a></span><br>
-			<span><a>Sylvester Briggs</a></span>
+			<ul>
+				<li ng-repeat="n in data.players">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+				</li>
+			</ul>
 		</div>
 	</div>
 

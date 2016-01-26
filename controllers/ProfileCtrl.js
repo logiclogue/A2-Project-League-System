@@ -1,7 +1,7 @@
 /**
  * Profile page controller.
  *
- * @method ProfileCtrl
+ * @controller ProfileCtrl
  */
 app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 {
@@ -22,7 +22,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 		$location.path('/login');
 	});
 
-	/*
+	/**
 	 * Method that gets user data from UserGet model.
 	 *
 	 * @method getUser
@@ -35,7 +35,6 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, callModel)
 				},
 				{
 					success: function (response) {
-						console.log(response);
 						$scope.data = response;
 
 						$scope.data.full_name = response.first_name + ' ' + response.last_name;
