@@ -47,6 +47,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 
 	/**
 	 * Method the gets the id of the current user.
+	 * Then calls @method getUser with id of current user.
 	 *
 	 * @method getStatus
 	 */
@@ -96,7 +97,9 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 
 
 	/*
-	 * Standard controller calls.
+	 * Checks whether url user id is set.
+	 * If not, calls @method getStatus.
+	 * Else, calls @method getUser with id of user.
 	 */
 	if ($routeParams.userId === undefined) {
 		getStatus();

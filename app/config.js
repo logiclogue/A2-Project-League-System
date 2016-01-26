@@ -11,10 +11,6 @@ app.config(['$routeProvider', function ($routeProvider)
 		templateUrl: 'views/home.html',
 		controller: 'HomeCtrl'
 	})
-	/*.when('/tournaments', {
-		templateUrl: 'views/tournament-list.html',
-		controller: 'TournamentListCtrl'
-	})*/
 	.when('/profile', {
 		templateUrl: 'views/profile.html',
 		controller: 'ProfileCtrl'

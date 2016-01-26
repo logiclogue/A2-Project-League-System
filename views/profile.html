@@ -87,7 +87,7 @@
 		<div class="box-container side">
 			<!-- Display all leagues that the user is playing in -->
 			<h2>Leagues</h2>
-			<ul>
+			<ul class="list-side">
 				<li ng-repeat="n in data.leagues_playing">
 					<a href="#/league/{{ n.id }}" ng-bind="n.name"></a>
 				</li>
@@ -95,7 +95,7 @@
 
 			<!-- Display all leagues that the user is managing -->
 			<h2>Managing</h2>
-			<ul>
+			<ul class="list-side">
 				<li ng-repeat="n in data.leagues_managing">
 					<a href="#/league/{{ n.id }}" ng-bind="n.name"></a>
 				</li>

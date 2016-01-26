@@ -49,6 +49,17 @@ hr {
 }
 
 
+.list-side li {
+	margin: 0;
+
+	list-style: none;
+}
+
+.list-side a {
+	text-decoration: none;
+}
+
+
 .nav {
 	list-style: none;
 

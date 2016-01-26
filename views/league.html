@@ -151,7 +151,7 @@
 			<!-- Display all league managers -->
 			<h2>Managers</h2>
 
-			<ul>
+			<ul class="list-side">
 				<li ng-repeat="n in data.league_managers">
 					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
 				</li>
@@ -160,7 +160,7 @@
 			<!-- Display all players -->
 			<h2>Players</h2>
 
-			<ul>
+			<ul class="list-side">
 				<li ng-repeat="n in data.players">
 					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
 				</li>
