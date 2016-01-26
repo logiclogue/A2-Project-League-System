@@ -189,7 +189,7 @@ SQL;
 	 * @return {Boolean} Whether tournament exists.
 	 */
 	protected function tournamentExists() {
-		$this->tournamentExistsId($this->data['tournament_id']);
+		return $this->tournamentExistsId($this->data['tournament_id']);
 	}
 }
 

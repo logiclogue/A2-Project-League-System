@@ -47,6 +47,7 @@ class Test
 		echo 'Database reset: ';
 		self::echo_n(Database::reset());
 
+		echo 'Register user: ';
 		self::echo_n($Register->call(array(
 			'email' => 'me@email.com',
 			'password' => 'password',
@@ -54,6 +55,7 @@ class Test
 			'last_name' => 'Lord'
 		)));
 
+		echo 'Reigster user: ';
 		self::echo_n($Register->call(array(
 			'email' => 'new@email.com',
 			'password' => 'pass1',
@@ -61,6 +63,7 @@ class Test
 			'last_name' => 'User'
 		)));
 
+		echo 'Login: ';
 		self::echo_n($Login->call(array(
 			'email' => 'me@email.com',
 			'password' => 'password'
