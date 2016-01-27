@@ -3,7 +3,8 @@
  *
  * @controller LeagueCtrl
  */
-app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, callModel) {
+app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, callModel)
+{
 	/* 
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
