@@ -58,6 +58,16 @@ app.factory('CallModel', function ($http, $location)
 					}
 				}
 			});
+		},
+		/**
+		 * Method that redirects to login page if not logged in.
+		 *
+		 * @method redirectIfNotLoggedIn
+		 */
+		redirectIfNotLoggedIn: function () {
+			this.ifLoggedIn(function () {}, function () {
+				$location.path('/login');
+			});
 		}
 	};
 });

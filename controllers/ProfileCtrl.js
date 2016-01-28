@@ -18,9 +18,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
 	 */
-	CallModel.ifLoggedIn(function () {}, function () {
-		$location.path('/login');
-	});
+	CallModel.redirectIfNotLoggedIn();
 
 	/**
 	 * Method that gets user data from UserGet model.

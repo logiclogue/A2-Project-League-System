@@ -1,7 +1,6 @@
 <?php
 
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
-require_once(dirname(__DIR__) . '/models/TournamentUserAttach.php');
 
 session_start();
 
@@ -15,6 +14,9 @@ session_start();
 /**
  * @param name {String} The name of the tournament.
  * @param description {String} The description of the tournament.
+ */
+/**
+ * @return id {Integer} Id of the tournament just created.
  */
 class TournamentCreate extends Tournament
 {
@@ -50,6 +52,25 @@ SQL;
 	 */
 	private $stmt;
 
+	/**
+	 * Id of the tournament that has just been created.
+	 *
+	 * @property tournament_id
+	 * @private
+	 */
+	private $tournament_id;
+
+
+	/**
+	 * Method which returns the tournament data.
+	 * Data collected from @class TournamentGet.
+	 *
+	 * @method returnTournamentData
+	 * @private
+	 */
+	private function returnTournamentData() {
+		$this->return_data['id'] = $this->tournament_id;
+	}
 
 	/**
 	 * Method for attaching the current user as the league manager.
@@ -62,11 +83,14 @@ SQL;
 
 		$stmt->bindParam(':user_id', $_SESSION['user']['id']);
 		// Bind the tournament id as the last insert id.
-		$stmt->bindParam(':tournament_id', Database::$conn->lastInsertId());
+		$stmt->bindParam(':tournament_id', $this->tournament_id);
 
 		if (!$stmt->execute() || $stmt->rowCount() != 1) {
 			$this->error_msg = "Failed to add you as a league manager";
 			$this->success = false;
+		}
+		else {
+			$this->returnTournamentData();
 		}
 	}
 
@@ -87,6 +111,9 @@ SQL;
 			$this->success = false;
 		}
 		else {
+			// Sets @property tournament_id
+			$this->tournament_id = Database::$conn->lastInsertId();
+
 			// Add league manager if didn't fail.
 			$this->addLeagueManager();
 		}

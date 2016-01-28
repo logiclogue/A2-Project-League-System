@@ -23,12 +23,16 @@ app.config(['$routeProvider', function ($routeProvider)
 		templateUrl: 'views/league.html',
 		controller: 'LeagueCtrl'
 	})
+	.when('/league/create', {
+		templateUrl: 'views/league-edit.html',
+		controller: 'LeagueCreateCtrl'
+	})
 	.when('/league/:leagueId', {
 		templateUrl: 'views/league.html',
 		controller: 'LeagueCtrl'
 	})
 	.when('/league/:leagueId/edit', {
-		templateUrl: 'views/edit-league.html',
+		templateUrl: 'views/league-edit.html',
 		controller: 'LeagueEditCtrl'
 	})
 	.when('/login', {

@@ -9,9 +9,7 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
 	 */
-	CallModel.ifLoggedIn(function () {}, function () {
-		$location.path('/login');
-	});
+	CallModel.redirectIfNotLoggedIn();
 
 
 	/**

@@ -1,7 +1,7 @@
 <div class="container">
 
 	<div class="box-container seven columns">
-		<h1>Edit League</h1>
+		<h1>{{ editOrCreate }} League</h1>
 
 		<!-- League name field -->
 		<label>League Name</label>
@@ -12,7 +12,7 @@
 		<textarea class="u-full-width" ng-model="description"></textarea>
 
 		<!-- Submit button -->
-		<button class="u-full-width" ng-click="eventUpdate()">Update</button>
+		<button class="u-full-width" ng-click="eventUpdate()">{{ editOrCreate }}</button>
 	</div>
 
 	<div class="box-container side five columns">

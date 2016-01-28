@@ -5,13 +5,20 @@
  */
 app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, CallModel)
 {
+	/**
+	 * The text that goes in the edit page.
+	 *
+	 * @val $scope.editOrCreate
+	 * @type String
+	 */
+	$scope.editOrCreate = 'Edit';
+
+
 	/* 
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
 	 */
-	CallModel.ifLoggedIn(function () {}, function () {
-		$location.path('/login');
-	});
+	CallModel.redirectIfNotLoggedIn();
 
 
 
