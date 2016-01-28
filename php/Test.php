@@ -137,6 +137,18 @@ class Test
 			'tournament_id' => 1
 		)));
 
+		echo 'Add player in tournament: ';
+		self::echo_n($TournamentPlayerAdd->call(array(
+			'user_id' => 2,
+			'tournament_id' => 1
+		)));
+
+		echo 'Add player in tournament: ';
+		self::echo_n($TournamentPlayerAdd->call(array(
+			'user_id' => 3,
+			'tournament_id' => 1
+		)));
+
 		echo 'Input result: ';
 		self::echo_n($ResultEnter->call(array(
 			'tournament_id' => 1,

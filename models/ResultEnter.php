@@ -65,13 +65,26 @@ SQL;
 	private function validate() {
 		// Check if player is in league.
 		if (!$this->isPlayer($this->data['player1_id'], $this->data['tournament_id'])) {
-			$error_msg = "User not in the league";
+			$this->error_msg = "User not in the league";
 
-			return false; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			return false;
 		}
 		// - If not, then check is league manager.
+		else if (!$this->isLeagueManager($this->data['player1_id'], $this->data['tournament_id'])) {
+			$this->error_msg = "You don't have permission to do that";
+		}
 		// Check if opponent is in league.
+		else if (!$this->isPlayer($this->data['player2_id'], $this->data['tournament_id'])) {
+			$this->error_msg = "Opponent not in the league";
+
+			return false;
+		}
 		// Check if opponent is not self.
+		else if ($this->data['player1_id'] == $this->data['player2_id']) {
+			$this->error_msg = "You can't enter a result against yourself";
+
+			return false;
+		}
 		// Check if result already exists.
 		// Check if score is valid.
 
