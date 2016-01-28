@@ -57,11 +57,19 @@ class Test
 			'last_name' => 'Lord'
 		)));
 
-		echo 'Reigster user: ';
+		echo 'Register user: ';
 		self::echo_n($Register->call(array(
 			'email' => 'new@email.com',
 			'password' => 'pass1',
 			'first_name' => 'New',
+			'last_name' => 'User'
+		)));
+
+		echo 'Register user: ';
+		self::echo_n($Register->call(array(
+			'email' => 'another@user.com',
+			'password' => 'password',
+			'first_name' => 'Another',
 			'last_name' => 'User'
 		)));
 

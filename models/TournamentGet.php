@@ -2,6 +2,8 @@
 
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 
+session_start();
+
 
 /**
  * Model that fetches tournament data based on id.
@@ -15,6 +17,7 @@ require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
  * @return id {Integer} Id of the tournament.
  * @return name {String} Name of the tournament.
  * @return description {String} Description of the tournament.
+ * @return is_league_manager {Boolean} Whether the user calling is a league manager.
  * @return league_managers {Array} Array of league managers.
  *  @return league_managers[].id {Integer} Id of the league manager.
  *  @return league_managers[].first_name {String} First name of the league manager.
@@ -123,6 +126,10 @@ SQL;
 		else {
 			$this->success = false;
 		}
+
+
+		// Shows whether the current user is a league manager.
+		$this->return_data['is_league_manager'] = $this->isLeagueManager($_SESSION['user']['id'], $this->data['id']);
 	}
 
 	/**
