@@ -4,7 +4,7 @@
  *
  * @controller LoginCtrl
  */
-app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
+app.controller('LoginCtrl', function ($scope, $http, $location, CallModel)
 {
 	$scope.response = {
 		success: true
@@ -13,7 +13,7 @@ app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 	/*
 	 * If user is logged in, redirects to home page.
 	 */
-	 callModel.ifLoggedIn(function () {
+	 CallModel.ifLoggedIn(function () {
 	 	$location.path('/');
 	 },
 	 function () {});
@@ -25,7 +25,7 @@ app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 	 * @method btnLoginClick
 	 */
 	$scope.btnLoginClick = function () {
-		callModel.fetch('Login', {
+		CallModel.fetch('Login', {
 			email: $scope.inputEmailLogin,
 			password: $scope.inputPasswordLogin
 		}, {
@@ -44,7 +44,7 @@ app.controller('LoginCtrl', function ($scope, $http, $location, callModel)
 	 * @method btnRegisterClick
 	 */
 	$scope.btnRegisterClick = function () {
-		callModel.fetch('Register', {
+		CallModel.fetch('Register', {
 			first_name: $scope.inputFirstName,
 			last_name: $scope.inputLastName,
 			email: $scope.inputEmailRegister,

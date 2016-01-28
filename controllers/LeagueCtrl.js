@@ -3,13 +3,13 @@
  *
  * @controller LeagueCtrl
  */
-app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, callModel)
+app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
 	/* 
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
 	 */
-	callModel.ifLoggedIn(function () {}, function () {
+	CallModel.ifLoggedIn(function () {}, function () {
 		$location.path('/login');
 	});
 
@@ -20,7 +20,7 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, c
 	 * @method getLeague
 	 */
 	function getLeague() {
-		callModel.fetch('TournamentGet', {
+		CallModel.fetch('TournamentGet', {
 			id: $routeParams.leagueId
 		},
 		{

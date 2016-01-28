@@ -3,7 +3,7 @@
  *
  * @controller NavCtrl
  */
-app.controller('NavCtrl', function ($scope, $location, callModel)
+app.controller('NavCtrl', function ($scope, $location, CallModel)
 {
 	/**
 	 * Changes login boolean depending whether logged in or not.
@@ -11,7 +11,7 @@ app.controller('NavCtrl', function ($scope, $location, callModel)
 	 * @method loginButtonText
 	 */
 	function loginButtonCheck() {
-		callModel.ifLoggedIn(function () {
+		CallModel.ifLoggedIn(function () {
 			$scope.loggedIn = true;
 		},
 		function () {
@@ -27,7 +27,7 @@ app.controller('NavCtrl', function ($scope, $location, callModel)
 	 * @method $scope.btnLogout
 	 */
 	$scope.btnLogout = function () {
-		callModel.fetch('Logout', {}, {
+		CallModel.fetch('Logout', {}, {
 			success: function () {
 				$location.path('/login');
 			}

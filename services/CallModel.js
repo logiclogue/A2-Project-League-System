@@ -1,9 +1,9 @@
 /**
  * Factory for calling the PHP models.
  *
- * @factory callModel
+ * @factory CallModel
  */
-app.factory('callModel', function ($http, $location)
+app.factory('CallModel', function ($http, $location)
 {
 	return {
 		/**

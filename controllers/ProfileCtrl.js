@@ -3,7 +3,7 @@
  *
  * @controller ProfileCtrl
  */
-app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, callModel)
+app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
 	/**
 	 * Variable for storing the name of the current subpage.
@@ -18,7 +18,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * Checks to see if logged in.
 	 * If not, redirects to login page.
 	 */
-	callModel.ifLoggedIn(function () {}, function () {
+	CallModel.ifLoggedIn(function () {}, function () {
 		$location.path('/login');
 	});
 
@@ -28,7 +28,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * @method getUser
 	 */
 	function getUser(user_id) {
-		callModel.fetch('UserGet', {
+		CallModel.fetch('UserGet', {
 			id: user_id
 		},
 		{
@@ -52,7 +52,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * @method getStatus
 	 */
 	function getStatus() {
-		callModel.fetch('Status', {}, {
+		CallModel.fetch('Status', {}, {
 			success: function (response) {
 				getUser(response.user.id);
 			}
