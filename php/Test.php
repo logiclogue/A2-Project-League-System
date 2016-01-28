@@ -5,8 +5,9 @@ require_once(dirname(__DIR__) . '/models/Register.php');
 require_once(dirname(__DIR__) . '/models/Status.php');
 require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UserUpdate.php');
-require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
 require_once(dirname(__DIR__) . '/models/UserGet.php');
+require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
+require_once(dirname(__DIR__) . '/models/TournamentUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentGet.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserAttach.php');
@@ -35,6 +36,7 @@ class Test
 		$Login = new Login();
 		$TournamentGet = new TournamentGet();
 		$TournamentCreate = new TournamentCreate();
+		$TournamentUpdate = new TournamentUpdate();
 		$TournamentPlayerAdd = new TournamentPlayerAdd();
 		$TournamentPlayerRemove = new TournamentPlayerRemove();
 		$TournamentManagerAdd = new TournamentManagerAdd();
@@ -127,6 +129,13 @@ class Test
 			'player2_id' => 2,
 			'player1_score' => 1,
 			'player2_score' => 3
+		)));
+
+		echo 'Update tournament: ';
+		self::echo_n($TournamentUpdate->call(array(
+			'id' => 1,
+			'name' => 'League',
+			'description' => 'The premier league'
 		)));
 	}
 }
