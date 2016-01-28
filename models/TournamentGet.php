@@ -12,6 +12,7 @@ require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 /**
  * @param id {Integer} Id of the tournament.
  *
+ * @return id {Integer} Id of the tournament.
  * @return name {String} Name of the tournament.
  * @return description {String} Description of the tournament.
  * @return league_managers {Array} Array of league managers.
@@ -33,7 +34,7 @@ class TournamentGet extends Tournament
 	 * @private
 	 */
 	private $query = <<<SQL
-		SELECT name, description
+		SELECT id, name, description
 		FROM tournaments
 		WHERE id = :id
 SQL;

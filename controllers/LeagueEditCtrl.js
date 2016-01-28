@@ -26,6 +26,9 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 		{
 			success: function (response) {
 				$scope.data = response;
+				// Fill fields with current league info.
+				$scope.name = response.name;
+				$scope.description = response.description;
 			},
 			fail: function (response) {
 				alert(response.error_msg);
@@ -41,9 +44,11 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 	 *
 	 * @method eventUpdate
 	 */
-	function eventUpdate() {
+	$scope.eventUpdate = function () {
 		CallModel.fetch('TournamentUpdate', {
-			id: $routeParams.leagueId
+			id: $routeParams.leagueId,
+			name: $scope.name,
+			description: $scope.description
 		},
 		{
 			success: function (response) {
@@ -52,7 +57,7 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 			fail: function (response) {
 				alert(response.error_msg);
 			}
-		}
+		});
 	}
 
 

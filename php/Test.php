@@ -73,8 +73,15 @@ class Test
 
 		echo 'Create tournament: ';
 		self::echo_n($TournamentCreate->call(array(
+			'name' => 'PL',
+			'description' => 'A league'
+		)));
+
+		echo 'Update tournament info: ';
+		self::echo_n($TournamentUpdate->call(array(
+			'id' => 1,
 			'name' => 'Premier League',
-			'description' => 'The top tier of the Primrose Squash leagues'
+			'description' => 'Top tier of Primrose Squash Leagues'
 		)));
 
 		echo 'Tournament data: ';
@@ -129,13 +136,6 @@ class Test
 			'player2_id' => 2,
 			'player1_score' => 1,
 			'player2_score' => 3
-		)));
-
-		echo 'Update tournament: ';
-		self::echo_n($TournamentUpdate->call(array(
-			'id' => 1,
-			'name' => 'League',
-			'description' => 'The premier league'
 		)));
 	}
 }
