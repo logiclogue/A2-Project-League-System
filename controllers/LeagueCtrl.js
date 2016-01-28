@@ -26,8 +26,6 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 		{
 			success: function (response) {
 				$scope.data = response;
-
-				console.log($scope.data);
 			},
 			fail: function (response) {
 				alert(response.error_msg);

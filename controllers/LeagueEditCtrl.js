@@ -14,6 +14,14 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 	});
 
 
+
+	function redirect(response) {
+		alert(response.error_msg);
+
+		$location.path('/');
+	}
+
+
 	/**
 	 * Method for getting league data from @class TournamentGet.
 	 *
@@ -29,12 +37,15 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 				// Fill fields with current league info.
 				$scope.name = response.name;
 				$scope.description = response.description;
-			},
-			fail: function (response) {
-				alert(response.error_msg);
 
-				$location.path('/');
-			}
+				// Check to see if user isn't a league manager, and then redirect
+				if (!response.is_league_manager) {
+					response.error_msg = "You must be a league manager to edit the league";
+
+					redirect(response);
+				}
+			},
+			fail: redirect
 		});
 	}
 
@@ -45,6 +56,7 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 	 * @method eventUpdate
 	 */
 	$scope.eventUpdate = function () {
+		// Calls @class TournamentUpdate with info from name and description fields.
 		CallModel.fetch('TournamentUpdate', {
 			id: $routeParams.leagueId,
 			name: $scope.name,
