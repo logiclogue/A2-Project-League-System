@@ -5,14 +5,14 @@
 
 		<!-- League name field -->
 		<label>League Name</label>
-		<input class="u-full-width" type="text">
+		<input class="u-full-width" type="text" value="{{ data.name }}">
 
 		<!-- League description field -->
 		<label>League Description</label>
-		<textarea class="u-full-width"></textarea>
+		<textarea class="u-full-width" ng-bind="data.description"></textarea>
 
 		<!-- Submit button -->
-		<button class="u-full-width">Update</button>
+		<button class="u-full-width" ng-click="eventUpdate()">Update</button>
 	</div>
 
 	<div class="box-container side five columns">

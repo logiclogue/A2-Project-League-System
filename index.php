@@ -18,6 +18,7 @@
 	<script src="controllers/NavCtrl.js"></script>
 	<script src="controllers/HomeCtrl.js"></script>
 	<script src="controllers/LeagueCtrl.js"></script>
+	<script src="controllers/LeagueEditCtrl.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
