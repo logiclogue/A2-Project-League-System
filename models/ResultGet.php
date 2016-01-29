@@ -19,9 +19,12 @@ require_once(dirname(__DIR__) . '/php/Model.php');
  * @return results {Array}
  *   @return [].id {Integer} Id of the result.
  *   @return [].tournament_id {Integer} Id of the tournament.
+ *   @return [].tournament_name {String} Name of the tournament.
  *   @return [].date {String} Date-time the match was played.
  *   @return [].player1_id {Integer} Id of player 1.
  *   @return [].player2_id {Integer} Id of player 2.
+ *   @return [].player1_name {String} Name of player 1.
+ *   @return [].player2_name {String} Name of player 2.
  *   @return [].score1 {Integer} Score of player 1.
  *   @return [].score2 {Integer} Score of player 2.
  **/
@@ -38,16 +41,28 @@ class ResultGet extends Model
 		SELECT
 		r.id,
 		r.tournament_id,
+		t.name tournament_name,
 		r.date,
 		ru1.user_id player1_id,
-		ru1.score score1,
 		ru2.user_id player2_id,
+		CONCAT(u1.first_name, ' ', u1.last_name) player1_name,
+		CONCAT(u2.first_name, ' ', u2.last_name) player2_name,
+		ru1.score score1,
 		ru2.score score2
 		FROM result_user_maps ru1
+
 		INNER JOIN result_user_maps ru2
 		ON ru2.result_id = ru1.result_id
 		INNER JOIN results r
 		ON r.id = ru1.result_id
+		
+		INNER JOIN users u1
+		ON ru1.user_id = u1.id
+		INNER JOIN users u2
+		ON ru2.user_id = u2.id
+		INNER JOIN tournaments t
+		ON r.tournament_id = t.id
+
 		WHERE
 		ru1.user_id <> ru2.user_id AND
 		CASE WHEN :player1_id IS NULL AND :player2_id IS NULL
