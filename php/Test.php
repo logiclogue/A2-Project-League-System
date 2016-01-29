@@ -16,6 +16,7 @@ require_once(dirname(__DIR__) . '/models/TournamentPlayerRemove.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerAdd.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerRemove.php');
 require_once(dirname(__DIR__) . '/models/ResultEnter.php');
+require_once(dirname(__DIR__) . '/models/ResultGet.php');
 
 
 /**
@@ -42,6 +43,7 @@ class Test
 		$TournamentManagerAdd = new TournamentManagerAdd();
 		$TournamentManagerRemove = new TournamentManagerRemove();
 		$ResultEnter = new ResultEnter();
+		$ResultGet = new ResultGet();
 		$UserGet = new UserGet();
 		$Logout = new Logout();
 		
@@ -156,6 +158,20 @@ class Test
 			'player2_id' => 2,
 			'player1_score' => 1,
 			'player2_score' => 3
+		)));
+
+		echo 'Input result: ';
+		self::echo_n($ResultEnter->call(array(
+			'tournament_id' => 1,
+			'player1_id' => 1,
+			'player2_id' => 2,
+			'player1_score' => 1,
+			'player2_score' => 3
+		)));
+
+		echo 'Get result: ';
+		self::echo_n($ResultGet->call(array(
+			'tournament_id' => 1
 		)));
 	}
 }
