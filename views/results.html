@@ -1,13 +1,13 @@
 <div>
-	<div class="result">
+	<div class="result" ng-repeat="n in results">
 		<div class="head">
-			<span>FRI 11 NOV 2015</span>
-			<a class="u-pull-right">Premier League</a><br>
+			<span ng-bind="n.date"></span>
+			<a class="u-pull-right" ng-bind="n.tournament_name"></a><br>
 		</div>
 
 		<div class="body">
-			<span class="score win">3-1</span>
-			<span>vs <a>John Doe</a> (1234)</span>
+			<span class="score" ng-class="n.winOrLoss" ng-bind="n.score1 + '-' + n.score2"></span>
+			<span>vs <a ng-bind="n.player2_name"></a> (1234)</span>
 			<span class="u-pull-right">+23</span>
 		</div>
 	</div>
