@@ -6,23 +6,6 @@
 	<title>Computing Project</title>
 	<meta name="author" content="Jordan Lord">
 
-	
-	<script src="lib/angular.min.js"></script>
-	<script src="lib/angular-route.min.js"></script>
-
-	<script src="app/app.js"></script>
-	<script src="app/config.js"></script>
-	<script src="services/CallModel.js"></script>
-	<script src="directives/cpResult.js"></script>
-	<script src="controllers/LoginCtrl.js"></script>
-	<script src="controllers/ProfileCtrl.js"></script>
-	<script src="controllers/NavCtrl.js"></script>
-	<script src="controllers/HomeCtrl.js"></script>
-	<script src="controllers/LeagueCtrl.js"></script>
-	<script src="controllers/LeagueEditCtrl.js"></script>
-	<script src="controllers/LeagueCreateCtrl.js"></script>
-
-
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
@@ -50,5 +33,21 @@
 	<!-- Main area for page -->
 	<div ng-view></div>
 
+
+
+	<script src="lib/angular.min.js"></script>
+	<script src="lib/angular-route.min.js"></script>
+
+	<script src="app/app.js"></script>
+	<script src="app/config.js"></script>
+	<script src="services/CallModel.js"></script>
+	<script src="directives/cpResult.js"></script>
+	<script src="controllers/LoginCtrl.js"></script>
+	<script src="controllers/ProfileCtrl.js"></script>
+	<script src="controllers/NavCtrl.js"></script>
+	<script src="controllers/HomeCtrl.js"></script>
+	<script src="controllers/LeagueCtrl.js"></script>
+	<script src="controllers/LeagueEditCtrl.js"></script>
+	<script src="controllers/LeagueCreateCtrl.js"></script>
 </body>
 </html>

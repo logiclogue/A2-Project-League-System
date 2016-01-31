@@ -2,12 +2,13 @@
 	<div class="result" ng-repeat="n in results">
 		<div class="head">
 			<span ng-bind="n.date"></span>
-			<a class="u-pull-right" ng-bind="n.tournament_name"></a><br>
+			<a class="u-pull-right" href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a><br>
 		</div>
 
 		<div class="body">
+			<a href="#/profile/{{ n.player1_id }}" ng-bind="n.player1_name"></a>
 			<span class="score" ng-class="n.winOrLoss" ng-bind="n.score1 + '-' + n.score2"></span>
-			<span>vs <a ng-bind="n.player2_name"></a> (1234)</span>
+			<a href="#/profile/{{ n.player2_id }}" ng-bind="n.player2_name"></a>
 			<span class="u-pull-right">+23</span>
 		</div>
 	</div>

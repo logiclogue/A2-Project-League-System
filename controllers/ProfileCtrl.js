@@ -32,7 +32,6 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		{
 			success: function (response) {
 				$scope.data = response;
-
 				$scope.data.full_name = response.first_name + ' ' + response.last_name;
 			},
 			fail: function (response) {
