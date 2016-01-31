@@ -14,20 +14,16 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 	$scope.editOrCreate = 'Edit';
 
 
-	/* 
-	 * Checks to see if logged in.
-	 * If not, redirects to login page.
+	/**
+	 * Method that redirects to home page and prints error message.
+	 *
+	 * @method redirect
 	 */
-	CallModel.redirectIfNotLoggedIn();
-
-
-
 	function redirect(response) {
 		alert(response.error_msg);
 
 		$location.path('/');
 	}
-
 
 	/**
 	 * Method for getting league data from @class TournamentGet.
@@ -60,7 +56,7 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 	/**
 	 * Function that is called when the update button is pressed.
 	 *
-	 * @method eventUpdate
+	 * @method $scope.eventUpdate
 	 */
 	$scope.eventUpdate = function () {
 		// Calls @class TournamentUpdate with info from name and description fields.
@@ -79,6 +75,45 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 		});
 	}
 
+	/**
+	 * Function that is called when a player is removed from the league.
+	 *
+	 * @method $scope.eventRemoveUser
+	 * @param userId {Integer} Id of the player to remove.
+	 */
+	$scope.eventRemovePlayer = function (userId) {
+		CallModel.fetch('TournamentPlayerRemove', {
 
-	getLeague();
+		},
+		function () {
+
+		});
+	};
+
+	/**
+	 * Function that is called when a league manager is removed.
+	 *
+	 * @method $scope.eventRemoveManager
+	 * @param userId {Integer} Id of the league manager to remove.
+	 */
+	$scope.eventRemoveManager = function (userId) {
+		CallModel.fetch('TournamentManagerRemove', {
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
+		},
+		function (response) {
+			// !!!!!!!!!!!!!!!!
+		});
+	}
+
+
+	(function () {
+		/* 
+		 * Checks to see if logged in.
+		 * If not, redirects to login page.
+		 */
+		CallModel.redirectIfNotLoggedIn();
+
+		getLeague();
+	}());
 });
