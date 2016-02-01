@@ -1,7 +1,6 @@
 <?php
 
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
-require_once(dirname(__DIR__) . '/models/UserGet.php');
 
 
 session_start();
@@ -101,11 +100,9 @@ SQL;
 	 * @return {Boolean} Whether can.
 	 */
 	private function verifyManager() {
-		$UserGet = new UserGet();
-
 		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
 		$does_tournament_exist = $this->tournamentExists();
-		$does_user_exist = $UserGet->call(array('id' => $this->data['user_id']))['success'];
+		$does_user_exist = $this->userExists($this->data['user_id']);
 
 		// If there are no league managers, then the league is free to be claimed.
 		if ($this->noOfLeagueManagers() == 0) {

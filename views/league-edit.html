@@ -16,17 +16,25 @@
 	</div>
 
 	<div class="box-container side five columns">
+		<!-- Display all league managers -->
 		<h2>Managers<a class="u-pull-right">Add</a></h2>
 
-		<span>
-			<a>Jordan Lord</a>
-			<a class="u-pull-right">Remove</a>
-		</span><br>
+		<ul class="list-side">
+			<li ng-repeat="n in data.league_managers">
+				<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+				<a class="u-pull-right" href ng-click="eventRemoveManager(n.id)">Remove</a>
+			</li>
+		</ul>
 
-		<span>
-			<a>John Doe</a>
-			<a class="u-pull-right">Remove</a>
-		</span><br> <!-- !!!!!!!!!!!!!!!!!!!!!!!!! -->
+		<!-- Display all players -->
+		<h2>Players</h2>
+
+		<ul class="list-side">
+			<li ng-repeat="n in data.players">
+				<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+				<a class="u-pull-right" href ng-click="eventRemovePlayer(n.id)">Remove</a>
+			</li>
+		</ul>
 	</div>
 
 </div>

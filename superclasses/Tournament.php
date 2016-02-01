@@ -42,6 +42,18 @@ SQL;
 		is_player = 1
 SQL;
 	/**
+	 * SQL query string for telling whether a user exists.
+	 *
+	 * @property query_user_exist
+	 * @type String
+	 * @private
+	 */
+	private $query_user_exist = <<<SQL
+		SELECT COUNT(*)
+		FROM users
+		WHERE id = :id
+SQL;
+	/**
 	 * SQL query string for checking whether the user is league manager of a particular league.
 	 *
 	 * @property query_league_manager_count
@@ -190,6 +202,27 @@ SQL;
 	 */
 	protected function tournamentExists() {
 		return $this->tournamentExistsId($this->data['tournament_id']);
+	}
+
+	/**
+	 * Checks whether a user exists.
+	 *
+	 * @method userExists
+	 * @protected
+	 * @param user_id {Integer} Id of the user to test.
+	 * @return {Boolean} Whether a user exists.
+	 */
+	protected function userExists($user_id) {
+		$stmt = Database::$conn->prepare($this->query_user_exist);
+
+		$stmt->bindParam(':id', $user_id);
+
+		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 

@@ -83,10 +83,13 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 	 */
 	$scope.eventRemovePlayer = function (userId) {
 		CallModel.fetch('TournamentPlayerRemove', {
-
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
 		},
-		function () {
-
+		{
+			success: function (response) {
+				getLeague();
+			}
 		});
 	};
 
@@ -101,10 +104,12 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 			user_id: userId,
 			tournament_id: $routeParams.leagueId
 		},
-		function (response) {
-			// !!!!!!!!!!!!!!!!
+		{
+			success: function (response) {
+				getLeague();
+			}
 		});
-	}
+	};
 
 
 	(function () {
