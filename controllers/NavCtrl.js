@@ -3,7 +3,7 @@
  *
  * @controller NavCtrl
  */
-app.controller('NavCtrl', function ($scope, $location, CallModel)
+app.controller('NavCtrl', function ($scope, $window, $location, CallModel)
 {
 	/**
 	 * Changes login boolean depending whether logged in or not.

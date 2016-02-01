@@ -3,16 +3,18 @@
  *
  * @controller LeagueEditCtrl
  */
-app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, CallModel)
+app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routeParams, CallModel)
 {
 	/**
 	 * The text that goes in the edit page.
 	 *
-	 * @val $scope.editOrCreate
+	 * @var $scope.editOrCreate
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Edit';
+	$scope.yourId = $window.sessionStorage.yourId;
 
+	console.log($scope.yourId);
 
 	/**
 	 * Method that redirects to home page and prints error message.
@@ -89,6 +91,9 @@ app.controller('LeagueEditCtrl', function ($scope, $location, $routeParams, Call
 		{
 			success: function (response) {
 				getLeague();
+			},
+			fail: function (response) {
+				alert(response.error_msg);
 			}
 		});
 	};

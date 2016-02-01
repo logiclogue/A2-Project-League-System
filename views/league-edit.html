@@ -22,7 +22,7 @@
 		<ul class="list-side">
 			<li ng-repeat="n in data.league_managers">
 				<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
-				<a class="u-pull-right" href ng-click="eventRemoveManager(n.id)">Remove</a>
+				<a class="u-pull-right" href ng-click="eventRemoveManager(n.id)" ng-show="n.user_id === yourId">Remove</a>
 			</li>
 		</ul>
 

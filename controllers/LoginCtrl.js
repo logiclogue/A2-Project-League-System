@@ -4,7 +4,7 @@
  *
  * @controller LoginCtrl
  */
-app.controller('LoginCtrl', function ($scope, $http, $location, CallModel)
+app.controller('LoginCtrl', function ($scope, $window, $http, $location, CallModel)
 {
 	$scope.response = {
 		success: true
@@ -19,17 +19,29 @@ app.controller('LoginCtrl', function ($scope, $http, $location, CallModel)
 	 function () {});
 
 
+	 function getUserData() {
+	 	CallModel.fetch('Status', {},
+	 	{
+	 		success: function (response) {
+	 			$window.sessionStorage.yourId = response.user.id;
+	 		}
+	 	});
+	 }
+
+
 	/**
 	 * Method that logs the user in.
 	 *
-	 * @method btnLoginClick
+	 * @method eventLogin
 	 */
-	$scope.btnLoginClick = function () {
+	$scope.eventLogin = function () {
 		CallModel.fetch('Login', {
 			email: $scope.inputEmailLogin,
 			password: $scope.inputPasswordLogin
 		}, {
 			success: function (response) {
+				getUserData();
+
 				$location.path('/');
 			},
 			fail: function (response) {
@@ -41,9 +53,9 @@ app.controller('LoginCtrl', function ($scope, $http, $location, CallModel)
 	/**
 	 * Method that registers the user.
 	 *
-	 * @method btnRegisterClick
+	 * @method eventRegister
 	 */
-	$scope.btnRegisterClick = function () {
+	$scope.eventRegister = function () {
 		CallModel.fetch('Register', {
 			first_name: $scope.inputFirstName,
 			last_name: $scope.inputLastName,
