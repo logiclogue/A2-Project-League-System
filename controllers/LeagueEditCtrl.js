@@ -12,9 +12,14 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Edit';
+	/**
+	 * Id of the user.
+	 * Used to prevent the user from removing themselves as a league manager.
+	 *
+	 * @var $scope.yourId
+	 * @type Integer
+	 */
 	$scope.yourId = $window.sessionStorage.yourId;
-
-	console.log($scope.yourId);
 
 	/**
 	 * Method that redirects to home page and prints error message.
