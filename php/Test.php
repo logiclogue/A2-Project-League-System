@@ -6,6 +6,7 @@ require_once(dirname(__DIR__) . '/models/Status.php');
 require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UserUpdate.php');
 require_once(dirname(__DIR__) . '/models/UserGet.php');
+require_once(dirname(__DIR__) . '/models/UserSearch.php');
 require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
 require_once(dirname(__DIR__) . '/models/TournamentUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentUserUpdate.php');
@@ -45,6 +46,7 @@ class Test
 		$ResultEnter = new ResultEnter();
 		$ResultGet = new ResultGet();
 		$UserGet = new UserGet();
+		$UserSearch = new UserSearch();
 		$Logout = new Logout();
 		
 
@@ -172,6 +174,16 @@ class Test
 		echo 'Get result: ';
 		self::echo_n($ResultGet->call(array(
 			'tournament_id' => 1
+		)));
+
+		echo 'Get user: ';
+		self::echo_n($UserGet->call(array(
+			'id' => 1
+		)));
+
+		echo 'Search for user: ';
+		self::echo_n($UserSearch->call(array(
+			'name' => 'a'
 		)));
 	}
 }

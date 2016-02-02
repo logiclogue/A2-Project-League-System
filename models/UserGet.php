@@ -37,7 +37,8 @@ class UserGet extends Model
 	private $query = <<<SQL
 		SELECT first_name, last_name, id
 		FROM users
-		WHERE id = :id
+		WHERE
+		id = :id
 SQL;
 
 	/**
