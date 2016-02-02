@@ -1,10 +1,14 @@
+<!-- View for @directive cpResult -->
 <div>
+	<!-- Repeats for every result -->
 	<div class="result" ng-repeat="n in results">
+		<!-- Displays date and league -->
 		<div class="head">
 			<span ng-bind="n.date"></span>
 			<a class="u-pull-right" href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a><br>
 		</div>
 
+		<!-- Displays player names and score -->
 		<div class="body">
 			<a href="#/profile/{{ n.player1_id }}" ng-bind="n.player1_name"></a>
 			<span class="score" ng-class="n.winOrLoss" ng-bind="n.score1 + '-' + n.score2"></span>

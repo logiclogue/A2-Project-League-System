@@ -42,6 +42,7 @@
 	<script src="app/config.js"></script>
 	<script src="services/CallModel.js"></script>
 	<script src="directives/cpResult.js"></script>
+	<script src="directives/cpUserSearch.js"></script>
 	<script src="controllers/LoginCtrl.js"></script>
 	<script src="controllers/ProfileCtrl.js"></script>
 	<script src="controllers/NavCtrl.js"></script>
