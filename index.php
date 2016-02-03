@@ -38,13 +38,18 @@
 	<script src="lib/angular.min.js"></script>
 	<script src="lib/angular-route.min.js"></script>
 
+
 	<script src="app/app.js"></script>
 	<script src="app/config.js"></script>
+
 	<script src="services/CallModel.js"></script>
+
 	<script src="directives/cpResult.js"></script>
 	<script src="directives/cpUserSearch.js"></script>
+
 	<script src="controllers/LoginCtrl.js"></script>
 	<script src="controllers/ProfileCtrl.js"></script>
+	<script src="controllers/UserSearchCtrl.js"></script>
 	<script src="controllers/NavCtrl.js"></script>
 	<script src="controllers/HomeCtrl.js"></script>
 	<script src="controllers/LeagueCtrl.js"></script>

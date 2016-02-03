@@ -11,6 +11,10 @@ app.config(['$routeProvider', function ($routeProvider)
 		templateUrl: 'views/home.html',
 		controller: 'HomeCtrl'
 	})
+	.when('/user', {
+		templateUrl: 'views/user-search-page.html',
+		controller: 'UserSearchCtrl'
+	})
 	.when('/profile', {
 		templateUrl: 'views/profile.html',
 		controller: 'ProfileCtrl'
