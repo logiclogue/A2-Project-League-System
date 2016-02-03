@@ -38,25 +38,21 @@ app.directive('cpUserSearch', function (CallModel)
 	 */
 	function main() {
 		$scope.eventInputChange = getUsers;
-
-		$scope.$watch('inputName', function (inputName) {
-			console.log(inputName);
-		});
 	}
 
 
 	return {
 		templateUrl: 'views/user-search.html',
-		scope: {},
+		scope: {
+			eventClickName: '=',
+			isReady: '=',
+			theName: '@'
+		},
 		link: function (scope, element, attrs) {
 			$scope = scope;
 
-			console.log(attrs);
-
 			// When loaded call @method main.
-			var waiting = scope.$watch('isReady', function (success) {
-				console.log(scope.theName);
-
+			var waiting = $scope.$watch('isReady', function (success) {
 				if (success === true) {
 					waiting();
 					main();

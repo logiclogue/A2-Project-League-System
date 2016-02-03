@@ -123,6 +123,19 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 		});
 	};
 
+	$scope.eventAddSpecificPlayer = function (userId) {
+		CallModel.fetch('TournamentPlayerAdd', {
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.eventCancelAdding();
+				getLeague();
+			}
+		});
+	}
+
 	$scope.eventAddManager = function () {
 		$scope.addingManager = true;
 		$scope.addingPlayer = false;
