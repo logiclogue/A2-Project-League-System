@@ -17,24 +17,44 @@
 
 	<div class="box-container side five columns">
 		<!-- Display all league managers -->
-		<h2>Managers<a class="u-pull-right">Add</a></h2>
+		<div ng-hide="addingManager">
+			<h2>Managers<a class="u-pull-right" href ng-click="eventAddManager()">Add</a></h2>
 
-		<ul class="list-side">
-			<li ng-repeat="n in data.league_managers">
-				<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
-				<a class="u-pull-right" href ng-click="eventRemoveManager(n.id)" ng-hide="n.id === yourId">Remove</a>
-			</li>
-		</ul>
+			<ul class="list-side">
+				<li ng-repeat="n in data.league_managers">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+					<a class="u-pull-right" href ng-click="eventRemoveManager(n.id)" ng-hide="n.id === yourId">Remove</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Appears when adding a manager -->
+		<div ng-show="addingManager">
+			<h2>Add Manager<a class="u-pull-right" href ng-click="eventCancelAdding()">Cancel</a></h2>
+
+			<!-- @directive cpUserSearch -->
+			<div cp-user-search is-ready="true" the-name="playerSearch"></div>
+		</div>
 
 		<!-- Display all players -->
-		<h2>Players<a class="u-pull-right">Add</a></h2>
+		<div ng-hide="addingPlayer">
+			<h2>Players<a class="u-pull-right" href ng-click="eventAddPlayer()">Add</a></h2>
 
-		<ul class="list-side">
-			<li ng-repeat="n in data.players">
-				<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
-				<a class="u-pull-right" href ng-click="eventRemovePlayer(n.id)">Remove</a>
-			</li>
-		</ul>
+			<ul class="list-side">
+				<li ng-repeat="n in data.players">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+					<a class="u-pull-right" href ng-click="eventRemovePlayer(n.id)">Remove</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Appears when adding a player -->
+		<div ng-show="addingPlayer">
+			<h2>Add Player<a class="u-pull-right" href ng-click="eventCancelAdding()">Cancel</a></h2>
+
+			<!-- @directive cpUserSearch -->
+			<div cp-user-search is-ready="false" the-name="playerSearch"></div>
+		</div>
 	</div>
 
 </div>

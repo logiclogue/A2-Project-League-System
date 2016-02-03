@@ -20,6 +20,8 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * @type Integer
 	 */
 	$scope.yourId = $window.sessionStorage.yourId;
+	$scope.addingManager = false;
+	$scope.addingPlayer = false;
 
 	/**
 	 * Method that redirects to home page and prints error message.
@@ -119,6 +121,21 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 				getLeague();
 			}
 		});
+	};
+
+	$scope.eventAddManager = function () {
+		$scope.addingManager = true;
+		$scope.addingPlayer = false;
+	};
+
+	$scope.eventAddPlayer = function () {
+		$scope.addingManager = false;
+		$scope.addingPlayer = true;
+	};
+
+	$scope.eventCancelAdding = function () {
+		$scope.addingManager = false;
+		$scope.addingPlayer = false;
 	};
 
 

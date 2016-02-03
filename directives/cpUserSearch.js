@@ -34,24 +34,29 @@ app.directive('cpUserSearch', function (CallModel)
 	 * Method that binds @var $scope.eventInputChange to @method getUsers.
 	 * Also binds other events.
 	 *
-	 * @method mainssss
+	 * @method main
 	 */
 	function main() {
 		$scope.eventInputChange = getUsers;
+
+		$scope.$watch('inputName', function (inputName) {
+			console.log(inputName);
+		});
 	}
 
 
 	return {
 		templateUrl: 'views/user-search.html',
-		scope: {
-			isReady: '=',
-			eventClickName: '='
-		},
-		link: function (scope) {
+		scope: {},
+		link: function (scope, element, attrs) {
 			$scope = scope;
+
+			console.log(attrs);
 
 			// When loaded call @method main.
 			var waiting = scope.$watch('isReady', function (success) {
+				console.log(scope.theName);
+
 				if (success === true) {
 					waiting();
 					main();

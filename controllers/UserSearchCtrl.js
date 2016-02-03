@@ -9,10 +9,10 @@ app.controller('UserSearchCtrl', function ($scope, $location)
 	 * Method that is called when a user is clicked.
 	 * Clicked from @directive cpUserSearch.
 	 *
-	 * @method $scope.goToUserPage
+	 * @method $scope.eventClickUser
 	 * @param userId
 	 */
-	$scope.goToUserPage = function (userId) {
+	$scope.eventClickUser = function (userId) {
 		$location.path('/profile/' + userId);
 	}
 });
