@@ -32,6 +32,7 @@ app.directive('cpUserSearch', function (CallModel)
 
 	/**
 	 * Method that binds @var $scope.eventInputChange to @method getUsers.
+	 * Also binds other events.
 	 *
 	 * @method mainssss
 	 */
@@ -43,7 +44,8 @@ app.directive('cpUserSearch', function (CallModel)
 	return {
 		templateUrl: 'views/user-search.html',
 		scope: {
-			isReady: '='
+			isReady: '=',
+			eventClickName: '='
 		},
 		link: function (scope) {
 			$scope = scope;
