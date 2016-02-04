@@ -20,7 +20,19 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * @type Integer
 	 */
 	$scope.yourId = $window.sessionStorage.yourId;
+	/**
+	 * Variable that is used to tell the view whether the adding manager dialog is open.
+	 *
+	 * @var $scope.addingManager
+	 * @type Boolean
+	 */
 	$scope.addingManager = false;
+	/**
+	 * Variable that is used to tell the view whether the adding player dialog is open.
+	 *
+	 * @var $scope.addingPlayer
+	 * @type Boolean
+	 */
 	$scope.addingPlayer = false;
 
 	/**
@@ -123,6 +135,12 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 		});
 	};
 
+	/**
+	 * Function that is called by @directive cpUserSearch when adding a player.
+	 *
+	 * @method $scope.eventAddSpecificPlayer
+	 * @param userId {Integer} Id of the player to add.
+	 */
 	$scope.eventAddSpecificPlayer = function (userId) {
 		CallModel.fetch('TournamentPlayerAdd', {
 			user_id: userId,
@@ -132,20 +150,60 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 			success: function (response) {
 				$scope.eventCancelAdding();
 				getLeague();
+			},
+			fail: function () {
+				alert("User already a player");
 			}
 		});
+	};
+
+	/**
+	 * Function that is called by @directive cpUserSearch when adding a league manager.
+	 *
+	 * @method $scope.eventAddSpecificManager
+	 * @param userId {Integer} Id of the player to add.
+	 */
+	$scope.eventAddSpecificManager = function (userId) {
+		CallModel.fetch('TournamentManagerAdd', {
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.eventCancelAdding();
+				getLeague();
+			},
+			fail: function () {
+				alert("User already a league manager");
+			}
+		})
 	}
 
+	/**
+	 * Function that opens adding league manager dialog but closes others.
+	 *
+	 * @method $scope.eventAddManager
+	 */
 	$scope.eventAddManager = function () {
 		$scope.addingManager = true;
 		$scope.addingPlayer = false;
 	};
 
+	/**
+	 * Function that opens adding player dialog but closes others.
+	 *
+	 * @method $scope.eventAddPlayer
+	 */
 	$scope.eventAddPlayer = function () {
 		$scope.addingManager = false;
 		$scope.addingPlayer = true;
 	};
 
+	/**
+	 * Function that closes all adding user dialogs.
+	 *
+	 * @method $scope.eventCancelAdding
+	 */
 	$scope.eventCancelAdding = function () {
 		$scope.addingManager = false;
 		$scope.addingPlayer = false;
