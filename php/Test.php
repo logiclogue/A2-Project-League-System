@@ -16,6 +16,7 @@ require_once(dirname(__DIR__) . '/models/TournamentPlayerAdd.php');
 require_once(dirname(__DIR__) . '/models/TournamentPlayerRemove.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerAdd.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerRemove.php');
+require_once(dirname(__DIR__) . '/models/TournamentSearch.php');
 require_once(dirname(__DIR__) . '/models/ResultEnter.php');
 require_once(dirname(__DIR__) . '/models/ResultGet.php');
 
@@ -43,6 +44,7 @@ class Test
 		$TournamentPlayerRemove = new TournamentPlayerRemove();
 		$TournamentManagerAdd = new TournamentManagerAdd();
 		$TournamentManagerRemove = new TournamentManagerRemove();
+		$TournamentSearch = new TournamentSearch();
 		$ResultEnter = new ResultEnter();
 		$ResultGet = new ResultGet();
 		$UserGet = new UserGet();
@@ -183,6 +185,11 @@ class Test
 
 		echo 'Search for user: ';
 		self::echo_n($UserSearch->call(array(
+			'name' => 'a'
+		)));
+
+		echo 'Search for tournament: ';
+		self::echo_n($TournamentSearch->call(array(
 			'name' => 'a'
 		)));
 	}
