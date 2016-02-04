@@ -1,9 +1,9 @@
 /**
- * Directive used to search for a user.
+ * Directive used to search for a tournament.
  *
- * @directive cpUserSearch
+ * @directive cpLeagueSearch
  */
-app.directive('cpUserSearch', function (CallModel)
+app.directive('cpLeagueSearch', function (CallModel)
 {
 	return {
 		templateUrl: 'views/search.html',
@@ -11,20 +11,20 @@ app.directive('cpUserSearch', function (CallModel)
 			eventClickName: '=',
 			theName: '@'
 		},
-		link: function (scope, element, attrs) {
+		link: function (scope) {
 			/**
 			 * Method that is called when text in input field is changed.
-			 * Updates search for user when input is changed.
+			 * Updates search for tournament when input is changed.
 			 *
 			 * @method scope.eventInputChange
 			 */
 			scope.eventInputChange = function () {
-				CallModel.fetch('UserSearch', {
+				CallModel.fetch('TournamentSearch', {
 					name: scope.inputName
 				},
 				{
 					success: function (response) {
-						scope.results = response.users;
+						scope.results = response.tournaments;
 					}
 				});
 			};

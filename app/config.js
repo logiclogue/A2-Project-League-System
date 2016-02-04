@@ -1,9 +1,7 @@
-/**
- * Angular config.
- * Mainly used to configure the routes.
- *
- *
- */
+/****************************************
+ * Angular config.                      *
+ * Mainly used to configure the routes. *
+ ****************************************/
 app.config(['$routeProvider', function ($routeProvider)
 {
 	$routeProvider
@@ -24,8 +22,8 @@ app.config(['$routeProvider', function ($routeProvider)
 		controller: 'ProfileCtrl'
 	})
 	.when('/league', {
-		templateUrl: 'views/league.html',
-		controller: 'LeagueCtrl'
+		templateUrl: 'views/league-search-page.html',
+		controller: 'LeagueSearchCtrl'
 	})
 	.when('/league/create', {
 		templateUrl: 'views/league-edit.html',

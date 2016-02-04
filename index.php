@@ -46,6 +46,7 @@
 
 	<script src="directives/cpResult.js"></script>
 	<script src="directives/cpUserSearch.js"></script>
+	<script src="directives/cpLeagueSearch.js"></script>
 
 	<script src="controllers/LoginCtrl.js"></script>
 	<script src="controllers/ProfileCtrl.js"></script>
@@ -55,5 +56,6 @@
 	<script src="controllers/LeagueCtrl.js"></script>
 	<script src="controllers/LeagueEditCtrl.js"></script>
 	<script src="controllers/LeagueCreateCtrl.js"></script>
+	<script src="controllers/LeagueSearchCtrl.js"></script>
 </body>
 </html>
