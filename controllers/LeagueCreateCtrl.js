@@ -12,11 +12,14 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Create';
-
-
-	CallModel.redirectIfNotLoggedIn();
 	
 	
+	/**
+	 * Event that is called when 'Create' button is clicked.
+	 * Creating the league.
+	 *
+	 * @method $scope.eventUpdate
+	 */
 	$scope.eventUpdate = function () {
 		CallModel.fetch('TournamentCreate', {
 			name: $scope.name,
@@ -31,4 +34,9 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 			}
 		});
 	};
+
+
+	(function () {
+		CallModel.redirectIfNotLoggedIn();
+	}());
 });
