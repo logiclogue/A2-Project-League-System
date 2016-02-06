@@ -81,4 +81,6 @@ SQL;
 	}
 }
 
+$FixturesGet = new FixturesGet();
+
 ?>
