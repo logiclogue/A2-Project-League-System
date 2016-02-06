@@ -45,6 +45,7 @@
 	<script src="services/CallModel.js"></script>
 
 	<script src="directives/cpResult.js"></script>
+	<script src="directives/cpFixtures.js"></script>
 	<script src="directives/cpUserSearch.js"></script>
 	<script src="directives/cpLeagueSearch.js"></script>
 

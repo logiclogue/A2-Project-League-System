@@ -12,16 +12,16 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  * @extends Model
  */
 /**
- * @param user_id {Integer} Find all matches that a user still has to play.
+ * @param player_id {Integer} Find all matches that a user still has to play.
  * @param tournament_id {Integer} Find all matches that still need to be played in a tournament.
  *
- * @return player1_id {Integer} Id of player 1.
- * @return player2_id {Integer} Id of player 2.
- * @return player1_name {String} Full name of player 1.
- * @return player2_name {String} Full name of player 2.
- * @return tournament_id {Integer} Id of tournament that the match is in.
- * @return tournament_name {String} Name of tournament that the match is in.
- * @return 
+ * @return fixtures
+ *   @return [].player1_id {Integer} Id of player 1.
+ *   @return [].player2_id {Integer} Id of player 2.
+ *   @return [].player1_name {String} Full name of player 1.
+ *   @return [].player2_name {String} Full name of player 2.
+ *   @return [].tournament_id {Integer} Id of tournament that the match is in.
+ *   @return [].tournament_name {String} Name of tournament that the match is in.
  */
 class FixturesGet extends Model
 {
@@ -55,7 +55,7 @@ class FixturesGet extends Model
 		tu2.is_player = TRUE AND
 		u1.id <> u2.id AND
 		CASE WHEN :tournament_id IS NULL THEN TRUE ELSE tu.tournament_id = :tournament_id END AND
-		CASE WHEN :user_id IS NULL THEN u1.id > u2.id ELSE u1.id = :user_id END
+		CASE WHEN :player_id IS NULL THEN u1.id > u2.id ELSE u1.id = :player_id END
 SQL;
 
 
@@ -68,7 +68,7 @@ SQL;
 	protected function main() {
 		$stmt = Database::$conn->prepare($this->query);
 
-		$stmt->bindParam(':user_id', $this->data['user_id']);
+		$stmt->bindParam(':player_id', $this->data['player_id']);
 		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
 
 		if ($stmt->execute()) {
