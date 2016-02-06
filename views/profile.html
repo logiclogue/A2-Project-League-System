@@ -20,6 +20,10 @@
 			<div cp-result player-one-id="data.id" is-ready="data.success"></div>
 		</div>
 
+		<!-- Fixutres = subpage -->
+		<div ng-show="isSubPage('fixtures')">
+			<div cp-fixtures player-id="data.id" is-ready="data.success"></div>
+		</div>
 
 		<!-- Progress = subpage -->
 		<img ng-show="isSubPage('progress')" width="u-full-width" height="500">

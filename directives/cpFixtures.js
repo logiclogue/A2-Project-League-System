@@ -13,6 +13,11 @@ app.directive('cpFixtures', function (CallModel)
 	var self;
 
 
+	/**
+	 * Method that gets data about fixtures from @class FixturesGet.
+	 *
+	 * @method getFixtures
+	 */
 	function getFixtures() {
 		CallModel.fetch('FixturesGet', {
 			player_id: self.playerId,
@@ -20,9 +25,9 @@ app.directive('cpFixtures', function (CallModel)
 		},
 		{
 			success: function (response) {
-				console.log(response);
+				self.fixtures = response.fixtures;
 			}
-		})
+		});
 	}
 
 
