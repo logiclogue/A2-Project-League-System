@@ -6,20 +6,30 @@ require_once(dirname(__DIR__) . '/php/Database.php');
 
 /**
  * Model that returns fixture list for a tournament or user.
+ * Lists all matches that are still to be played.
  *
  * @class FixturesGet
  * @extends Model
  */
 /**
+ * @param user_id {Integer} Find all matches that a user still has to play.
+ * @param tournament_id {Integer} Find all matches that still need to be played in a tournament.
  *
- *
+ * @return player1_id {Integer} Id of player 1.
+ * @return player2_id {Integer} Id of player 2.
+ * @return player1_name {String} Full name of player 1.
+ * @return player2_name {String} Full name of player 2.
+ * @return tournament_id {Integer} Id of tournament that the match is in.
+ * @return tournament_name {String} Name of tournament that the match is in.
+ * @return 
  */
 class FixturesGet extends Model
 {
 	/**
+	 * SQL query string that fetches the matches to be played.
 	 *
-	 *
-	 *
+	 * @property query
+	 * @private
 	 */
 	private $query = <<<SQL
 		SELECT
@@ -27,8 +37,8 @@ class FixturesGet extends Model
 		u2.id player2_id,
 		CONCAT(u1.first_name, ' ', u1.last_name) player1_name,
 		CONCAT(u2.first_name, ' ', u2.last_name) player2_name,
-		tu.tournament_id t_id_1,
-		tu2.tournament_id t_id_2
+		tu.tournament_id tournament_id,
+		t.name tournament_name
 		FROM users u1
 
 		INNER JOIN users u2
@@ -36,6 +46,8 @@ class FixturesGet extends Model
 		ON tu.user_id = u1.id
 		INNER JOIN tournament_user_maps tu2
 		ON tu2.user_id = u2.id
+		INNER JOIN tournaments t
+		ON tu.tournament_id = t.id
 
 		WHERE
 		tu.tournament_id = tu2.tournament_id AND
@@ -48,17 +60,23 @@ SQL;
 
 
 	/**
+	 * Main method that execute @property query and binds input data.
 	 *
-	 *
-	 *
+	 * @method main
+	 * @protected
 	 */
 	protected function main() {
 		$stmt = Database::$conn->prepare($this->query);
 
 		$stmt->bindParam(':user_id', $this->data['user_id']);
+		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
 
 		if ($stmt->execute()) {
-			
+			$this->return_data['fixtures'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = "Failed to execute query";
 		}
 	}
 }
