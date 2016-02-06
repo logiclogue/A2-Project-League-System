@@ -42,7 +42,7 @@ class FixturesGet extends Model
 		tu.is_player = TRUE AND
 		tu2.is_player = TRUE AND
 		u1.id <> u2.id AND
-		CASE WHEN :tournament_id IS NULL THEN TRUE ELSE tu.tournament_id = :tournament_id END
+		CASE WHEN :tournament_id IS NULL THEN TRUE ELSE tu.tournament_id = :tournament_id END AND
 		CASE WHEN :user_id IS NULL THEN u1.id > u2.id ELSE u1.id = :user_id END
 SQL;
 
