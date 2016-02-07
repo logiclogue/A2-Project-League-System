@@ -5,13 +5,6 @@
  */
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
-	/* 
-	 * Checks to see if logged in.
-	 * If not, redirects to login page.
-	 */
-	CallModel.redirectIfNotLoggedIn();
-
-
 	/**
 	 * Method for getting league data from @class TournamentGet.
 	 *
@@ -33,6 +26,26 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 		});
 	}
 
+	/**
+	 * Method that redirects if not a subpage.
+	 *
+	 * @method checkSubPage
+	 */
+	function checkSubPage() {
+		switch ($routeParams.subPage) {
+			case 'fixtures':
+			case 'results':
+			case 'table':
+				break;
+			default:
+				$location.path('/league/' + $routeParams.leagueId);
+		}
+	}
 
-	getLeague();
+
+	(function () {
+		CallModel.redirectIfNotLoggedIn();
+		getLeague();
+		checkSubPage();
+	}());
 });
