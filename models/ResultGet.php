@@ -62,6 +62,10 @@ class ResultGet extends Model
 		ON ru2.user_id = u2.id
 		INNER JOIN tournaments t
 		ON r.tournament_id = t.id
+		INNER JOIN tournament_user_maps tu1
+		ON tu1.user_id = u1.id
+		INNER JOIN tournament_user_maps tu2
+		ON tu2.user_id = u2.id
 
 		WHERE
 		ru1.user_id <> ru2.user_id AND
@@ -70,7 +74,9 @@ class ResultGet extends Model
 		r.id = CASE WHEN :result_id IS NULL THEN r.id ELSE :result_id END AND
 		ru1.user_id = CASE WHEN :player1_id IS NULL THEN ru1.user_id ELSE :player1_id END AND
 		ru2.user_id = CASE WHEN :player2_id IS NULL THEN ru2.user_id ELSE :player2_id END AND
-		r.tournament_id = CASE WHEN :tournament_id IS NULL THEN r.tournament_id ELSE :tournament_id END
+		r.tournament_id = CASE WHEN :tournament_id IS NULL THEN r.tournament_id ELSE :tournament_id END AND
+		tu1.is_player = TRUE AND
+		tu2.is_player = TRUE
 SQL;
 
 
