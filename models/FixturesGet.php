@@ -49,16 +49,28 @@ class FixturesGet extends Model
 		INNER JOIN tournaments t
 		ON tu.tournament_id = t.id
 
-		WHERE
-		tu.tournament_id = tu2.tournament_id AND
+		WHERE tu.tournament_id = tu2.tournament_id AND
 		tu.is_player = TRUE AND
 		tu2.is_player = TRUE AND
 		u1.id <> u2.id AND
 		CASE WHEN :tournament_id IS NULL THEN TRUE ELSE tu.tournament_id = :tournament_id END AND
-		CASE WHEN :player_id IS NULL THEN u1.id > u2.id ELSE u1.id = :player_id END
+		CASE WHEN :player_id IS NULL THEN u1.id > u2.id ELSE u1.id = :player_id END AND
+		(
+			SELECT COUNT(*)
+			FROM result_user_maps ru1
+			INNER JOIN result_user_maps ru2
+			ON ru2.result_id = ru1.result_id
+			INNER JOIN results r
+			ON r.id = ru1.result_id
+			WHERE
+			ru1.user_id <> ru2.user_id AND
+			r.tournament_id = tu.tournament_id AND
+			ru1.user_id = u1.id AND
+			ru2.user_id = u2.id
+		) = 0
 SQL;
 
-
+	
 	/**
 	 * Main method that execute @property query and binds input data.
 	 *
