@@ -77,6 +77,8 @@ class ResultGet extends Model
 		r.tournament_id = CASE WHEN :tournament_id IS NULL THEN r.tournament_id ELSE :tournament_id END AND
 		tu1.is_player = TRUE AND
 		tu2.is_player = TRUE
+
+		ORDER BY r.date DESC
 SQL;
 
 
