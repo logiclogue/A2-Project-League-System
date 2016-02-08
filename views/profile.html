@@ -7,26 +7,26 @@
 
 		<!-- Mini navigation -->
 		<ul class="nav sub">
-			<li><a ng-click="btnChangeSubPage('results')" ng-class="subPageClass('results')">Results</a></li>
-			<li><a ng-click="btnChangeSubPage('fixtures')" ng-class="subPageClass('fixtures')">Fixtures</a></li>
-			<li><a ng-click="btnChangeSubPage('progress')" ng-class="subPageClass('progress')">Progress</a></li>
+			<li><a href ng-click="subPage = 'results'" ng-class="{active: subPage === 'results'}">Results</a></li>
+			<li><a href ng-click="subPage = 'fixtures'" ng-class="{active: subPage === 'fixtures'}">Fixtures</a></li>
+			<li><a href ng-click="subPage = 'progress'" ng-class="{active: subPage === 'progress'}">Progress</a></li>
 		</ul>
 
 
 		<!-- Sub pages -->
 
 		<!-- Results = subpage -->
-		<div ng-show="isSubPage('results')">
+		<div ng-show="subPage === 'results'">
 			<div cp-result player-one-id="data.id" is-ready="data.success"></div>
 		</div>
 
 		<!-- Fixutres = subpage -->
-		<div ng-show="isSubPage('fixtures')">
+		<div ng-show="subPage === 'fixtures'">
 			<div cp-fixtures player-id="data.id" is-ready="data.success"></div>
 		</div>
 
 		<!-- Progress = subpage -->
-		<img ng-show="isSubPage('progress')" width="u-full-width" height="500">
+		<img ng-show="subPage === 'progress'" width="u-full-width" height="500">
 	</div>
 
 	<!-- Side bar -->

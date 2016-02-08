@@ -8,17 +8,11 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	/**
 	 * Variable for storing the name of the current subpage.
 	 *
-	 * @var currentSubPage
+	 * @var $scope.currentSubPage
 	 * @type {String}
 	 */
-	var currentSubPage = 'results';
+	$scope.subPage = 'results';
 
-
-	/*
-	 * Checks to see if logged in.
-	 * If not, redirects to login page.
-	 */
-	CallModel.redirectIfNotLoggedIn();
 
 	/**
 	 * Method that gets user data from UserGet model.
@@ -57,51 +51,20 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	}
 
 
-	/**
-	 * Method for view checking whether it can show a particular subpage.
-	 *
-	 * @method $scope.isSubPage
-	 * @param pageName {String} Name of the page to query.
-	 * @return {Boolean} Whether that page is visible.
-	 */
-	$scope.isSubPage = function (pageName) {
-		return currentSubPage === pageName;
-	};
-
-	/**
-	 * Method for returning the class for an active subpage button.
-	 *
-	 * @method subPageClass
-	 */
-	$scope.subPageClass = function (pageName) {
-		if (currentSubPage === pageName) {
-			return 'active';
-		}
-		else {
-			return '';
-		}
-	}
-
-	/**
- 	 * Method for changing the current subs page.
- 	 *
- 	 * @method btnChangeSubPage
- 	 * @param pageName {String} Name of page to switch to.
- 	 */
-	$scope.btnChangeSubPage = function (pageName) {
-		currentSubPage = pageName;
-	};
-
-
 	/*
+	 * Redirects if not logged in.
 	 * Checks whether url user id is set.
 	 * If not, calls @method getStatus.
 	 * Else, calls @method getUser with id of user.
 	 */
-	if ($routeParams.userId === undefined) {
-		getStatus();
-	}
-	else {
-		getUser($routeParams.userId);
-	}
+	(function () {
+		CallModel.redirectIfNotLoggedIn();
+		
+		if ($routeParams.userId === undefined) {
+			getStatus();
+		}
+		else {
+			getUser($routeParams.userId);
+		}
+	}());
 });

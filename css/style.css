@@ -43,6 +43,10 @@ button:hover {
 	color: #FFF;
 }
 
+a:link {
+	text-decoration: none;
+}
+
 
 hr {
 	margin: 2rem 0 2rem;

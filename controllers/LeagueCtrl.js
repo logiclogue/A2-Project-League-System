@@ -5,6 +5,9 @@
  */
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
+	$scope.subPage = 'table';
+
+
 	/**
 	 * Method for getting league data from @class TournamentGet.
 	 *
@@ -26,26 +29,9 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 		});
 	}
 
-	/**
-	 * Method that redirects if not a subpage.
-	 *
-	 * @method checkSubPage
-	 */
-	function checkSubPage() {
-		switch ($routeParams.subPage) {
-			case 'fixtures':
-			case 'results':
-			case 'table':
-				break;
-			default:
-				$location.path('/league/' + $routeParams.leagueId);
-		}
-	}
-
 
 	(function () {
 		CallModel.redirectIfNotLoggedIn();
 		getLeague();
-		checkSubPage();
 	}());
 });

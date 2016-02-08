@@ -13,87 +13,89 @@
 
 		<!-- Mini navigation -->
 		<ul class="nav sub">
-			<li><a class="active">Table</a></li>
-			<li><a>Results</a></li>
-			<li><a>Fixtures</a></li>
+			<li><a href ng-click="subPage = 'table'" ng-class="{ active: subPage === 'table' }">Table</a></li>
+			<li><a href ng-click="subPage = 'results'" ng-class="{ active: subPage === 'results' }">Results</a></li>
+			<li><a href ng-click="subPage = 'fixtures'" ng-class="{ active: subPage === 'fixtures' }">Fixtures</a></li>
 		</ul>
 
 
 		<!-- Sub pages -->
 
 		<!-- League table = subpage -->
-		<table class="u-full-width">
-			<thead>
-				<tr>
-					<th>Pos</th>
-					<th>Name</th>
-					<th>Played</th>
-					<th>Wins</th>
-					<th>Losses</th>
-					<th>Rating</th>
-					<th>Pts</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>Jordan Lord</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1342</td>
-					<td>8</td>
-				</tr>
+		<div ng-show="subPage === 'table'">
+			<table class="u-full-width">
+				<thead>
+					<tr>
+						<th>Pos</th>
+						<th>Name</th>
+						<th>Played</th>
+						<th>Wins</th>
+						<th>Losses</th>
+						<th>Rating</th>
+						<th>Pts</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1</td>
+						<td>Jordan Lord</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1342</td>
+						<td>8</td>
+					</tr>
 
-				<tr>
-					<td>2</td>
-					<td>John Doe</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1312</td>
-					<td>6</td>
-				</tr>
+					<tr>
+						<td>2</td>
+						<td>John Doe</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1</td>
+						<td>1312</td>
+						<td>6</td>
+					</tr>
 
-				<tr>
-					<td>3</td>
-					<td>Wilfred Morales</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>1300</td>
-					<td>0</td>
-				</tr>
+					<tr>
+						<td>3</td>
+						<td>Wilfred Morales</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>1300</td>
+						<td>0</td>
+					</tr>
 
-				<tr>
-					<td>3</td>
-					<td>Shane Washington</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>1300</td>
-					<td>0</td>
-				</tr>
+					<tr>
+						<td>3</td>
+						<td>Shane Washington</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>1300</td>
+						<td>0</td>
+					</tr>
 
-				<tr>
-					<td>3</td>
-					<td>Sylvester Briggs</td>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-					<td>1300</td>
-					<td>0</td>
-				</tr>
-			</tbody>
-		</table>
+					<tr>
+						<td>3</td>
+						<td>Sylvester Briggs</td>
+						<td>0</td>
+						<td>0</td>
+						<td>0</td>
+						<td>1300</td>
+						<td>0</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 
 		<!-- Results = subpage -->
-		<div cp-result tournament-id="data.tournament.id" is-ready="data.success"></div>
+		<div cp-result tournament-id="data.tournament.id" is-ready="data.success" ng-show="subPage === 'results'"></div>
 
 		
 		<!-- Fixutes = subpage -->
-		<div cp-fixtures tournament-id="data.tournament_id" is-ready="data.success"></div>
+		<div cp-fixtures tournament-id="data.tournament_id" is-ready="data.success" ng-show="subPage === 'fixtures'"></div>
 	</div>
 
 
