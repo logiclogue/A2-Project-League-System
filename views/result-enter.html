@@ -5,21 +5,21 @@
 
 		<table>
 			<tr>
-				<td><h2>Jordan Lord</h2></td>
-				<td><input type="number" min="0" max="3"></td>
+				<td><h2 ng-bind="player1.fullName"></h2></td>
+				<td><input type="number" min="0" max="3" ng-model="player1.score"></td>
 			</tr>
 			<tr>
-				<td><h2>John Doe</h2></td>
-				<td><input type="number" min="0" max="3"></td>
+				<td><h2 ng-bind="player2.fullName"></h2></td>
+				<td><input type="number" min="0" max="3" ng-model="player2.score"></td>
 			</tr>
 		</table>
 
-		<button class="u-full-width">Submit</button>
+		<button class="u-full-width" ng-click="eventSubmitResult()">Submit</button>
 	</div>
 
 	<div class="box-container side five columns">
-		<h2>Tournament</h2>
-		<a>Premier League</a>
+		<h2>League</h2>
+		<a ng-href="#/league/{{ tournamentId }}" ng-bind="tournamentName"></a>
 		<h2>Date</h2>
 		<span>13/12/2015</span>
 	</div>

@@ -58,5 +58,6 @@
 	<script src="controllers/LeagueEditCtrl.js"></script>
 	<script src="controllers/LeagueCreateCtrl.js"></script>
 	<script src="controllers/LeagueSearchCtrl.js"></script>
+	<script src="controllers/ResultEnterCtrl.js"></script>
 </body>
 </html>

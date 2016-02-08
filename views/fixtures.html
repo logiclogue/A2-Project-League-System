@@ -3,7 +3,7 @@
 	<!-- Repeats for every fixture -->
 	<div class="result" ng-repeat="n in fixtures">
 		<div class="head">
-			<a>ENTER RESULT</a>
+			<a ng-href="#/result/enter/{{ n.tournament_id }}/{{ n.player1_id }}/{{ n.player2_id }}">ENTER RESULT</a>
 			<a class="u-pull-right" href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a><br>
 		</div>
 

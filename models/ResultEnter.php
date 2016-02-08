@@ -163,4 +163,6 @@ SQL;
 	}
 }
 
+$ResultEnter = new ResultEnter();
+
 ?>

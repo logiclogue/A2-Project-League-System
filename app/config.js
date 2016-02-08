@@ -37,7 +37,7 @@ app.config(['$routeProvider', function ($routeProvider)
 		templateUrl: 'views/league.html',
 		controller: 'LeagueCtrl'
 	})
-	.when('/result/enter', {
+	.when('/result/enter/:tournamentId/:player1Id/:player2Id', {
 		templateUrl: 'views/result-enter.html',
 		controller: 'ResultEnterCtrl'
 	})
