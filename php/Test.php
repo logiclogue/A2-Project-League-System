@@ -17,6 +17,7 @@ require_once(dirname(__DIR__) . '/models/TournamentPlayerRemove.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerAdd.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerRemove.php');
 require_once(dirname(__DIR__) . '/models/TournamentSearch.php');
+require_once(dirname(__DIR__) . '/models/TournamentLeagueTable.php');
 require_once(dirname(__DIR__) . '/models/ResultEnter.php');
 require_once(dirname(__DIR__) . '/models/ResultGet.php');
 require_once(dirname(__DIR__) . '/models/FixturesGet.php');
@@ -46,6 +47,7 @@ class Test
 		$TournamentManagerAdd = new TournamentManagerAdd();
 		$TournamentManagerRemove = new TournamentManagerRemove();
 		$TournamentSearch = new TournamentSearch();
+		$TournamentLeagueTable = new TournamentLeagueTable();
 		$ResultEnter = new ResultEnter();
 		$ResultGet = new ResultGet();
 		$FixturesGet = new FixturesGet();
@@ -198,6 +200,11 @@ class Test
 		echo 'Get fixtures: ';
 		self::echo_n($FixturesGet->call(array(
 			'user_id' => 1
+		)));
+
+		echo 'League table: ';
+		self::echo_n($TournamentLeagueTable->call(array(
+			'id' => 1
 		)));
 	}
 }
