@@ -6,6 +6,7 @@
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
 	$scope.subPage = 'table';
+	$scope.table;
 
 
 	/**
@@ -27,6 +28,15 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 				$location.path('/');
 			}
 		});
+
+		CallModel.fetch('TournamentLeagueTable', {
+			id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.table = response.table;
+			}
+		})
 	}
 
 

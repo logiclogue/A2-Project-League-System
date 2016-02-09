@@ -36,54 +36,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>1</td>
-						<td>Jordan Lord</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1342</td>
-						<td>8</td>
-					</tr>
-
-					<tr>
-						<td>2</td>
-						<td>John Doe</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1</td>
-						<td>1312</td>
-						<td>6</td>
-					</tr>
-
-					<tr>
-						<td>3</td>
-						<td>Wilfred Morales</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
+					<tr ng-repeat="n in table track by $index">
+						<td ng-bind="$index + 1">1</td>
+						<td ng-bind="n.name"></td>
+						<td ng-bind="n.played"></td>
+						<td ng-bind="n.wins"></td>
+						<td ng-bind="n.loses"></td>
 						<td>1300</td>
-						<td>0</td>
-					</tr>
-
-					<tr>
-						<td>3</td>
-						<td>Shane Washington</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
-						<td>1300</td>
-						<td>0</td>
-					</tr>
-
-					<tr>
-						<td>3</td>
-						<td>Sylvester Briggs</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
-						<td>1300</td>
-						<td>0</td>
+						<td ng-bind="n.points"></td>
 					</tr>
 				</tbody>
 			</table>
