@@ -3,13 +3,13 @@
 	<!-- Repeats for every fixture -->
 	<div class="result" ng-repeat="n in fixtures">
 		<div class="head">
-			<a ng-href="#/result/enter/{{ n.tournament_id }}/{{ n.player1_id }}/{{ n.player2_id }}">ENTER RESULT</a>
-			<a class="u-pull-right" href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a><br>
+			<a ng-href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a>
+			<a class="u-pull-right" ng-href="#/result/enter/{{ n.tournament_id }}/{{ n.player1_id }}/{{ n.player2_id }}" ng-show="yourId == n.player1_id || yourId == n.player2_id">ENTER RESULT</a><br>
 		</div>
 
 		<div class="body">
-			<a ng-bind="n.player1_name" href="#/profile/{{ n.player1_id }}"></a><br>
-			<a ng-bind="n.player2_name" href="#/profile/{{ n.player2_id }}"></a>
+			<a ng-bind="n.player1_name" ng-href="#/profile/{{ n.player1_id }}"></a><br>
+			<a ng-bind="n.player2_name" ng-href="#/profile/{{ n.player2_id }}"></a>
 		</div>
 	</div>
 </div>

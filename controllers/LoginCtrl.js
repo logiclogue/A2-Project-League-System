@@ -19,6 +19,11 @@ app.controller('LoginCtrl', function ($scope, $window, $http, $location, CallMod
 	 function () {});
 
 
+	 /**
+	  * Method for getting user data and storing it in a session.
+	  *
+	  * @method getUserData
+	  */
 	 function getUserData() {
 	 	CallModel.fetch('Status', {},
 	 	{

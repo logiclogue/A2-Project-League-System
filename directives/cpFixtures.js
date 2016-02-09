@@ -3,7 +3,7 @@
  *
  * @directive cpFixtures
  */
-app.directive('cpFixtures', function (CallModel)
+app.directive('cpFixtures', function ($window, CallModel)
 {
 	/**
 	 * Varaibe for storing scope.
@@ -40,6 +40,8 @@ app.directive('cpFixtures', function (CallModel)
 		},
 		link: function ($scope) {
 			self = $scope;
+
+			$scope.yourId = $window.sessionStorage.yourId;
 
 			// When loaded call @method getFixtures
 			var waiting = $scope.$watch('isReady', function (success) {
