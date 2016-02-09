@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `tournament_user_maps` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL UNIQUE,
   `first_name` varchar(20) NOT NULL,
   `last_name` varchar(20) NOT NULL,
   `hash` varchar(60) NOT NULL,
