@@ -4,7 +4,7 @@
  *
  * @controller LoginCtrl
  */
-app.controller('LoginCtrl', function ($scope, $window, $http, $location, CallModel)
+app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route, CallModel)
 {
 	$scope.response = {
 		success: true
@@ -67,8 +67,15 @@ app.controller('LoginCtrl', function ($scope, $window, $http, $location, CallMod
 			email: $scope.inputEmailRegister,
 			password: $scope.inputPasswordRegister
 		},
-		function (response) {
-			console.log(response.data);
+		{
+			success: function (response) {
+				alert('You have successfully registered. You must now login.');
+				
+				$route.reload();
+			},
+			fail: function (response) {
+				alert(response.error_msg);
+			}
 		});
 	};
 });
