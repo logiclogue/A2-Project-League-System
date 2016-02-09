@@ -63,26 +63,31 @@ SQL;
 	 * @return {Boolean} Whether valid to enter result.
 	 */
 	private function validate() {
-		// Check if player is in league.
+		// Check if player 1 is in league.
 		if (!$this->isPlayer($this->data['player1_id'], $this->data['tournament_id'])) {
-			$this->error_msg = "User not in the league";
+			$this->error_msg = "Player 1 is not in the league";
 
 			return false;
-		}
-		// - If not, then check is league manager.
-		else if (!$this->isLeagueManager($this->data['player1_id'], $this->data['tournament_id'])) {
-			$this->error_msg = "You don't have permission to do that";
-		}
-		
-		// Check if opponent is in league.
+		}		
+		// Check if player 2 is in league.
 		if (!$this->isPlayer($this->data['player2_id'], $this->data['tournament_id'])) {
-			$this->error_msg = "Opponent not in the league";
+			$this->error_msg = "Player 2 is not in the league";
 
 			return false;
 		}
-		// Check if opponent is not self.
+
+		// Check if player 1 is not player 2.
 		if ($this->data['player1_id'] == $this->data['player2_id']) {
-			$this->error_msg = "You can't enter a result against yourself";
+			$this->error_msg = "You can't enter a result against the same player";
+
+			return false;
+		}
+
+		// Check if user is one of the players.
+		if ($_SESSION['user']['id'] != $this->data['player1_id'] &&
+			$_SESSION['user']['id'] != $this->data['player2_id'] &&
+			!$this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id'])) {
+			$this->error_msg = "You must be a player or league manager to enter this result";
 
 			return false;
 		}
