@@ -6,14 +6,14 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentPlayerAlter.php');
 /**
  * Model for adding a user as a player to a tournament.
  *
- * @class TournamentPlayerAdd
+ * @class TournamentPlayerAttach
  * @extends TournamentPlayerAlter
  */
 /**
  * @param user_id {Integer} Id of the user to be added to the tournament.
  * @param tournament_id {Integer} Id of the tournament.
  */
-class TournamentPlayerAdd extends TournamentPlayerAlter
+class TournamentPlayerAttach extends TournamentPlayerAlter
 {
 	/**
 	 * Player becomes true when adding a player.
@@ -35,6 +35,6 @@ class TournamentPlayerAdd extends TournamentPlayerAlter
 	}
 }
 
-$TournamentPlayerAdd = new TournamentPlayerAdd();
+$TournamentPlayerAttach = new TournamentPlayerAttach();
 
 ?>

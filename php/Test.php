@@ -10,9 +10,9 @@ require_once(dirname(__DIR__) . '/models/UserSearch.php');
 require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
 require_once(dirname(__DIR__) . '/models/TournamentUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentGet.php');
-require_once(dirname(__DIR__) . '/models/TournamentPlayerAdd.php');
+require_once(dirname(__DIR__) . '/models/TournamentPlayerAttach.php');
 require_once(dirname(__DIR__) . '/models/TournamentPlayerRemove.php');
-require_once(dirname(__DIR__) . '/models/TournamentManagerAdd.php');
+require_once(dirname(__DIR__) . '/models/TournamentManagerAttach.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerRemove.php');
 require_once(dirname(__DIR__) . '/models/TournamentSearch.php');
 require_once(dirname(__DIR__) . '/models/TournamentLeagueTable.php');
@@ -40,9 +40,9 @@ class Test
 		$TournamentGet = new TournamentGet();
 		$TournamentCreate = new TournamentCreate();
 		$TournamentUpdate = new TournamentUpdate();
-		$TournamentPlayerAdd = new TournamentPlayerAdd();
+		$TournamentPlayerAttach = new TournamentPlayerAttach();
 		$TournamentPlayerRemove = new TournamentPlayerRemove();
-		$TournamentManagerAdd = new TournamentManagerAdd();
+		$TournamentManagerAttach = new TournamentManagerAttach();
 		$TournamentManagerRemove = new TournamentManagerRemove();
 		$TournamentSearch = new TournamentSearch();
 		$TournamentLeagueTable = new TournamentLeagueTable();
@@ -106,7 +106,7 @@ class Test
 		)));
 
 		echo 'Add player in tournament: ';
-		self::echo_n($TournamentPlayerAdd->call(array(
+		self::echo_n($TournamentPlayerAttach->call(array(
 			'user_id' => 1,
 			'tournament_id' => 1
 		)));
@@ -124,7 +124,7 @@ class Test
 		)));
 
 		echo 'Add league manager: ';
-		self::echo_n($TournamentManagerAdd->call(array(
+		self::echo_n($TournamentManagerAttach->call(array(
 			'user_id' => 1,
 			'tournament_id' => 1
 		)));
@@ -140,19 +140,19 @@ class Test
 		)));*/
 
 		echo 'Add league_manager: ';
-		self::echo_n($TournamentManagerAdd->call(array(
+		self::echo_n($TournamentManagerAttach->call(array(
 			'user_id' => 2,
 			'tournament_id' => 1
 		)));
 
 		echo 'Add player in tournament: ';
-		self::echo_n($TournamentPlayerAdd->call(array(
+		self::echo_n($TournamentPlayerAttach->call(array(
 			'user_id' => 2,
 			'tournament_id' => 1
 		)));
 
 		echo 'Add player in tournament: ';
-		self::echo_n($TournamentPlayerAdd->call(array(
+		self::echo_n($TournamentPlayerAttach->call(array(
 			'user_id' => 3,
 			'tournament_id' => 1
 		)));

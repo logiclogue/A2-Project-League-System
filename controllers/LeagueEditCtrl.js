@@ -142,7 +142,7 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * @param userId {Integer} Id of the player to add.
 	 */
 	$scope.eventAddSpecificPlayer = function (userId) {
-		CallModel.fetch('TournamentPlayerAdd', {
+		CallModel.fetch('TournamentPlayerAttach', {
 			user_id: userId,
 			tournament_id: $routeParams.leagueId
 		},
@@ -164,7 +164,7 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * @param userId {Integer} Id of the player to add.
 	 */
 	$scope.eventAddSpecificManager = function (userId) {
-		CallModel.fetch('TournamentManagerAdd', {
+		CallModel.fetch('TournamentManagerAttach', {
 			user_id: userId,
 			tournament_id: $routeParams.leagueId
 		},

@@ -6,14 +6,14 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentManagerAlter.php');
 /**
  * Model for adding a user as a manager of a tournament.
  *
- * @class TournamentManagerAdd
+ * @class TournamentManagerAttach
  * @extends TournamentManagerAlter
  */
 /**
  * @param user_id {Integer} Id of the user to make a manager.
  * @param tournament_id {Integer} Id of the tournament.
  */
-class TournamentManagerAdd extends TournamentManagerAlter
+class TournamentManagerAttach extends TournamentManagerAlter
 {
 	/**
 	 * User becomes a league manager.
@@ -35,6 +35,6 @@ class TournamentManagerAdd extends TournamentManagerAlter
 	}
 }
 
-$TournamentManagerAdd = new TournamentManagerAdd();
+$TournamentManagerAttach = new TournamentManagerAttach();
 
 ?>
