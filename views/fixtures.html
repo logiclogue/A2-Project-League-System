@@ -4,7 +4,7 @@
 	<div class="result" ng-repeat="n in fixtures">
 		<div class="head">
 			<a ng-href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a>
-			<a class="u-pull-right" ng-href="#/result/enter/{{ n.tournament_id }}/{{ n.player1_id }}/{{ n.player2_id }}" ng-show="yourId == n.player1_id || yourId == n.player2_id">ENTER RESULT</a><br>
+			<a class="u-pull-right" ng-href="#/result/enter/{{ n.tournament_id }}/{{ n.player1_id }}/{{ n.player2_id }}" ng-show="yourId == n.player1_id || yourId == n.player2_id || n.is_league_manager == '1'">ENTER RESULT</a><br>
 		</div>
 
 		<div class="body">
