@@ -25,7 +25,6 @@ app.directive('cpFixtures', function ($window, CallModel)
 		},
 		{
 			success: function (response) {
-				console.log(response);
 				self.fixtures = response.fixtures;
 			}
 		});
