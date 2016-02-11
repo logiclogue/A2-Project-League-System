@@ -4,7 +4,6 @@
  * The Database class connects the the database when the file is included.
  *
  * @class Database
- * @static
  */
 class Database
 {
@@ -13,6 +12,7 @@ class Database
 	 *
 	 * @property conn
 	 * @type Object
+	 * @static
 	 */
 	public static $conn;
 	/**
@@ -21,6 +21,7 @@ class Database
 	 * @property query_delete
 	 * @type String
 	 * @private
+	 * @static
 	 */
 	private static $query_delete = <<<SQL
 		DROP TABLE `results`, `result_user_maps`, `tournaments`, `tournament_user_maps`, `users`
@@ -33,6 +34,7 @@ SQL;
 	 *
 	 * @method create
 	 * @public
+	 * @static
 	 * @return {Boolean} Whether success.
 	 */
 	public static function create() {
@@ -47,6 +49,7 @@ SQL;
 	 *
 	 * @method delete
 	 * @public
+	 * @static
 	 * @return {Boolean} Whether success.
 	 */
 	public static function delete() {
@@ -64,6 +67,7 @@ SQL;
 	 *
 	 * @method reset
 	 * @public
+	 * @static
 	 * @return {Boolean} Whether success.
 	 */
 	public static function reset() {
@@ -79,6 +83,8 @@ SQL;
 	 * Also to set @property conn to new PDO.
 	 *
 	 * @method init
+	 * @public
+	 * @static
 	 */
 	public static function init() {
 		$string = file_get_contents(dirname(__DIR__) . '/env.json');
