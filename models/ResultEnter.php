@@ -102,6 +102,8 @@ SQL;
 	 * Method for inserting the score of a player.
 	 *
 	 * @method insertScore
+	 * @param user_id {Integer} Id of the user whose score to input.
+	 * @param score {Integer} Score that the user achieved.
 	 * @private
 	 */
 	private function insertScore($user_id, $score) {
