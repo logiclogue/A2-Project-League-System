@@ -226,3 +226,8 @@ hr {
 .result .score.loss {
 	background-color: #D81D18;
 }
+
+
+.league-table {
+	table-layout: fixed;
+}
