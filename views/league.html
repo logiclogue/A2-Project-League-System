@@ -38,7 +38,7 @@
 				<tbody>
 					<tr ng-repeat="n in table track by $index">
 						<td ng-bind="$index + 1">1</td>
-						<td ng-bind="n.name"></td>
+						<td><a ng-href="#/profile/{{ n.user_id }}" ng-bind="n.name"></a></td>
 						<td ng-bind="n.played"></td>
 						<td ng-bind="n.wins"></td>
 						<td ng-bind="n.loses"></td>
