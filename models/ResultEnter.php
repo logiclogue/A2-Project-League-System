@@ -3,6 +3,7 @@
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
 
 session_start();
 
@@ -42,7 +43,7 @@ SQL;
 	 */
 	private $query_score = <<<SQL
 		INSERT INTO result_user_maps (result_id, user_id, score, rating, rating_change)
-		VALUES (:result_id, :user_id, :score, 0, 0)
+		VALUES (:result_id, :user_id, :score, :new_rating, :rating_change)
 SQL;
 
 	/**
@@ -104,14 +105,18 @@ SQL;
 	 * @method insertScore
 	 * @param user_id {Integer} Id of the user whose score to input.
 	 * @param score {Integer} Score that the user achieved.
+	 * @param new_rating {Integer} New rating of the user.
+	 * @param rating_change {Integer} Rating change.
 	 * @private
 	 */
-	private function insertScore($user_id, $score) {
+	private function insertScore($user_id, $score, $new_rating, $rating_change) {
 		$stmt = Database::$conn->prepare($this->query_score);
 
 		$stmt->bindParam(':result_id', $this->id_of_result);
 		$stmt->bindParam(':user_id', $user_id);
 		$stmt->bindParam(':score', $score);
+		$stmt->bindParam(':new_rating', $new_rating);
+		$stmt->bindParam(':rating_change', $rating_change);
 
 		$stmt->execute();
 	}
@@ -146,9 +151,12 @@ SQL;
 	 */
 	private function general() {
 		if ($this->validate()) {
+			$player1_elo = new EloRating($this->data['player1_id'], $this->data['player2_id'], $this->data['tournament_id'], $this->data['player1_score'], $this->data['player2_score']);
+			$player2_elo = new EloRating($this->data['player2_id'], $this->data['player1_id'], $this->data['tournament_id'], $this->data['player2_score'], $this->data['player1_score']);
+
 			$this->insertInfo();
-			$this->insertScore($this->data['player1_id'], $this->data['player1_score']);
-			$this->insertScore($this->data['player2_id'], $this->data['player2_score']);
+			$this->insertScore($this->data['player1_id'], $this->data['player1_score'], $player1_elo->new_rating, $player1_elo->rating_change);
+			$this->insertScore($this->data['player2_id'], $this->data['player2_score'], $player2_elo->new_rating, $player2_elo->rating_change);
 		}
 		else {
 			$this->success = false;
