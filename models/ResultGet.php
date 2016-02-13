@@ -25,6 +25,10 @@ require_once(dirname(__DIR__) . '/php/Model.php');
  *   @return [].player2_id {Integer} Id of player 2.
  *   @return [].player1_name {String} Name of player 1.
  *   @return [].player2_name {String} Name of player 2.
+ *   @return [].player1_rating {Integer} Player 1 rating before the match.
+ *   @return [].player2_rating {Integer} Player 2 rating before the match.
+ *   @return [].player1_rating_change {Integer} Player 1 rating change.
+ *   @return [].player2_rating_change {Integer} Player 2 rating change.
  *   @return [].score1 {Integer} Score of player 1.
  *   @return [].score2 {Integer} Score of player 2.
  **/
@@ -47,6 +51,10 @@ class ResultGet extends Model
 		ru2.user_id player2_id,
 		CONCAT(u1.first_name, ' ', u1.last_name) player1_name,
 		CONCAT(u2.first_name, ' ', u2.last_name) player2_name,
+		ru1.rating - ru1.rating_change player1_rating,
+		ru2.rating - ru2.rating_change player2_rating,
+		ru1.rating_change player1_rating_change,
+		ru2.rating_change player2_rating_change,
 		ru1.score score1,
 		ru2.score score2
 		FROM result_user_maps ru1
