@@ -213,6 +213,24 @@ hr {
 	padding: 0.5rem;
 }
 
+.result td {
+	padding: 0;
+}
+
+.result .centre-align {
+	text-align: center;
+}
+
+.result .player1-name {
+	float: right;
+	text-align: right;
+}
+
+.result .player2-name {
+	float: left;
+	text-align: left;
+}
+
 .result .score {
 	color: white;
 	padding: 0.5rem;

@@ -10,10 +10,35 @@
 
 		<!-- Displays player names and score -->
 		<div class="body">
-			<a href="#/profile/{{ n.player1_id }}" ng-bind="n.player1_name"></a>
-			<span class="score" ng-class="n.winOrLoss" ng-bind="n.score1 + '-' + n.score2"></span>
-			<a href="#/profile/{{ n.player2_id }}" ng-bind="n.player2_name"></a>
-			<span class="u-pull-right">+23</span>
+			<table class="u-full-width">
+				<tr>
+					<td width="40%">
+						<a class="player1-name" href="#/profile/{{ n.player1_id }}" ng-bind="n.player1_name"></a>
+					</td>
+					<td width="20%" class="centre-align">
+						<span class="score u-pull-center" ng-class="n.winOrLoss" ng-bind="n.score1 + '-' + n.score2"></span>
+					</td>
+					<td width="40%">
+						<a class="player2-name" href="#/profile/{{ n.player2_id }}" ng-bind="n.player2_name"></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="player1-name">
+							<span ng-bind="n.player1_rating"></span>
+							<span>(<span ng-show="n.player1_rating_change > 0">+</span><span ng-bind="n.player1_rating_change"></span>)</span>
+						</span>
+					</td>
+					<td>
+					</td>
+					<td>
+						<span class="player2-name">
+							<span ng-bind="n.player2_rating"></span>
+							<span>(<span ng-show="n.player2_rating_change > 0">+</span><span ng-bind="n.player2_rating_change"></span>)</span>
+						</span>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 </div>

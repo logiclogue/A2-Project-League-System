@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `result_user_maps` (
 
 CREATE TABLE IF NOT EXISTS `tournaments` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(40) NOT NULL,
   `description` tinytext,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS `tournament_user_maps` (
 CREATE TABLE IF NOT EXISTS `users` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL UNIQUE,
-  `first_name` varchar(20) NOT NULL,
-  `last_name` varchar(20) NOT NULL,
+  `first_name` varchar(30) NOT NULL,
+  `last_name` varchar(30) NOT NULL,
   `hash` varchar(60) NOT NULL,
   `home_phone` varchar(20) DEFAULT NULL,
   `mobile_phone` varchar(20) DEFAULT NULL,
