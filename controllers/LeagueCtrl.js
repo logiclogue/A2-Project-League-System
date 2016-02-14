@@ -35,7 +35,6 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 		{
 			success: function (response) {
 				$scope.table = response.table;
-				console.log(response);
 			}
 		});
 	}
