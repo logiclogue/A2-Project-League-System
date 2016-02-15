@@ -4,6 +4,7 @@ require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
 require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
+require_once(dirname(__DIR__) . '/superclasses/ResultMethods.php');
 
 session_start();
 
@@ -94,6 +95,11 @@ SQL;
 		}
 		
 		// Check if result already exists.
+		if (ResultMethods::resultExists($this->data['player1_id'], $this->data['player2_id'], $this->data['tournament_id'])) {
+			$this->error_msg = "Result already exists";
+
+			return false;
+		}
 		// Check if score is valid.
 
 		return true;
