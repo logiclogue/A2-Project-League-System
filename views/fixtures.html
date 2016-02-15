@@ -8,26 +8,9 @@
 		</div>
 
 		<div class="body">
-			<a ng-bind="n.player1_name" ng-href="#/profile/{{ n.player1_id }}"></a><br>
-			<a ng-bind="n.player2_name" ng-href="#/profile/{{ n.player2_id }}"></a>
+			<span class="u-pull-right">{{ n.expected_percent }}%</span>
+			<a ng-bind="n.player1_name" ng-href="#/profile/{{ n.player1_id }}"></a><span> ({{ n.player1_rating }})</span><br>
+			<a ng-bind="n.player2_name" ng-href="#/profile/{{ n.player2_id }}"></a><span> ({{ n.player2_rating }})</span>
 		</div>
 	</div>
 </div>
-
-
-<!-- Original design.
-
-<div class="result">
-	<div class="head">
-		<a>ENTER RESULT</a>
-		<a class="u-pull-right">Premier League</a><br>
-	</div>
-
-	<div class="body">
-		<span><a>John Doe</a> (1312)</span><br>
-		<span><a>Shane Washington</a> (1300)</span>
-		<span class="u-pull-right">%52</span>
-	</div>
-</div>
-
--->

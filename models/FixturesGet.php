@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
 
 session_start();
 
@@ -22,6 +23,10 @@ session_start();
  *   @return [].player2_id {Integer} Id of player 2.
  *   @return [].player1_name {String} Full name of player 1.
  *   @return [].player2_name {String} Full name of player 2.
+ *   @return [].player1_rating {Integer} Rating of player 1.
+ *   @return [].player2_rating {Integer} Rating of player 2.
+ *   @return [].expected {Float} Odds of player 1 winning.
+ *   @return [].expected_percent {Integer} Percentage chance of player 1 winning.
  *   @return [].tournament_id {Integer} Id of tournament that the match is in.
  *   @return [].tournament_name {String} Name of tournament that the match is in.
  *   @return [].is_league_manager {Boolean} Whether the user is a league manager.
@@ -76,7 +81,22 @@ class FixturesGet extends Model
 		) = 0
 SQL;
 
-	
+
+	/**
+	 * Method that gets the user ratings and puts them in every fixture including the expected result for player 1.
+	 *
+	 * @method attachRatings
+	 * @private
+	 */
+	private function attachRatings() {
+		foreach($this->return_data['fixtures'] as &$fixture) {
+			$fixture['player1_rating'] = EloRating::userRating($fixture['player1_id'], $this->data['tournament_id']);
+			$fixture['player2_rating'] = EloRating::userRating($fixture['player2_id'], $this->data['tournament_id']);
+			$fixture['expected'] = EloRating::expected($fixture['player1_rating'], $fixture['player2_rating']);
+			$fixture['expected_percent'] = round($fixture['expected'] * 100);
+		}
+	}
+
 	/**
 	 * Main method that execute @property query and binds input data.
 	 *
@@ -92,6 +112,7 @@ SQL;
 
 		if ($stmt->execute()) {
 			$this->return_data['fixtures'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$this->attachRatings();
 		}
 		else {
 			$this->success = false;
