@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
+var watch = require('gulp-watch');
 var del = require('del');
 
 var paths = {
@@ -12,7 +13,8 @@ var paths = {
 		'controllers/*.js'
 	],
 	css: [
-		'lib/*.css',
+		'lib/normalize.css',
+		'lib/skeleton.css',
 		'css/*.css'
 	]
 }
@@ -25,8 +27,27 @@ gulp.task('clean', function () {
 
 
 // Concats all JavaScript files
-gulp.task('javascript', ['clean'], function () {
+gulp.task('javascript', function () {
 	return gulp.src(paths.javascript)
 		.pipe(concat('all.js'))
 		.pipe(gulp.dest('build'));
 });
+
+
+// Concats all CSS files
+gulp.task('css', function () {
+	return gulp.src(paths.css)
+		.pipe(concat('all.css'))
+		.pipe(gulp.dest('build'));
+});
+
+
+// Watches all
+gulp.task('watch', function () {
+	gulp.watch(paths.javascript, ['javascript']);
+	gulp.watch(paths.css, ['css']);
+});
+
+
+// Default task
+gulp.task('default', ['clean', 'javascript', 'css', 'watch']);

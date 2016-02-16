@@ -9,9 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="lib/normalize.css">
-	<link rel="stylesheet" href="lib/skeleton.css">
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="build/all.css">
 
 </head>
 <body ng-app="computing-project">
@@ -34,33 +32,6 @@
 	<div ng-view></div>
 
 
-
-	<!--
-	<script src="lib/angular.min.js"></script>
-	<script src="lib/angular-route.min.js"></script>
-
-
-	<script src="app/app.js"></script>
-	<script src="app/config.js"></script>
-
-	<script src="services/CallModel.js"></script>
-
-	<script src="directives/cpResult.js"></script>
-	<script src="directives/cpFixtures.js"></script>
-	<script src="directives/cpUserSearch.js"></script>
-	<script src="directives/cpLeagueSearch.js"></script>
-
-	<script src="controllers/LoginCtrl.js"></script>
-	<script src="controllers/ProfileCtrl.js"></script>
-	<script src="controllers/UserSearchCtrl.js"></script>
-	<script src="controllers/NavCtrl.js"></script>
-	<script src="controllers/HomeCtrl.js"></script>
-	<script src="controllers/LeagueCtrl.js"></script>
-	<script src="controllers/LeagueEditCtrl.js"></script>
-	<script src="controllers/LeagueCreateCtrl.js"></script>
-	<script src="controllers/LeagueSearchCtrl.js"></script>
-	<script src="controllers/ResultEnterCtrl.js"></script>
-	-->
 	<script src="build/all.js"></script>
 </body>
 </html>
