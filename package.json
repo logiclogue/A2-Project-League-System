@@ -16,6 +16,8 @@
     "url": "https://github.com/logiclogue/A2-Project-League-System/issues"
   },
   "devDependencies": {
-    "gulp": "~3.9.1"
+    "gulp": "~3.9.1",
+    "gulp-concat": "~2.6.0",
+    "del": "~2.2.0"
   }
 }

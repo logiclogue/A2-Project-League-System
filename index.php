@@ -35,6 +35,7 @@
 
 
 
+	<!--
 	<script src="lib/angular.min.js"></script>
 	<script src="lib/angular-route.min.js"></script>
 
@@ -59,5 +60,7 @@
 	<script src="controllers/LeagueCreateCtrl.js"></script>
 	<script src="controllers/LeagueSearchCtrl.js"></script>
 	<script src="controllers/ResultEnterCtrl.js"></script>
+	-->
+	<script src="build/all.js"></script>
 </body>
 </html>
