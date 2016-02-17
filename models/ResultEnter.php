@@ -64,6 +64,10 @@ SQL;
 	 * @private
 	 */
 	private function validScore() {
+		if (!is_int($this->data['player1_score']) || !is_int($this->data['player2_score'])) {
+			return false;
+		}
+
 		if ($this->data['player1_score'] >= 0 && $this->data['player1_score'] <= 3 && $this->data['player2_score'] >= 0 && $this->data['player2_score'] <= 3) {
 			if (($this->data['player1_score'] != 3 && $this->data['player2_score'] == 3) || ($this->data['player2_score'] != 3 && $this->data['player1_score'] == 3)) {
 				return true;
