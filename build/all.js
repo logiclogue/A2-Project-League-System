@@ -1050,7 +1050,8 @@ app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route,
 		CallModel.fetch('Login', {
 			email: $scope.inputEmailLogin,
 			password: $scope.inputPasswordLogin
-		}, {
+		},
+		{
 			success: function (response) {
 				getUserData();
 
@@ -1249,6 +1250,9 @@ app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, Cal
 			fail: function (response) {
 				alert(response.error_msg);
 				$location.path('/');
+			},
+			normal: function (response) {
+				console.log($scope.player1.score, $scope.player2.score);
 			}
 		})
 	};

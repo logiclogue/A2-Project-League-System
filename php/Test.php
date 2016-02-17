@@ -162,8 +162,8 @@ class Test
 			'tournament_id' => 1,
 			'player1_id' => 3,
 			'player2_id' => 2,
-			'player1_score' => 1,
-			'player2_score' => 3
+			'player1_score' => 3,
+			'player2_score' => 1
 		)));
 
 		echo 'Get result: ';

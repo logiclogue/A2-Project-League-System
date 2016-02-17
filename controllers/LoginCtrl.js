@@ -43,7 +43,8 @@ app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route,
 		CallModel.fetch('Login', {
 			email: $scope.inputEmailLogin,
 			password: $scope.inputPasswordLogin
-		}, {
+		},
+		{
 			success: function (response) {
 				getUserData();
 

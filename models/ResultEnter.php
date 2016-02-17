@@ -58,6 +58,22 @@ SQL;
 
 
 	/**
+	 * Method that checks whether the entered score is valid.
+	 *
+	 * @method validScore
+	 * @private
+	 */
+	private function validScore() {
+		if ($this->data['player1_score'] >= 0 && $this->data['player1_score'] <= 3 && $this->data['player2_score'] >= 0 && $this->data['player2_score'] <= 3) {
+			if (($this->data['player1_score'] != 3 && $this->data['player2_score'] == 3) || ($this->data['player2_score'] != 3 && $this->data['player1_score'] == 3)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Main validation method.
 	 *
 	 * @method validate
@@ -101,6 +117,11 @@ SQL;
 			return false;
 		}
 		// Check if score is valid.
+		if (!$this->validScore()) {
+			$this->error_msg = "Not a valid score";
+
+			return false;
+		}
 
 		return true;
 	}
