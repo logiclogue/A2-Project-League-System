@@ -1250,9 +1250,6 @@ app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, Cal
 			fail: function (response) {
 				alert(response.error_msg);
 				$location.path('/');
-			},
-			normal: function (response) {
-				console.log($scope.player1.score, $scope.player2.score);
 			}
 		})
 	};
