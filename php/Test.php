@@ -7,6 +7,7 @@ require_once(dirname(__DIR__) . '/models/Logout.php');
 require_once(dirname(__DIR__) . '/models/UserUpdate.php');
 require_once(dirname(__DIR__) . '/models/UserGet.php');
 require_once(dirname(__DIR__) . '/models/UserSearch.php');
+require_once(dirname(__DIR__) . '/models/UserRatings.php');
 require_once(dirname(__DIR__) . '/models/TournamentCreate.php');
 require_once(dirname(__DIR__) . '/models/TournamentUpdate.php');
 require_once(dirname(__DIR__) . '/models/TournamentGet.php');
@@ -51,6 +52,7 @@ class Test
 		$FixturesGet = new FixturesGet();
 		$UserGet = new UserGet();
 		$UserSearch = new UserSearch();
+		$UserRatings = new UserRatings();
 		$Logout = new Logout();
 		
 
@@ -195,6 +197,9 @@ class Test
 		self::echo_n($TournamentLeagueTable->call(array(
 			'id' => 1
 		)));
+
+		echo 'User ratings: ';
+		self::echo_n($UserRatings->call(array()));
 	}
 }
 

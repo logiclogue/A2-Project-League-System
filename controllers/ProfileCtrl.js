@@ -47,7 +47,23 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 			success: function (response) {
 				getUser(response.user.id);
 			}
-		})
+		});
+	}
+
+	/**
+	 * Method that gets the users ratings for the graph.
+	 *
+	 * @method getRatings
+	 */
+	function getRatings() {
+		CallModel.fetch('UserRatings', {}, {
+			success: function (response) {
+				console.log(response);
+			},
+			fail: function (response) {
+				console.log(response);
+			}
+		});
 	}
 
 
@@ -66,5 +82,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		else {
 			getUser($routeParams.userId);
 		}
+
+		getRatings();
 	}());
 });

@@ -5,7 +5,19 @@
  */
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
+	/**
+	 * String that determines which sub page the user is on.
+	 *
+	 * @val $scope.subPage
+	 * type String
+	 */
 	$scope.subPage = 'table';
+	/**
+	 * Object that contains the table data.
+	 *
+	 * @val $scope.table
+	 * type Object
+	 */
 	$scope.table;
 
 

@@ -725,7 +725,19 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
  */
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
+	/**
+	 * String that determines which sub page the user is on.
+	 *
+	 * @val $scope.subPage
+	 * type String
+	 */
 	$scope.subPage = 'table';
+	/**
+	 * Object that contains the table data.
+	 *
+	 * @val $scope.table
+	 * type Object
+	 */
 	$scope.table;
 
 
@@ -1175,7 +1187,23 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 			success: function (response) {
 				getUser(response.user.id);
 			}
-		})
+		});
+	}
+
+	/**
+	 * Method that gets the users ratings for the graph.
+	 *
+	 * @method getRatings
+	 */
+	function getRatings() {
+		CallModel.fetch('UserRatings', {}, {
+			success: function (response) {
+				console.log(response);
+			},
+			fail: function (response) {
+				console.log(response);
+			}
+		});
 	}
 
 
@@ -1194,6 +1222,8 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		else {
 			getUser($routeParams.userId);
 		}
+
+		getRatings();
 	}());
 });
 /**
