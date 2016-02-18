@@ -7,6 +7,7 @@ var paths = {
 	javascript: [
 		'lib/angular.min.js',
 		'lib/angular-route.min.js',
+		'lib/*.js',
 		'app/*.js',
 		'services/*.js',
 		'directives/*.js',
