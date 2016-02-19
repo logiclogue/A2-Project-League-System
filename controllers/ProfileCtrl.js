@@ -3,7 +3,7 @@
  *
  * @controller ProfileCtrl
  */
-app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, CallModel)
+app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, CallModel, RatingChart)
 {
 	/**
 	 * Variable for storing the name of the current subpage.
@@ -58,10 +58,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	function getRatings() {
 		CallModel.fetch('UserRatings', {}, {
 			success: function (response) {
-				console.log(response);
-			},
-			fail: function (response) {
-				console.log(response);
+				RatingChart.inputRatings(response.ratings);
 			}
 		});
 	}
@@ -84,5 +81,6 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		}
 
 		getRatings();
+		RatingChart.draw();
 	}());
 });
