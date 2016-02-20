@@ -6,6 +6,13 @@
 app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, CallModel, RatingChart)
 {
 	/**
+	 * Id of the user.
+	 *
+	 * @var userId
+	 */
+	var userId;
+
+	/**
 	 * Variable for storing the name of the current subpage.
 	 *
 	 * @var $scope.currentSubPage
@@ -45,7 +52,9 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	function getStatus() {
 		CallModel.fetch('Status', {}, {
 			success: function (response) {
-				getUser(response.user.id);
+				userId = response.user.id;
+
+				getUser(userId);
 			}
 		});
 	}
@@ -56,7 +65,11 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * @method getRatings
 	 */
 	function getRatings() {
-		CallModel.fetch('UserRatings', {}, {
+		RatingChart.init();
+
+		CallModel.fetch('UserRatings', {
+			user_id: userId
+		}, {
 			success: function (response) {
 				RatingChart.inputRatings(response.ratings);
 				RatingChart.draw();
@@ -78,7 +91,9 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 			getStatus();
 		}
 		else {
-			getUser($routeParams.userId);
+			userId = $routeParams.userId;
+
+			getUser(userId);
 		}
 
 		getRatings();

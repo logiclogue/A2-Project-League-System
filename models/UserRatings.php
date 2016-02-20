@@ -8,14 +8,16 @@ session_start();
 
 /**
  * Model when called will return all the user's ratings over time.
- * No parameters because just returns the ratings of the user that calls the model.
  *
  * @class UserRatings
  * @extends Model
  */
 /**
+ * @param user_id {Integer} Id of the user to query.
+ *
  * @return ratings {Array} Array of all the ratings over time.
  *   @return [].rating {Integer} Rating at that moment in time.
+ *   @return [].rating_change {Integer} Change of rating.
  *   @return [].date {String} Date and time when rating was the value.
  *   @return [].tournament_id {Integer} Id of the tournament that the rating was associated with.
  *   @return [].tournament_name {String} Name of the tournament.
@@ -32,6 +34,7 @@ class UserRatings extends Model
 	private $query = <<<SQL
 		SELECT
 		ru.rating,
+		ru.rating_change,
 		r.date,
 		r.tournament_id,
 		t.name tournament_name
@@ -54,7 +57,7 @@ SQL;
 	private function general() {
 		$stmt = Database::$conn->prepare($this->query);
 
-		$stmt->bindParam(':id', $_SESSION['user']['id']);
+		$stmt->bindParam(':id', $this->data['user_id']);
 
 		if ($stmt->execute()) {
 			$this->return_data['ratings'] = $stmt->fetchAll(PDO::FETCH_ASSOC);

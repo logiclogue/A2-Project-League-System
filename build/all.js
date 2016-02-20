@@ -461,11 +461,40 @@ app.factory('CallModel', function ($http, $location)
  */
 app.factory('RatingChart', function ()
 {
-	var canvas = document.getElementById('canvas-rating-chart');
-	var ctx = canvas.getContext('2d');
-	var chart = new Chart(ctx);
+	/**
+	 * Canvas context variable.
+	 *
+	 * @val ctx
+	 * @private
+	 */
+	var ctx;
+	/**
+	 * Chart object for talking to Chart.JS library.
+	 *
+	 * @val chart
+	 * @private
+	 */
+	var chart;
+	/**
+	 * List of dates corresponding to a rating.
+	 *
+	 * @val dates
+	 * @private
+	 */
 	var dates = [];
+	/**
+	 * List of ratings for the graph.
+	 *
+	 * @val averageRating
+	 * @private
+	 */
 	var averageRating = [];
+	/**
+	 * Data object for drawing the chart.
+	 *
+	 * @val data
+	 * @private
+	 */
 	var data = {
 		labels: dates,
 		datasets: [
@@ -481,6 +510,12 @@ app.factory('RatingChart', function ()
 			}
 		]
 	};
+	/**
+	 * Configuration for drawing the chart.
+	 *
+	 * @val options
+	 * @private
+	 */
 	var options = {
 		scaleShowGridLines : true,
 		scaleGridLineColor : "rgba(0,0,0,.05)",
@@ -525,21 +560,34 @@ app.factory('RatingChart', function ()
 
 			// Calculate average rating.
 			ratings.forEach(function () {
-				var average = 0;
-				var count = 1;
+				var average;
 
 				return function (rating) {
-					average = average + ((rating.rating - average) / count);
-					average = Math.round(average);
+					average = average + parseInt(rating.rating_change) || parseInt(rating.rating);
 
-					count += 1;
-
-					rating.average_rating = average;
 					averageRating.push(average);
 					dates.push(rating.date);
 				};
 			}());
 		},
+		/**
+		 * Call this method when initialising the graph.
+		 *
+		 * @method init
+		 */
+		init: function () {
+			ctx = document.getElementById('canvas-rating-chart').getContext('2d');
+			chart = new Chart(ctx);
+
+			// Reset arrays without deleting reference
+			dates.splice(0, dates.length);
+			averageRating.splice(0, averageRating.length);
+		},
+		/**
+		 * This method is called when drawing the graph.
+		 *
+		 * @method draw
+		 */
 		draw: function () {
 			chart.Line(data, options);
 		}
@@ -1248,6 +1296,13 @@ app.controller('NavCtrl', function ($scope, $window, $location, CallModel)
 app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, CallModel, RatingChart)
 {
 	/**
+	 * Id of the user.
+	 *
+	 * @var userId
+	 */
+	var userId;
+
+	/**
 	 * Variable for storing the name of the current subpage.
 	 *
 	 * @var $scope.currentSubPage
@@ -1287,7 +1342,9 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	function getStatus() {
 		CallModel.fetch('Status', {}, {
 			success: function (response) {
-				getUser(response.user.id);
+				userId = response.user.id;
+
+				getUser(userId);
 			}
 		});
 	}
@@ -1298,7 +1355,11 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * @method getRatings
 	 */
 	function getRatings() {
-		CallModel.fetch('UserRatings', {}, {
+		RatingChart.init();
+
+		CallModel.fetch('UserRatings', {
+			user_id: userId
+		}, {
 			success: function (response) {
 				RatingChart.inputRatings(response.ratings);
 				RatingChart.draw();
@@ -1320,7 +1381,9 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 			getStatus();
 		}
 		else {
-			getUser($routeParams.userId);
+			userId = $routeParams.userId;
+
+			getUser(userId);
 		}
 
 		getRatings();
