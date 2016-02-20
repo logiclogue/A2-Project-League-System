@@ -59,6 +59,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		CallModel.fetch('UserRatings', {}, {
 			success: function (response) {
 				RatingChart.inputRatings(response.ratings);
+				RatingChart.draw();
 			}
 		});
 	}
@@ -81,6 +82,5 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		}
 
 		getRatings();
-		RatingChart.draw();
 	}());
 });

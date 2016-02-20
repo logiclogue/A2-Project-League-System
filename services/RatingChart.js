@@ -7,6 +7,7 @@ app.factory('RatingChart', function ()
 {
 	var canvas = document.getElementById('canvas-rating-chart');
 	var ctx = canvas.getContext('2d');
+	var chart = new Chart(ctx);
 	var dates = [];
 	var averageRating = [];
 	var data = {
@@ -41,6 +42,7 @@ app.factory('RatingChart', function ()
 		datasetFill : true,
 		legendTemplate : ""
 	};
+
 
 	return {
 		/**
@@ -81,11 +83,9 @@ app.factory('RatingChart', function ()
 					dates.push(rating.date);
 				};
 			}());
-
-			console.log(dates);
 		},
 		draw: function () {
-			var chart = new Chart(ctx).Line(data, options);
+			chart.Line(data, options);
 		}
 	}
 });
