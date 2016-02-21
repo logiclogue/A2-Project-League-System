@@ -3,12 +3,13 @@
  *
  * @controller ProfileCtrl
  */
-app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, CallModel, RatingChart)
+app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, $window, CallModel, RatingChart)
 {
 	/**
 	 * Id of the user.
 	 *
 	 * @var userId
+	 * @type Integer
 	 */
 	var userId;
 
@@ -16,9 +17,16 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * Variable for storing the name of the current subpage.
 	 *
 	 * @var $scope.currentSubPage
-	 * @type {String}
+	 * @type String
 	 */
 	$scope.subPage = 'results';
+	/**
+	 * Is user.
+	 *
+	 * @var $scope.isUser
+	 * @type Boolean
+	 */
+	 $scope.isUser = false;
 
 
 	/**
@@ -91,12 +99,15 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		RatingChart.init();
 		
 		if ($routeParams.userId === undefined) {
+			$scope.isUser = true;
+
 			getStatus(function () {
 				getRatings();
 			});
 		}
 		else {
 			userId = $routeParams.userId;
+			$scope.isUser = $window.sessionStorage.yourId === userId;
 
 			getUser(userId);
 			getRatings();

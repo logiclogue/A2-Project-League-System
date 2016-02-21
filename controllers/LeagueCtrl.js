@@ -8,14 +8,14 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 	/**
 	 * String that determines which sub page the user is on.
 	 *
-	 * @val $scope.subPage
+	 * @var $scope.subPage
 	 * type String
 	 */
 	$scope.subPage = 'table';
 	/**
 	 * Object that contains the table data.
 	 *
-	 * @val $scope.table
+	 * @var $scope.table
 	 * type Object
 	 */
 	$scope.table;

@@ -345,6 +345,10 @@ app.config(['$routeProvider', function ($routeProvider)
 		templateUrl: 'views/profile.html',
 		controller: 'ProfileCtrl'
 	})
+	.when('/profile/edit', {
+		templateUrl: 'views/profile-edit.html',
+		controller: 'ProfileEditCtrl'
+	})
 	.when('/profile/:userId', {
 		templateUrl: 'views/profile.html',
 		controller: 'ProfileCtrl'
@@ -464,35 +468,35 @@ app.factory('RatingChart', function ()
 	/**
 	 * Canvas context variable.
 	 *
-	 * @val ctx
+	 * @var ctx
 	 * @private
 	 */
 	var ctx;
 	/**
 	 * Chart object for talking to Chart.JS library.
 	 *
-	 * @val chart
+	 * @var chart
 	 * @private
 	 */
 	var chart;
 	/**
 	 * List of dates corresponding to a rating.
 	 *
-	 * @val dates
+	 * @var dates
 	 * @private
 	 */
 	var dates = [];
 	/**
 	 * List of ratings for the graph.
 	 *
-	 * @val averageRating
+	 * @var averageRating
 	 * @private
 	 */
 	var averageRating = [];
 	/**
 	 * Data object for drawing the chart.
 	 *
-	 * @val data
+	 * @var data
 	 * @private
 	 */
 	var data = {
@@ -513,7 +517,7 @@ app.factory('RatingChart', function ()
 	/**
 	 * Configuration for drawing the chart.
 	 *
-	 * @val options
+	 * @var options
 	 * @private
 	 */
 	var options = {
@@ -836,7 +840,7 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 	/**
 	 * The text that goes in the edit page.
 	 *
-	 * @val $scope.editOrCreate
+	 * @var $scope.editOrCreate
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Create';
@@ -878,14 +882,14 @@ app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, C
 	/**
 	 * String that determines which sub page the user is on.
 	 *
-	 * @val $scope.subPage
+	 * @var $scope.subPage
 	 * type String
 	 */
 	$scope.subPage = 'table';
 	/**
 	 * Object that contains the table data.
 	 *
-	 * @val $scope.table
+	 * @var $scope.table
 	 * type Object
 	 */
 	$scope.table;
@@ -1293,12 +1297,13 @@ app.controller('NavCtrl', function ($scope, $window, $location, CallModel)
  *
  * @controller ProfileCtrl
  */
-app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, CallModel, RatingChart)
+app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, $window, CallModel, RatingChart)
 {
 	/**
 	 * Id of the user.
 	 *
 	 * @var userId
+	 * @type Integer
 	 */
 	var userId;
 
@@ -1306,9 +1311,16 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * Variable for storing the name of the current subpage.
 	 *
 	 * @var $scope.currentSubPage
-	 * @type {String}
+	 * @type String
 	 */
 	$scope.subPage = 'results';
+	/**
+	 * Is user.
+	 *
+	 * @var $scope.isUser
+	 * @type Boolean
+	 */
+	 $scope.isUser = false;
 
 
 	/**
@@ -1381,17 +1393,100 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 		RatingChart.init();
 		
 		if ($routeParams.userId === undefined) {
+			$scope.isUser = true;
+
 			getStatus(function () {
 				getRatings();
 			});
 		}
 		else {
 			userId = $routeParams.userId;
+			$scope.isUser = $window.sessionStorage.yourId === userId;
 
 			getUser(userId);
 			getRatings();
 		}
 	}());
+});
+/**
+ * Controller for editing a user.
+ *
+ * @controller
+ */
+app.controller('ProfileEditCtrl', function ($scope, $window, $location, CallModel)
+{
+	/**
+	 * The user id.
+	 *
+	 * @property $scope.yourId
+	 * @type Integer
+	 */
+	$scope.yourId = $window.sessionStorage.yourId;
+	/**
+	 * Error message to be displayed if there is an error.
+	 *
+	 * @property $scope.errorMsg
+	 * @type String
+	 */
+	$scope.errorMsg;
+
+
+	/**
+	 * Method that is called when submit button is pressed.
+	 *
+	 * @method $scope.eventSubmit
+	 */
+	$scope.eventSubmit = function () {
+		CallModel.fetch('UserUpdate', {
+			first_name: $scope.first_name,
+			last_name: $scope.last_name,
+			home_phone: $scope.home_phone,
+			mobile_phone: $scope.mobile_phone
+		},
+		{
+			success: function (response) {
+				alert("Successfully updated your profile");
+
+				$location.path('/profile');
+			},
+			fail: function (response) {
+				$scope.errorMsg = response.error_msg;
+			}
+		})
+	};
+
+
+	/**
+	 * Method the gets the data of the user.
+	 *
+	 * @method getUserData
+	 */
+	function getUserData() {
+		CallModel.fetch('UserGet', {
+			id: $scope.yourId
+		},
+		{
+			success: function (response) {
+				$scope.first_name = response.first_name;
+				$scope.last_name = response.last_name;
+			},
+			fail: function (response) {
+				alert(response.error_msg);
+
+				$location.path('/profile');
+			}
+		});
+	}
+
+
+	/*
+	 * Redirects if not logged in.
+	 * Then gets the user data to fill in the fields.
+	 */
+	 (function () {
+	 	CallModel.redirectIfNotLoggedIn();
+	 	getUserData();
+	 }());
 });
 /**
  * Controller that allows a user to input a result.

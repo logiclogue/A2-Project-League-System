@@ -8,35 +8,35 @@ app.factory('RatingChart', function ()
 	/**
 	 * Canvas context variable.
 	 *
-	 * @val ctx
+	 * @var ctx
 	 * @private
 	 */
 	var ctx;
 	/**
 	 * Chart object for talking to Chart.JS library.
 	 *
-	 * @val chart
+	 * @var chart
 	 * @private
 	 */
 	var chart;
 	/**
 	 * List of dates corresponding to a rating.
 	 *
-	 * @val dates
+	 * @var dates
 	 * @private
 	 */
 	var dates = [];
 	/**
 	 * List of ratings for the graph.
 	 *
-	 * @val averageRating
+	 * @var averageRating
 	 * @private
 	 */
 	var averageRating = [];
 	/**
 	 * Data object for drawing the chart.
 	 *
-	 * @val data
+	 * @var data
 	 * @private
 	 */
 	var data = {
@@ -57,7 +57,7 @@ app.factory('RatingChart', function ()
 	/**
 	 * Configuration for drawing the chart.
 	 *
-	 * @val options
+	 * @var options
 	 * @private
 	 */
 	var options = {

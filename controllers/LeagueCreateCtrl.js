@@ -8,7 +8,7 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 	/**
 	 * The text that goes in the edit page.
 	 *
-	 * @val $scope.editOrCreate
+	 * @var $scope.editOrCreate
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Create';

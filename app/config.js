@@ -17,6 +17,10 @@ app.config(['$routeProvider', function ($routeProvider)
 		templateUrl: 'views/profile.html',
 		controller: 'ProfileCtrl'
 	})
+	.when('/profile/edit', {
+		templateUrl: 'views/profile-edit.html',
+		controller: 'ProfileEditCtrl'
+	})
 	.when('/profile/:userId', {
 		templateUrl: 'views/profile.html',
 		controller: 'ProfileCtrl'

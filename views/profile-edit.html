@@ -1,0 +1,33 @@
+<div class="container">
+
+	<div class="box-container seven columns">
+		<h1>Edit Profile</h1>
+
+		<!-- Where error messages go -->
+		<div class="error-container" ng-hide="errorMsg === undefined">
+			<ul>
+				<li ng-bind="errorMsg"></li>
+			</ul>
+		</div>
+
+		<!-- First name field -->
+		<label>First Name</label>
+		<input class="u-full-width" type="text" ng-model="first_name">
+
+		<!-- Last name field -->
+		<label>Last Name</label>
+		<input class="u-full-width" type="text" ng-model="last_name">
+
+		<!-- Home number field -->
+		<label>Home Phone Number</label>
+		<input class="u-full-width" type="tel">
+
+		<!-- Mobile number field -->
+		<label>Mobile Phone Number</label>
+		<input class="u-full-width" type="tel">
+
+		<!-- Submit button -->
+		<button class="u-full-width" ng-click="eventSubmit()">Submit</button>
+	</div>
+
+</div>
