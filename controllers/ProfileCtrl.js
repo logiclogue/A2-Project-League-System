@@ -25,6 +25,7 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * Method that gets user data from UserGet model.
 	 *
 	 * @method getUser
+	 * @param user_id {Integer} Id of user to get.
 	 */
 	function getUser(user_id) {
 		CallModel.fetch('UserGet', {
@@ -48,13 +49,15 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * Then calls @method getUser with id of current user.
 	 *
 	 * @method getStatus
+	 * @param callback {Function} Executes after response from server.
 	 */
-	function getStatus() {
+	function getStatus(callback) {
 		CallModel.fetch('Status', {}, {
 			success: function (response) {
 				userId = response.user.id;
 
 				getUser(userId);
+				callback();
 			}
 		});
 	}
@@ -65,8 +68,6 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 * @method getRatings
 	 */
 	function getRatings() {
-		RatingChart.init();
-
 		CallModel.fetch('UserRatings', {
 			user_id: userId
 		}, {
@@ -86,16 +87,19 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	 */
 	(function () {
 		CallModel.redirectIfNotLoggedIn();
+
+		RatingChart.init();
 		
 		if ($routeParams.userId === undefined) {
-			getStatus();
+			getStatus(function () {
+				getRatings();
+			});
 		}
 		else {
 			userId = $routeParams.userId;
 
 			getUser(userId);
+			getRatings();
 		}
-
-		getRatings();
 	}());
 });
