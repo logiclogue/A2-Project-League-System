@@ -1,0 +1,53 @@
+body {
+	background-color: #E9E9E9;
+	font-family: 'Open Sans', sans-serif;
+	line-height: 3rem;
+	font-color: #3C3C3C;
+}
+
+
+h1 {
+	font-size: 3rem;
+}
+
+
+h2 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+}
+
+
+input {
+	border-radius: 0.5rem !important;
+}
+
+
+td {
+	border-style: none;
+}
+
+
+button {
+	text-transform: none;
+	font-size: 1.5rem;
+
+	background-color: #1CAFF6;
+	color: #FFF;
+
+	border-width: 0;
+	border-radius: 0.5rem;
+}
+
+button:hover {
+	background-color: #3BBAF7;
+	color: #FFF;
+}
+
+a:link {
+	text-decoration: none;
+}
+
+
+hr {
+	margin: 2rem 0 2rem;
+}

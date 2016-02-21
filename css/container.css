@@ -1,0 +1,43 @@
+.box-container {
+	padding: 2rem 2rem 1rem 2rem;
+	margin-bottom: 4rem;
+
+	border-radius: 1rem;
+
+	background-color: #FFF;
+}
+
+.box-container.side {
+	border-width: 0.3rem;
+	border-color: #DADADA;
+	border-style: solid;
+
+	background-color: #E9E9E9;
+}
+
+.box-container.side h2 {
+	color: #999;
+	text-transform: uppercase;
+}
+
+
+.error-container {
+	background-color: #FFD4CC;
+	color: #DD381D;
+
+	border-radius: 1rem;
+
+	padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+
+	margin-bottom: 1rem;
+}
+
+.error-container ul {
+	margin: 0;
+
+	list-style: none;
+}
+
+.error-container li {
+	margin: 0;
+}

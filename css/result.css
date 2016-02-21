@@ -1,0 +1,45 @@
+.result {
+	margin-bottom: 2rem;
+}
+
+.result .head {
+	padding: 0.5rem;
+
+	color: #999;
+}
+
+.result .body {
+	padding: 0.5rem;
+}
+
+.result td {
+	padding: 0;
+}
+
+.result .centre-align {
+	text-align: center;
+}
+
+.result .player1-name {
+	float: right;
+	text-align: right;
+}
+
+.result .player2-name {
+	float: left;
+	text-align: left;
+}
+
+.result .score {
+	color: white;
+	padding: 0.5rem;
+	border-radius: 0.3rem;
+}
+
+.result .score.win {
+	background-color: #63C016;
+}
+
+.result .score.loss {
+	background-color: #D81D18;
+}
