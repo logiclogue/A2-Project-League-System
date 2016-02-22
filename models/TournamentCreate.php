@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
 
 session_start();
 
@@ -127,7 +128,15 @@ SQL;
 	 */
 	protected function main() {
 		if (isset($_SESSION['user'])) {
-			$this->create();
+			$validate = Validate::tournamentName($this->data['name']);
+			
+			if ($validate['success']) { 
+				$this->create();
+			}
+			else {
+				$this->error_msg = $validate['error_msg'];
+				$this->success = false;
+			}
 		}
 		else {
 			$this->error_msg = "You must be logged in";
