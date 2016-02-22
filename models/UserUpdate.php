@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
 
 session_start();
 
@@ -68,6 +69,44 @@ SQL;
 	}
 
 	/**
+	 * Method that validates the inputs.
+	 * Validating first name, last name, and phone numbers.
+	 *
+	 * @method validate
+	 * @private
+	 * @return {Boolean} Whether valid.
+	 */
+	private function validate() {
+		$validateFirstName = Validate::userName($this->data['first_name'], 'First name');
+		$validateLastName = Validate::userName($this->data['last_name'], 'Last name');
+		$validateHomePhone = Validate::phoneNumber($this->data['home_phone']);
+		$validateMobilePhone = Validate::phoneNumber($this->data['mobile_phone']);
+
+		if (!$validateFirstName['success']) {
+			$this->error_msg = $validateFirstName['error_msg'];
+
+			return false;
+		}
+		if (!$validateLastName['success']) {
+			$this->error_msg = $validateLastName['error_msg'];
+
+			return false;
+		}
+		if (!$validateHomePhone['success'] && isset($this->data['home_phone'])) {
+			$this->error_msg = $validateHomePhone['error_msg'];
+
+			return false;
+		}
+		if (!$validateMobilePhone['success'] && isset($this->data['mobile_phone'])) {
+			$this->error_msg = $validateMobilePhone['error_msg'];
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Checks to see if the user is logged in.
 	 * Calls @method update if true.
 	 *
@@ -75,7 +114,7 @@ SQL;
 	 * @protected
 	 */
 	protected function main() {
-		if (isset($_SESSION['user'])) {
+		if (isset($_SESSION['user']) && $this->validate()) {
 			$this->update();
 		}
 		else {

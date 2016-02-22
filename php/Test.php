@@ -71,7 +71,7 @@ class Test
 		echo 'Register user: ';
 		self::echo_n($Register->call(array(
 			'email' => 'new@email.com',
-			'password' => 'pass1',
+			'password' => 'pass123',
 			'first_name' => 'New',
 			'last_name' => 'User'
 		)));
@@ -92,7 +92,7 @@ class Test
 
 		echo 'Create tournament: ';
 		self::echo_n($TournamentCreate->call(array(
-			'name' => 'PL',
+			'name' => 'Premier League',
 			'description' => 'A league'
 		)));
 
