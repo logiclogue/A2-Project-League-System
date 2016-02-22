@@ -97,6 +97,10 @@ class Validate
 		// Regex
 		preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/", $email, $match);
 
+		// Check email is entered
+		if (strlen($email) < 1) {
+			return self::returnData(false, 'You must enter an email');
+		}
 		// Check using valid email regex.
 		if ($match[0] != $email) {
 			return self::returnData(false, 'Email is not valid');
