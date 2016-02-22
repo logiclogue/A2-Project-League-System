@@ -35,6 +35,12 @@
 		<div class="row box-container six columns u-pull-right">
 			<h1>Register</h1>
 
+			<div class="error-container" ng-hide="responseRegister.success">
+				<ul>
+					<li ng-bind="responseRegister.error_msg"></li>
+				</ul>
+			</div>
+
 			<!-- First name field -->
 			<div class="u-full-width">
 				<label>First Name</label>

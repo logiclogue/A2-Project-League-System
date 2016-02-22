@@ -10,6 +10,10 @@ app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route,
 		success: true
 	};
 
+	$scope.responseRegister = {
+		success: true
+	};
+
 	/*
 	 * If user is logged in, redirects to home page.
 	 */
@@ -62,21 +66,29 @@ app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route,
 	 * @method eventRegister
 	 */
 	$scope.eventRegister = function () {
-		CallModel.fetch('Register', {
-			first_name: $scope.inputFirstName,
-			last_name: $scope.inputLastName,
-			email: $scope.inputEmailRegister,
-			password: $scope.inputPasswordRegister
-		},
-		{
-			success: function (response) {
-				alert('You have successfully registered. You must now login.');
-				
-				$route.reload();
+		if ($scope.inputPasswordRegister === $scope.inputPasswordRepeatRegister) {
+			CallModel.fetch('Register', {
+				first_name: $scope.inputFirstName,
+				last_name: $scope.inputLastName,
+				email: $scope.inputEmailRegister,
+				password: $scope.inputPasswordRegister
 			},
-			fail: function (response) {
-				alert(response.error_msg);
+			{
+				success: function (response) {
+					alert('You have successfully registered. You must now login.');
+					
+					$route.reload();
+				},
+				fail: function (response) {
+					$scope.responseRegister = response;
+				}
+			});
+		}
+		else {
+			$scope.responseRegister = {
+				success: false,
+				error_msg: 'Passwords do not match'
 			}
-		});
+		}
 	};
 });
