@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
 
 session_start();
 
@@ -42,6 +43,7 @@ SQL;
 	private function validate() {
 		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['id']);
 		$tournament_exists = $this->tournamentExistsId($this->data['id']);
+		$validateName = Validate::tournamentName($this->data['name']);
 
 		if (!$tournament_exists) {
 			$this->error_msg = "Tournament doesn't exists";
@@ -50,6 +52,11 @@ SQL;
 		}
 		if (!$is_league_manager) {
 			$this->error_msg = "You don't have permission to do that";
+
+			return false;
+		}
+		if (!$validateName['success']) {
+			$this->error_msg = $validateName['error_msg'];
 
 			return false;
 		}
