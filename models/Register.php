@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
 
 session_start();
 
@@ -65,6 +66,43 @@ SQL;
 	}
 
 	/**
+	 * Validate email, first name, last name, and password.
+	 *
+	 * @method validate
+	 * @private
+	 * @return {Boolean} Whether all is valid.
+	 */
+	private function validate() {
+		$validateFirstName = Validate::userName($this->data['first_name'], 'First name');
+		$validateLastName = Validate::userName($this->data['last_name'], 'Last name');
+		$validateEmail = Validate::email($this->data['email']);
+		$validatePassword = Validate::password($this->data['password']);
+
+		if (!$validateFirstName['success']) {
+			$this->error_msg = $validateFirstName['error_msg'];
+
+			return false;
+		}
+		if (!$validateLastName['success']) {
+			$this->error_msg = $validateLastName['error_msg'];
+
+			return false;
+		}
+		if (!$validateEmail['success']) {
+			$this->error_msg = $validateEmail['error_msg'];
+
+			return false;
+		}
+		if (!$validatePassword['success']) {
+			$this->error_msg = $validatePassword['error_msg'];
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Prepares query.
 	 * Hashes password.
 	 * Executes query.
@@ -73,12 +111,17 @@ SQL;
 	 * @public
 	 */
 	public function main() {
-		$this->stmt = Database::$conn->prepare($this->query);
-		$this->hash = password_hash($this->data['password'], PASSWORD_BCRYPT);
+		if ($this->validate()) {
+			$this->stmt = Database::$conn->prepare($this->query);
+			$this->hash = password_hash($this->data['password'], PASSWORD_BCRYPT);
 
-		$this->bindParams();
-		
-		if (!$this->stmt->execute()) {
+			$this->bindParams();
+			
+			if (!$this->stmt->execute()) {
+				$this->success = false;
+			}
+		}
+		else {
 			$this->success = false;
 		}
 	}
