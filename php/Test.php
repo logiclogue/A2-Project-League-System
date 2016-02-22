@@ -20,6 +20,7 @@ require_once(dirname(__DIR__) . '/models/TournamentLeagueTable.php');
 require_once(dirname(__DIR__) . '/models/ResultEnter.php');
 require_once(dirname(__DIR__) . '/models/ResultGet.php');
 require_once(dirname(__DIR__) . '/models/FixturesGet.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
 
 
 /**
