@@ -35,6 +35,4 @@ class TournamentPlayerAttach extends TournamentPlayerAlter
 	}
 }
 
-$TournamentPlayerAttach = new TournamentPlayerAttach();
-
 ?>

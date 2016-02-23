@@ -106,6 +106,4 @@ SQL;
 	}
 }
 
-$TournamentUpdate = new TournamentUpdate();
-
 ?>

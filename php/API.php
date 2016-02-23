@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Allows the JavaScript to communicate with the PHP models.
+ *
+ * @class API
+ */
 class API
 {
 	/**
@@ -30,10 +35,7 @@ class API
 	 * @private
 	 */
 	private function getData() {
-		if (isset($_GET)) {
-			$this->modelName = $_GET['model'];
-		}
-		else if (isset($_POST)) {
+		if (isset($_POST)) {
 			$this->modelName = $_POST['model'];
 		}
 	}

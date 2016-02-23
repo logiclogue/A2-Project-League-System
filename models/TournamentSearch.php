@@ -59,6 +59,4 @@ SQL;
 	}
 }
 
-$TournamentSearch = new TournamentSearch();
-
 ?>

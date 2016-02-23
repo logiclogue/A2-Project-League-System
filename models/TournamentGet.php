@@ -152,6 +152,4 @@ SQL;
 	}
 }
 
-$TournamentGet = new TournamentGet();
-
 ?>

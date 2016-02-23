@@ -51,6 +51,4 @@ class Status extends Model
 	}
 }
 
-$Status = new Status();
-
 ?>

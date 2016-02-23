@@ -145,6 +145,4 @@ SQL;
 	}
 }
 
-$TournamentCreate = new TournamentCreate();
-
 ?>

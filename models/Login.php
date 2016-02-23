@@ -108,6 +108,4 @@ SQL;
 	}
 }
 
-$Login = new Login();
-
 ?>

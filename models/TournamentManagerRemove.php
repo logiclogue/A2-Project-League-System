@@ -35,6 +35,4 @@ class TournamentManagerRemove extends TournamentManagerAlter
 	}
 }
 
-$TournamentManagerRemove = new TournamentManagerRemove();
-
 ?>

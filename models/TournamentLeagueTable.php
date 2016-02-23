@@ -88,6 +88,4 @@ SQL;
 	}
 }
 
-$TournamentLeagueTable = new TournamentLeagueTable();
-
 ?>

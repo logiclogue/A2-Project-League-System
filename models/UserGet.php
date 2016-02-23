@@ -192,6 +192,4 @@ SQL;
 	}
 }
 
-$UserGet = new UserGet();
-
 ?>

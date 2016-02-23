@@ -211,6 +211,4 @@ SQL;
 	}
 }
 
-$ResultEnter = new ResultEnter();
-
 ?>

@@ -20,10 +20,12 @@ app.factory('CallModel', function ($http, $location)
 		 */
 		fetch: function (modelName, data, callbacks) {
 			$http({
-				url: 'models/' + modelName + '.php',
+				url: 'php/API.php',
 				method: 'POST',
-				data: 'JSON=' + encodeURIComponent(JSON.stringify(data)),
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+				data: 'JSON=' + encodeURIComponent(JSON.stringify(data)) + '&model=' + modelName,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
 			})
 			.then(function (response) {
 				if (response.data.success && typeof callbacks.success == 'function') {

@@ -123,6 +123,4 @@ SQL;
 	}
 }
 
-$UserUpdate = new UserUpdate();
-
 ?>

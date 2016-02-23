@@ -27,6 +27,4 @@ class Logout extends Model
 	}
 }
 
-$Logout = new Logout();
-
 ?>

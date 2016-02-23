@@ -114,6 +114,4 @@ SQL;
 	}
 }
 
-$ResultGet = new ResultGet();
-
 ?>

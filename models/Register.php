@@ -127,6 +127,4 @@ SQL;
 	}
 }
 
-$Register = new Register();
-
 ?>

@@ -84,6 +84,4 @@ SQL;
 	}
 }
 
-$UserRatings = new UserRatings();
-
 ?>

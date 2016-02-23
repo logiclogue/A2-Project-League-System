@@ -59,6 +59,4 @@ SQL;
 	}
 }
 
-$UserSearch = new UserSearch();
-
 ?>

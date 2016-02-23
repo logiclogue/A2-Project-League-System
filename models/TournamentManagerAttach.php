@@ -35,6 +35,4 @@ class TournamentManagerAttach extends TournamentManagerAlter
 	}
 }
 
-$TournamentManagerAttach = new TournamentManagerAttach();
-
 ?>

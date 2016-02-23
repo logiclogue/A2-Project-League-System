@@ -35,6 +35,4 @@ class TournamentPlayerRemove extends TournamentPlayerAlter
 	}
 }
 
-$TournamentPlayerRemove = new TournamentPlayerRemove();
-
 ?>
