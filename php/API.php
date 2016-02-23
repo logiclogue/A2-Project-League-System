@@ -3,12 +3,39 @@
 class API
 {
 	/**
+	 * Name of the model to be called.
 	 *
+	 * @property modelName
+	 * @private
+	 * @type String
+	 */
+	private $modelName;
+
+
+	/**
+	 * Creates an instance of the class requested.
+	 * Therefore calling the model.
 	 *
-	 *
+	 * @method execute
+	 * @private
 	 */
 	private function execute() {
+		$model = new $this->modelName();
+	}
 
+	/**
+	 * Gets the data from GET or POST.
+	 *
+	 * @method getData
+	 * @private
+	 */
+	private function getData() {
+		if (isset($_GET)) {
+			$this->modelName = $_GET['model'];
+		}
+		else if (isset($_POST)) {
+			$this->modelName = $_POST['model'];
+		}
 	}
 
 	/**
@@ -31,12 +58,15 @@ class API
 
 	/**
 	 * Method that is executed when the API is called.
+	 * Calls all of the other methods.
 	 *
 	 * @method __construct
 	 * @public
 	 */
 	public function __construct() {
 		$this->requireAll();
+		$this->getData();
+		$this->execute();
 	}
 }
 
