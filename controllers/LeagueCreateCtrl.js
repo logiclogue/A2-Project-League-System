@@ -12,6 +12,15 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Create';
+	/**
+	 * Object where error message is and tells whether there is an error message.
+	 *
+	 * @property $scope.response
+	 * @type Object
+	 */
+	$scope.response = {
+		success: true
+	}
 	
 	
 	/**
@@ -30,7 +39,7 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 				$location.path('/league/' + response.id);
 			},
 			fail: function (response) {
-				alert(response.error_msg);
+				$scope.response = response;
 			}
 		});
 	};

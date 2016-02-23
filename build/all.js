@@ -844,6 +844,15 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Create';
+	/**
+	 * Object where error message is and tells whether there is an error message.
+	 *
+	 * @property $scope.response
+	 * @type Object
+	 */
+	$scope.response = {
+		success: true
+	}
 	
 	
 	/**
@@ -862,7 +871,7 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 				$location.path('/league/' + response.id);
 			},
 			fail: function (response) {
-				alert(response.error_msg);
+				$scope.response = response;
 			}
 		});
 	};
@@ -967,6 +976,15 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * @type Boolean
 	 */
 	$scope.addingPlayer = false;
+	/**
+	 * Object where error message is and tells whether there is an error message.
+	 *
+	 * @property $scope.response
+	 * @type Object
+	 */
+	$scope.response = {
+		success: true
+	}
 
 	/**
 	 * Method that redirects to home page and prints error message.
@@ -1024,7 +1042,7 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 				$location.path('/league/' + $routeParams.leagueId);
 			},
 			fail: function (response) {
-				alert(response.error_msg);
+				$scope.response = response;
 			}
 		});
 	}

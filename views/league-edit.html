@@ -3,6 +3,13 @@
 	<div class="box-container seven columns">
 		<h1>{{ editOrCreate }} League</h1>
 
+		<!-- Error message box -->
+		<div class="error-container" ng-hide="response.success">
+			<ul>
+				<li ng-bind="response.error_msg"></li>
+			</ul>
+		</div>
+
 		<!-- League name field -->
 		<label>League Name</label>
 		<input class="u-full-width" type="text" ng-model="name">
@@ -15,7 +22,7 @@
 		<button class="u-full-width" ng-click="eventUpdate()">{{ editOrCreate }}</button>
 	</div>
 
-	<div class="box-container side five columns">
+	<div class="box-container side five columns" ng-show="editOrDelete == 'Edit'">
 		<!-- Display all league managers -->
 		<div ng-hide="addingManager">
 			<h2>Managers<a class="u-pull-right" href ng-click="eventAddManager()">Add</a></h2>
