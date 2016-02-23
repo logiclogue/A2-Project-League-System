@@ -31,7 +31,7 @@ require_once(dirname(__DIR__) . '/php/Model.php');
  *   @return [].player2_rating_change {Integer} Player 2 rating change.
  *   @return [].score1 {Integer} Score of player 1.
  *   @return [].score2 {Integer} Score of player 2.
- **/
+ */
 class ResultGet extends Model
 {
 	/**
