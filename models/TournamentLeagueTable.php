@@ -3,6 +3,7 @@
 require_once(dirname(__DIR__) . '/php/Model.php');
 require_once(dirname(__DIR__) . '/php/Database.php');
 require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
+require_once(dirname(__DIR__) . '/models/ResultGet.php');
 
 
 /**
@@ -26,42 +27,58 @@ require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
 class TournamentLeagueTable extends Model
 {
 	/**
-	 * SQL query string for generating the league table.
+	 * Array that stores the table data.
+	 *
+	 * @property table
+	 * @private
+	 * @type Array
+	 */
+	private $table = array();
+
+	/**
+	 * SQL query string for getting the players in the leauge.
 	 *
 	 * @property query
-	 * @type String
 	 * @private
+	 * @type String
 	 */
 	private $query = <<<SQL
 		SELECT
-		ru.user_id,
+		u.id user_id,
 		CONCAT(u.first_name, ' ', u.last_name) name,
-		COUNT(ru.user_id) played,
-		SUM(ru.score = 3) wins,
-		SUM(ru.score <> 3) loses,
-		SUM(ru.score) points
-		FROM result_user_maps ru
+		0 played,
+		0 wins,
+		0 loses,
+		0 points,
+		0 rating
+		FROM tournament_user_maps tu
 		INNER JOIN users u
-		ON u.id = user_id
-		INNER JOIN results r
-		ON r.id = ru.result_id
-		WHERE r.tournament_id = :id
-		GROUP BY user_id
-		ORDER BY points DESC
+		ON u.id = tu.user_id
+		WHERE tu.tournament_id = :id
 SQL;
 
 
 	/**
-	 * Method gets all user ratings.
-	 * Loops over all player and appends their rating.
-	 * Gets rating from @class EloRating and @method userRating.
+	 * If that player is unpopulated, then populate the table.
 	 *
-	 * @method getPlayerRatings
+	 * @method populateTable
 	 * @private
 	 */
-	private function getPlayerRatings() {
-		foreach ($this->return_data['table'] as &$player) {
-			$player['rating'] = EloRating::userRating($player['user_id'], $this->data['id']);
+	private function populateTable() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if ($stmt->execute()) {
+			$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			foreach($users as &$user) {
+				$this->table[$user['user_id']] = $user;
+			}
+		}
+		else {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
 		}
 	}
 
@@ -73,18 +90,50 @@ SQL;
 	 * @protected
 	 */
 	protected function main() {
-		$stmt = Database::$conn->prepare($this->query);
+		$ResultGet = new ResultGet(true);
+		$results = $ResultGet->call(array(
+			'tournament_id' => $this->data['id']
+		))['results'];
+		$this->return_data['table'] = array();
 
-		$stmt->bindParam(':id', $this->data['id']);
+		$this->populateTable();
 
-		if ($stmt->execute()) {
-			$this->return_data['table'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			$this->getPlayerRatings();
+		// Calculate points and put in table.
+		foreach ($results as &$result) {
+			$points1 = 0;
+			$points2 = 0;
+			$this->table[$result['player1_id']]['played'] += 1;
+			$this->table[$result['player2_id']]['played'] += 1;
+
+			// Player 1 wins.
+			if ($result['score1'] == 3) {
+				$points1 = 6 - $result['score2'];
+				$points2 = 1 + $result['score2'];
+				$this->table[$result['player1_id']]['wins'] += 1;
+				$this->table[$result['player2_id']]['loses'] += 1;
+			}
+			// Player 2 wins.
+			else if ($result['score2'] == 3) {
+				$points1 = 1 + $result['score1'];
+				$points2 = 6 - $result['score1'];
+				$this->table[$result['player2_id']]['wins'] += 1;
+				$this->table[$result['player1_id']]['loses'] += 1;
+			}
+
+			$this->table[$result['player1_id']]['points'] = $points1;
+			$this->table[$result['player2_id']]['points'] = $points2;
+			$this->table[$result['player1_id']]['rating'] = $result['player1_rating'];
+			$this->table[$result['player2_id']]['rating'] = $result['player2_rating'];
 		}
-		else {
-			$this->success = false;
-			$this->error_msg = "Failed to execute query";
+
+		// Order table and return.
+		foreach ($this->table as &$user) {
+			array_push($this->return_data['table'], $user);
 		}
+
+		usort($this->return_data['table'], function($a, $b) {
+			return $b['points'] > $a['points'];
+		});
 	}
 }
 

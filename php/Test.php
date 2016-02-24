@@ -20,7 +20,6 @@ require_once(dirname(__DIR__) . '/models/TournamentLeagueTable.php');
 require_once(dirname(__DIR__) . '/models/ResultEnter.php');
 require_once(dirname(__DIR__) . '/models/ResultGet.php');
 require_once(dirname(__DIR__) . '/models/FixturesGet.php');
-require_once(dirname(__DIR__) . '/superclasses/Validate.php');
 
 
 /**
@@ -32,7 +31,7 @@ require_once(dirname(__DIR__) . '/superclasses/Validate.php');
 class Test
 {
 	private static function echo_n($data) {
-		echo (json_encode($data, JSON_PRETTY_PRINT)) . '<br>';
+		echo (json_encode($data, JSON_PRETTY_PRINT)) . '<br><br>';
 	}
 
 

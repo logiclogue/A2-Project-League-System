@@ -134,8 +134,15 @@ class Model
 	 *
 	 * @method __construct
 	 * @public
+	 * @param notAPI {Boolean}
 	 */
-	public function __construct() {
+	public function __construct($notAPI) {
+		// If not being called as API, then unset POST.
+		if ($notAPI) {
+			unset($_POST);
+		}
+
+		// If called as API.
 		if ($this->isPost()) {
 			$this->data = $this->decodePost();
 
