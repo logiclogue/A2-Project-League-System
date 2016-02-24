@@ -54,7 +54,9 @@ class TournamentLeagueTable extends Model
 		FROM tournament_user_maps tu
 		INNER JOIN users u
 		ON u.id = tu.user_id
-		WHERE tu.tournament_id = :id
+		WHERE
+		tu.tournament_id = :id AND
+		tu.is_player = TRUE
 SQL;
 
 
@@ -118,10 +120,6 @@ SQL;
 			// Add points to total.
 			$this->table[$result['player1_id']]['points'] += $points1;
 			$this->table[$result['player2_id']]['points'] += $points2;
-
-			// Make sure that the latest rating is put in.
-			$this->table[$result['player1_id']]['rating'] = EloRating::userRating($result['player1_id']);
-			$this->table[$result['player2_id']]['rating'] = EloRating::userRating($result['player2_id']);
 		}
 	}
 
@@ -134,6 +132,8 @@ SQL;
 	private function order() {
 		// Set table to return data.
 		foreach ($this->table as &$user) {
+			$this->table[$user['user_id']]['rating'] = EloRating::userRating($user['user_id']);
+
 			array_push($this->return_data['table'], $user);
 		}
 
