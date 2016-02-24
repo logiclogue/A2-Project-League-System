@@ -2,6 +2,7 @@
 
 require_once(dirname(__DIR__) . '/php/Database.php');
 require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
 
 session_start();
 
@@ -18,6 +19,7 @@ session_start();
  * @return id {Integer} Id of the user.
  * @return first_name {String} First name of the user.
  * @return last_name {String} Last name of the user.
+ * @return rating {Integer} The user's rating.
  * @return leagues_playing {Array}
  *   @return leagues_playing[].id {Integer} Id of league playing in.
  *   @return leagues_playing[].name {String} Name of league playing in.
@@ -186,6 +188,8 @@ SQL;
 	 */
 	protected function main() {
 		if ($this->getUserData()) {
+			$this->return_data['rating'] = EloRating::userRating($this->data['id']);
+			
 			$this->getPlaying();
 			$this->getManaging();
 		}

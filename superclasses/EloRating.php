@@ -44,17 +44,13 @@ class EloRating
 	 */
 	private static $query_get_rating = <<<SQL
 		SELECT
-		ru.user_id,
-		r.tournament_id,
-		r.date,
-		CASE WHEN COUNT(*) = 0 THEN :default_rating ELSE ru.rating END rating
+		ru.rating rating
 		FROM result_user_maps ru
 		INNER JOIN results r
 		ON r.id = ru.result_id
 		WHERE
-		ru.user_id = :user_id AND
-		r.tournament_id = :tournament_id
-		ORDER BY r.date
+		ru.user_id = :user_id
+		ORDER BY r.date DESC
 		LIMIT 1
 SQL;
 
@@ -75,18 +71,22 @@ SQL;
 	 * @public
 	 * @static
 	 * @param user_id {Integer} Id of the user to get rating.
-	 * @param tournament_id {Integer} Id of the tournament.
 	 * @return {Integer} Latest rating of the user.
 	 */
-	public static function userRating($user_id, $tournament_id) {
+	public static function userRating($user_id) {
 		$stmt = Database::$conn->prepare(self::$query_get_rating);
 
 		$stmt->bindParam(':user_id', $user_id);
-		$stmt->bindParam(':tournament_id', $tournament_id);
-		$stmt->bindParam(':default_rating', self::$default_rating);
 
 		if ($stmt->execute()) {
-			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['rating'];
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if (count($result) == 0) {
+				return self::$default_rating;
+			}
+			else {
+				return $result[0]['rating'];
+			}
 		}
 		else {
 			return false;

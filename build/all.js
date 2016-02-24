@@ -467,9 +467,7 @@ app.factory('CallModel', function ($http, $location)
  */
 app.factory('RatingChart', function ()
 {
-	/**
-	 * Canvas context variable.
-	 *
+	/**	 *
 	 * @var ctx
 	 * @private
 	 */
@@ -549,32 +547,16 @@ app.factory('RatingChart', function ()
 		 * @param ratings {Array} Array of all the ratings over time.
 		 */
 		inputRatings: function (ratings) {
-			// Initialise the tournament array.
-			var tournamentRatings = [];
-
-			// Sort into different tournaments.
-			ratings.forEach(function (rating) {
-				tournamentRatings[rating.tournament_id] = tournamentRatings[rating.tournament_id] || [];
-				tournamentRatings[rating.tournament_id].tournament_name = rating.tournament_name;
-				tournamentRatings[rating.tournament_id].push(rating);
-			});
-
 			// Sort rating in reverse order.
 			ratings.sort(function (a, b) {
 				return a.date > b.date;
 			});
 
 			// Calculate average rating.
-			ratings.forEach(function () {
-				var average;
-
-				return function (rating) {
-					average = average + parseInt(rating.rating_change) || parseInt(rating.rating);
-
-					averageRating.push(average);
-					dates.push(rating.date);
-				};
-			}());
+			ratings.forEach(function (rating) {
+				averageRating.push(parseInt(rating.rating));
+				dates.push(rating.date);
+			});
 		},
 		/**
 		 * Call this method when initialising the graph.
@@ -588,6 +570,9 @@ app.factory('RatingChart', function ()
 			// Reset arrays without deleting reference
 			dates.splice(0, dates.length);
 			averageRating.splice(0, averageRating.length);
+
+			dates.push('');
+			averageRating.push(1300);
 		},
 		/**
 		 * This method is called when drawing the graph.

@@ -19,8 +19,6 @@ session_start();
  *   @return [].rating {Integer} Rating at that moment in time.
  *   @return [].rating_change {Integer} Change of rating.
  *   @return [].date {String} Date and time when rating was the value.
- *   @return [].tournament_id {Integer} Id of the tournament that the rating was associated with.
- *   @return [].tournament_name {String} Name of the tournament.
  */
 class UserRatings extends Model
 {
@@ -35,14 +33,10 @@ class UserRatings extends Model
 		SELECT
 		ru.rating,
 		ru.rating_change,
-		r.date,
-		r.tournament_id,
-		t.name tournament_name
+		r.date
 		FROM result_user_maps ru
 		INNER JOIN results r
 		ON r.id = ru.result_id
-		INNER JOIN tournaments t
-		ON t.id = r.tournament_id
 		WHERE ru.user_id = :id
 		ORDER BY r.date DESC
 SQL;

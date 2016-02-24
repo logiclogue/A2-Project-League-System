@@ -120,12 +120,8 @@ SQL;
 			$this->table[$result['player2_id']]['points'] += $points2;
 
 			// Make sure that the latest rating is put in.
-			if (!isset($this->table[$result['player1_id']]['rating'])) {
-				$this->table[$result['player1_id']]['rating'] = $result['player1_rating'];
-			}
-			if (!isset($this->table[$result['player2_id']]['rating'])) {
-				$this->table[$result['player2_id']]['rating'] = $result['player2_rating'];
-			}
+			$this->table[$result['player1_id']]['rating'] = EloRating::userRating($result['player1_id']);
+			$this->table[$result['player2_id']]['rating'] = EloRating::userRating($result['player2_id']);
 		}
 	}
 
