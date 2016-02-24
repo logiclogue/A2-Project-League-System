@@ -50,7 +50,7 @@ class TournamentLeagueTable extends Model
 		0 wins,
 		0 loses,
 		0 points,
-		0 rating
+		null rating
 		FROM tournament_user_maps tu
 		INNER JOIN users u
 		ON u.id = tu.user_id
@@ -83,22 +83,17 @@ SQL;
 	}
 
 	/**
-	 * Method the executes @property query.
-	 * Returns league table.
+	 * Calculate points and put in table.
 	 *
-	 * @method main
-	 * @protected
+	 * @method calcuate
+	 * @private
 	 */
-	protected function main() {
+	private function calculate() {
 		$ResultGet = new ResultGet(true);
 		$results = $ResultGet->call(array(
 			'tournament_id' => $this->data['id']
 		))['results'];
-		$this->return_data['table'] = array();
 
-		$this->populateTable();
-
-		// Calculate points and put in table.
 		foreach ($results as &$result) {
 			$points1 = 0;
 			$points2 = 0;
@@ -120,25 +115,57 @@ SQL;
 				$this->table[$result['player1_id']]['loses'] += 1;
 			}
 
+			// Add points to total.
 			$this->table[$result['player1_id']]['points'] += $points1;
 			$this->table[$result['player2_id']]['points'] += $points2;
-			$this->table[$result['player1_id']]['rating'] = $result['player1_rating'];
-			$this->table[$result['player2_id']]['rating'] = $result['player2_rating'];
-		}
 
-		// Order table and return.
+			// Make sure that the latest rating is put in.
+			if (!isset($this->table[$result['player1_id']]['rating'])) {
+				$this->table[$result['player1_id']]['rating'] = $result['player1_rating'];
+			}
+			if (!isset($this->table[$result['player2_id']]['rating'])) {
+				$this->table[$result['player2_id']]['rating'] = $result['player2_rating'];
+			}
+		}
+	}
+
+	/**
+	 * Order table and return.
+	 *
+	 * @method order
+	 * @private
+	 */
+	private function order() {
+		// Set table to return data.
 		foreach ($this->table as &$user) {
 			array_push($this->return_data['table'], $user);
 		}
 
+		// Order table.
 		usort($this->return_data['table'], function($a, $b) {
 			// If level on points then order by wins.
 			if ($a['points'] == $b['points']) {
 				return $b['wins'] > $a['wins'];
 			}
 
+			// Else order by points.
 			return $b['points'] > $a['points'];
 		});
+	}
+
+	/**
+	 * Method the executes @property query.
+	 * Returns league table.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->return_data['table'] = array();
+
+		$this->populateTable();
+		$this->calculate();
+		$this->order();		
 	}
 }
 
