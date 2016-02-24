@@ -120,8 +120,8 @@ SQL;
 				$this->table[$result['player1_id']]['loses'] += 1;
 			}
 
-			$this->table[$result['player1_id']]['points'] = $points1;
-			$this->table[$result['player2_id']]['points'] = $points2;
+			$this->table[$result['player1_id']]['points'] += $points1;
+			$this->table[$result['player2_id']]['points'] += $points2;
 			$this->table[$result['player1_id']]['rating'] = $result['player1_rating'];
 			$this->table[$result['player2_id']]['rating'] = $result['player2_rating'];
 		}
@@ -132,6 +132,11 @@ SQL;
 		}
 
 		usort($this->return_data['table'], function($a, $b) {
+			// If level on points then order by wins.
+			if ($a['points'] == $b['points']) {
+				return $b['wins'] > $a['wins'];
+			}
+
 			return $b['points'] > $a['points'];
 		});
 	}
