@@ -71,15 +71,31 @@ class Validate
 
 		// Check only a-zA-Z0-9 and spaces using regex.
 		if ($match[0] != $name) {
-			return self::returnData(false, 'Tournament name can only contain alphanumerical or !@#$%^&*()£/?,. characters');
+			return self::returnData(false, 'League name can only contain alphanumerical or !@#$%^&*()£/?,. characters');
 		}
 		// Check length > 5.
 		if (strlen($name) < 5) {
-			return self::returnData(false, 'Tournament name must be at least 5 characters');
+			return self::returnData(false, 'League name must be at least 5 characters');
 		}
 		// Check length <= 40.
 		if (strlen($name) > 40) {
-			return self::returnData(false, 'Tournament name must be at most 40 characters');
+			return self::returnData(false, 'League name must be at most 40 characters');
+		}
+
+		return self::returnData(true, null);
+	}
+
+	/**
+	 * Validates tournament description.
+	 *
+	 * @method tournamentDescription
+	 * @static
+	 * @param description {String}
+	 * @return {Object} Return of @method returnData
+	 */
+	public static function tournamentDescription($description) {
+		if (strlen($description) > 255) {
+			return self::returnData(false, 'League description must be at most 255 characters');
 		}
 
 		return self::returnData(true, null);

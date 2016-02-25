@@ -128,14 +128,19 @@ SQL;
 	 */
 	protected function main() {
 		if (isset($_SESSION['user'])) {
-			$validate = Validate::tournamentName($this->data['name']);
-			
-			if ($validate['success']) { 
-				$this->create();
+			$validateName = Validate::tournamentName($this->data['name']);
+			$validateDescription = Validate::tournamentDescription($this->data['description']);
+
+			if (!$validateName['success']) {
+				$this->error_msg = $validateName['error_msg'];
+				$this->success = false;
+			}
+			else if (!$validateDescription['success']) {
+				$this->error_msg = $validateDescription['error_msg'];
+				$this->success = false;
 			}
 			else {
-				$this->error_msg = $validate['error_msg'];
-				$this->success = false;
+				$this->create();
 			}
 		}
 		else {

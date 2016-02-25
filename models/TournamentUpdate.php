@@ -44,6 +44,7 @@ SQL;
 		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['id']);
 		$tournament_exists = $this->tournamentExistsId($this->data['id']);
 		$validateName = Validate::tournamentName($this->data['name']);
+		$validateDescription = Validate::tournamentDescription($this->data['description']);
 
 		if (!$tournament_exists) {
 			$this->error_msg = "Tournament doesn't exists";
@@ -57,6 +58,11 @@ SQL;
 		}
 		if (!$validateName['success']) {
 			$this->error_msg = $validateName['error_msg'];
+
+			return false;
+		}
+		if (!$validateDescription['success']) {
+			$this->error_msg = $validateDescription['error_msg'];
 
 			return false;
 		}
