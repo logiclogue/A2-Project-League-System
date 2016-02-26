@@ -3,7 +3,7 @@
  *
  * @directive cpResult
  */
-app.directive('cpResult', function (CallModel)
+app.directive('cpResult', function (CallModel, DateFormat)
 {
 	/**
 	 * Variable for storing scope.
@@ -11,32 +11,7 @@ app.directive('cpResult', function (CallModel)
 	 * @var self
 	 */
 	var self;
-	/**
-	 * Days of the week for date format.
-	 *
-	 * @var days
-	 */
-	var days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-	/**
-	 * Months of the year for date format.
-	 *
-	 * @var months
-	 */
-	var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-
-	/**
-	 * Function that returns formated output date from input date.
-	 *
-	 * @method getDateString
-	 * @param dateString {String} Input date string.
-	 * @return {String} Output formated date string.
-	 */
-	function getDateString(dateString) {
-		var date = new Date(dateString);
-
-		return days[date.getDay()] + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
-	}
 
 	/**
 	 * Function that sets CSS class for colouring result.
@@ -53,7 +28,7 @@ app.directive('cpResult', function (CallModel)
 				result.winOrLoss = 'loss';
 			}
 
-			result.date = getDateString(result.date);
+			result.date = DateFormat.getString(result.date);
 		});
 	}
 

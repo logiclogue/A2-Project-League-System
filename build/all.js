@@ -461,6 +461,42 @@ app.factory('CallModel', function ($http, $location)
 	};
 });
 /**
+ * Factory that returns the site's format of date.
+ *
+ * @factory DateFormat
+ */
+app.factory('DateFormat', function ()
+{
+	/**
+	 * Days of the week for date format.
+	 *
+	 * @var days
+	 */
+	var days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+	/**
+	 * Months of the year for date format.
+	 *
+	 * @var months
+	 */
+	var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+
+	return {
+		/**
+		 * Function that returns formated output date from input date.
+		 *
+		 * @method getDateString
+		 * @param dateString {String} Input date string.
+		 * @return {String} Output formated date string.
+		 */
+		getString: function (dateString) {
+			var date = new Date(dateString);
+
+			return days[date.getDay()] + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+		}
+	}
+});
+/**
  * Factory for handling the rating graph.
  *
  * @factory RatingChart
@@ -677,7 +713,7 @@ app.directive('cpLeagueSearch', function (CallModel)
  *
  * @directive cpResult
  */
-app.directive('cpResult', function (CallModel)
+app.directive('cpResult', function (CallModel, DateFormat)
 {
 	/**
 	 * Variable for storing scope.
@@ -685,32 +721,7 @@ app.directive('cpResult', function (CallModel)
 	 * @var self
 	 */
 	var self;
-	/**
-	 * Days of the week for date format.
-	 *
-	 * @var days
-	 */
-	var days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-	/**
-	 * Months of the year for date format.
-	 *
-	 * @var months
-	 */
-	var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-
-	/**
-	 * Function that returns formated output date from input date.
-	 *
-	 * @method getDateString
-	 * @param dateString {String} Input date string.
-	 * @return {String} Output formated date string.
-	 */
-	function getDateString(dateString) {
-		var date = new Date(dateString);
-
-		return days[date.getDay()] + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
-	}
 
 	/**
 	 * Function that sets CSS class for colouring result.
@@ -727,7 +738,7 @@ app.directive('cpResult', function (CallModel)
 				result.winOrLoss = 'loss';
 			}
 
-			result.date = getDateString(result.date);
+			result.date = DateFormat.getString(result.date);
 		});
 	}
 
@@ -1510,32 +1521,43 @@ app.controller('ProfileEditCtrl', function ($scope, $window, $location, CallMode
  *
  * @controller ResultEnterCtrl
  */
-app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, CallModel)
+app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, CallModel, DateFormat)
 {
 	/**
 	 * The id of the tournament as defined by the route parametre.
 	 *
 	 * @var $scope.tournamentId
+	 * @type Integer
 	 */
 	$scope.tournamentId = $routeParams.tournamentId;
 	/**
 	 * Name of the tournament.
 	 *
 	 * @var $scope.tournamentName
+	 * @type String
 	 */
 	$scope.tournamentName;
 	/**
 	 * Player 1 data object.
 	 *
 	 * @var $scope.player1
+	 * @type Integer
 	 */
 	$scope.player1 = {};
 	/**
 	 * Player 2 data object.
 	 *
 	 * @var $scope.player2
+	 * @type Integer
 	 */
 	$scope.player2 = {};
+	/**
+	 * The date that the result will be entered.
+	 *
+	 * @var $scope.date
+	 * @type String
+	 */
+	$scope.date = DateFormat.getString(Date.now());
 
 
 	/**

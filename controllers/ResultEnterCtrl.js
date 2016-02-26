@@ -3,32 +3,43 @@
  *
  * @controller ResultEnterCtrl
  */
-app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, CallModel)
+app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, CallModel, DateFormat)
 {
 	/**
 	 * The id of the tournament as defined by the route parametre.
 	 *
 	 * @var $scope.tournamentId
+	 * @type Integer
 	 */
 	$scope.tournamentId = $routeParams.tournamentId;
 	/**
 	 * Name of the tournament.
 	 *
 	 * @var $scope.tournamentName
+	 * @type String
 	 */
 	$scope.tournamentName;
 	/**
 	 * Player 1 data object.
 	 *
 	 * @var $scope.player1
+	 * @type Integer
 	 */
 	$scope.player1 = {};
 	/**
 	 * Player 2 data object.
 	 *
 	 * @var $scope.player2
+	 * @type Integer
 	 */
 	$scope.player2 = {};
+	/**
+	 * The date that the result will be entered.
+	 *
+	 * @var $scope.date
+	 * @type String
+	 */
+	$scope.date = DateFormat.getString(Date.now());
 
 
 	/**
