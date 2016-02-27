@@ -1241,6 +1241,8 @@ app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route,
 			success: function (response) {
 				getUserData();
 
+				alert('You have successfully logged in');
+				
 				$location.path('/');
 			},
 			fail: function (response) {
