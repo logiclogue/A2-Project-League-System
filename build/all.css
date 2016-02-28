@@ -868,6 +868,14 @@ there.
 	text-transform: uppercase;
 }
 
+.box-container.side span {
+	line-height: auto;
+}
+
+.box-container .buffer {
+	height: 1.5rem;
+}
+
 
 .error-container {
 	background-color: #FFD4CC;

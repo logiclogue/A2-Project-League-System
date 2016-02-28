@@ -1,10 +1,17 @@
 <!-- View for the search directives -->
 <div>
 	<!-- Search field -->
-	<input class="u-full-width" type="text" ng-model="inputName" ng-change="eventInputChange()"></input>
+	<input class="u-full-width" type="text" placeholder="Search" ng-model="inputName" ng-change="eventInputChange()"></input>
+
+	<!-- Error shows when no league found -->
+	<div class="error-container" ng-show="results.length === 0">
+		<ul>
+			<li>No leagues found</li>
+		</ul>
+	</div>
 
 	<!-- Results from search -->
-	<ul>
+	<ul class="list-side" ng-show="inputName.length !== 0">
 		<li ng-repeat="n in results">
 			<a href ng-bind="n.name" ng-click="eventClickName(n.id)"></a>
 		</li>
