@@ -4,8 +4,10 @@
 
 .list-side li {
 	margin: 0;
+	margin-bottom: 0.5rem;
 
 	list-style: none;
+	line-height: normal;
 }
 
 .list-side a {

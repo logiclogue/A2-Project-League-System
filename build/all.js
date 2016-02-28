@@ -690,6 +690,15 @@ app.directive('cpLeagueSearch', function (CallModel)
 		},
 		link: function (scope) {
 			/**
+			 * Must be empty string for search results box to fully hide
+			 *
+			 * @property scope.inputName
+			 * @type String
+			 */
+			scope.inputName = '';
+			
+
+			/**
 			 * Method that is called when text in input field is changed.
 			 * Updates search for tournament when input is changed.
 			 *
