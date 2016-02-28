@@ -845,7 +845,7 @@ there.
 @media (min-width: 1200px) {}
 
 .box-container {
-	padding: 2rem 2rem 1rem 2rem;
+	padding: 2rem 2rem 0rem 2rem;
 	margin-bottom: 4rem;
 
 	border-radius: 1rem;
@@ -854,6 +854,8 @@ there.
 }
 
 .box-container.side {
+	padding-bottom: 0;
+
 	border-width: 0.3rem;
 	border-color: #DADADA;
 	border-style: solid;
@@ -890,6 +892,10 @@ there.
 .league-table {
 	table-layout: fixed;
 }
+.list-side {
+	margin-bottom: 2rem;
+}
+
 .list-side li {
 	margin: 0;
 
