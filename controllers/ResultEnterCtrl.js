@@ -40,6 +40,13 @@ app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, Cal
 	 * @type String
 	 */
 	$scope.date = DateFormat.getString(Date.now());
+	/**
+	 * Error message, if there is one.
+	 *
+	 * @var $scope.errorMsg
+	 * @type String
+	 */
+	$scope.errorMsg = '';
 
 
 	/**
@@ -58,11 +65,12 @@ app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, Cal
 		},
 		{
 			success: function (response) {
+				alert('Successfully entered result');
+
 				$location.path('/league/' + $routeParams.tournamentId);
 			},
 			fail: function (response) {
-				alert(response.error_msg);
-				$location.path('/');
+				$scope.errorMsg = response.error_msg;
 			}
 		})
 	};

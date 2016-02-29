@@ -3,6 +3,12 @@
 	<div class="box-container seven columns">
 		<h1>Input Result</h1>
 
+		<div class="error-container" ng-show="errorMsg.length != 0">
+			<ul>
+				<li ng-bind="errorMsg"></li>
+			</ul>
+		</div>
+
 		<table>
 			<tr>
 				<td><h2 ng-bind="player1.fullName"></h2></td>
@@ -20,8 +26,10 @@
 	<div class="box-container side five columns">
 		<h2>League</h2>
 		<a ng-href="#/league/{{ tournamentId }}" ng-bind="tournamentName"></a>
+		<div class="buffer"></div>
 		<h2>Date</h2>
 		<span ng-bind="date"></span>
+		<div class="buffer"></div>
 	</div>
 
 </div>
