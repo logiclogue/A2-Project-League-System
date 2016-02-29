@@ -73,6 +73,7 @@ SQL;
 			$this->general();
 		}
 		else {
+			$this->error_msg = "You must be logged in";
 			$this->success = false;
 		}
 	}

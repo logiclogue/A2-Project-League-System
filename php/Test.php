@@ -17,6 +17,7 @@ require_once(dirname(__DIR__) . '/models/TournamentManagerAttach.php');
 require_once(dirname(__DIR__) . '/models/TournamentManagerRemove.php');
 require_once(dirname(__DIR__) . '/models/TournamentSearch.php');
 require_once(dirname(__DIR__) . '/models/TournamentLeagueTable.php');
+require_once(dirname(__DIR__) . '/models/TournamentDelete.php');
 require_once(dirname(__DIR__) . '/models/ResultEnter.php');
 require_once(dirname(__DIR__) . '/models/ResultGet.php');
 require_once(dirname(__DIR__) . '/models/FixturesGet.php');
@@ -47,6 +48,7 @@ class Test
 		$TournamentManagerRemove = new TournamentManagerRemove();
 		$TournamentSearch = new TournamentSearch();
 		$TournamentLeagueTable = new TournamentLeagueTable();
+		$TournamentDelete = new TournamentDelete();
 		$ResultEnter = new ResultEnter();
 		$ResultGet = new ResultGet();
 		$FixturesGet = new FixturesGet();

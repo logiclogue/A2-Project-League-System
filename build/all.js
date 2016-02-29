@@ -875,6 +875,8 @@ app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 		},
 		{
 			success: function (response) {
+				alert('Successfully created the league');
+
 				$location.path('/league/' + response.id);
 			},
 			fail: function (response) {
