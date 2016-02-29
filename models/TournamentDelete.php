@@ -28,10 +28,10 @@ class TournamentDelete extends Tournament
 		FROM tournaments t
 		INNER JOIN tournament_user_maps tu
 		ON t.id = tu.tournament_id
-		INNER JOIN result_user_maps ru
-		ON ru.user_id = tu.user_id
 		INNER JOIN results r
-		ON r.id = ru.result_id
+		ON r.tournament_id = t.id
+		INNER JOIN result_user_maps ru
+		ON ru.result_id = r.id
 		WHERE t.id = :id
 SQL;
 
