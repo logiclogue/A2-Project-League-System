@@ -218,6 +218,24 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 		$scope.addingPlayer = false;
 	};
 
+	/**
+	 * Function that calls @class TournamentDelete, to delete the league.
+	 *
+	 * @method $scope.eventDelete
+	 */
+	 $scope.eventDelete = function () {
+	 	CallModel.fetch('TournamentDelete', {
+	 		id: $routeParams.leagueId
+	 	}, {
+	 		success: function (response) {
+	 			alert('Successfully deleted the league');
+
+	 			$location.path('/profile');
+	 		}
+	 	})
+	 };
+
+
 
 	(function () {
 		/* 

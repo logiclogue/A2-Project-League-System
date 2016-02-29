@@ -18,6 +18,9 @@
 		<label>League Description</label>
 		<textarea class="u-full-width" ng-model="description"></textarea>
 
+		<!-- Delete league button -->
+		<button class="u-full-width" ng-click="eventDelete()" ng-show="editOrCreate == 'Edit'">Delete League</button>
+
 		<!-- Submit button -->
 		<button class="u-full-width" ng-click="eventUpdate()">{{ editOrCreate }}</button>
 	</div>
