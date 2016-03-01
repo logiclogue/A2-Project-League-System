@@ -20,6 +20,7 @@ require_once(dirname(__DIR__) . '/models/TournamentLeagueTable.php');
 require_once(dirname(__DIR__) . '/models/TournamentDelete.php');
 require_once(dirname(__DIR__) . '/models/ResultEnter.php');
 require_once(dirname(__DIR__) . '/models/ResultGet.php');
+require_once(dirname(__DIR__) . '/models/ResultDelete.php');
 require_once(dirname(__DIR__) . '/models/FixturesGet.php');
 
 
@@ -51,6 +52,7 @@ class Test
 		$TournamentDelete = new TournamentDelete();
 		$ResultEnter = new ResultEnter();
 		$ResultGet = new ResultGet();
+		$ResultDelete = new ResultDelete();
 		$FixturesGet = new FixturesGet();
 		$UserGet = new UserGet();
 		$UserSearch = new UserSearch();
@@ -202,6 +204,20 @@ class Test
 
 		echo 'User ratings: ';
 		self::echo_n($UserRatings->call(array()));
+
+		echo 'Enter result: ';
+		self::echo_n($ResultEnter->call(array(
+			'tournament_id' => 1,
+			'player1_id' => 1,
+			'player2_id' => 2,
+			'player1_score' => 1,
+			'player2_score' => 3
+		)));
+
+		echo 'Delete result: ';
+		self::echo_n($ResultDelete->call(array(
+			'id' => 2
+		)));
 	}
 }
 

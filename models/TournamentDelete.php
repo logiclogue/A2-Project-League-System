@@ -1,5 +1,7 @@
 <?php
 
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+
 session_start();
 
 
@@ -79,7 +81,6 @@ SQL;
 	 *
 	 * @method main
 	 * @protected
-	 * @private
 	 */
 	protected function main() {
 		if ($this->verify()) {
