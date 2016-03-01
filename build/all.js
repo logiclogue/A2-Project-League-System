@@ -722,7 +722,7 @@ app.directive('cpLeagueSearch', function (CallModel)
  *
  * @directive cpResult
  */
-app.directive('cpResult', function (CallModel, DateFormat)
+app.directive('cpResult', function ($route, CallModel, DateFormat)
 {
 	/**
 	 * Variable for storing scope.
@@ -784,6 +784,30 @@ app.directive('cpResult', function (CallModel, DateFormat)
 		},
 		link: function ($scope) {
 			self = $scope;
+
+
+			/**
+			 * Function that deletes a result when delete button is clicked.
+			 *
+			 * @method $scope.eventDelete
+			 * @param id {Integer} Id of the result to be deleted.
+			 */
+			$scope.eventDelete = function (id) {
+				CallModel.fetch('ResultDelete', {
+					id: id
+				},
+				{
+					success: function (response) {
+						alert("Successfully deleted the result");
+
+						$route.reload();
+					},
+					fail: function (response) {
+						alert(response.error_msg);
+					}
+				});
+			};
+
 
 			// When loaded call @method getResults.
 			var waiting = $scope.$watch('isReady', function (success) {

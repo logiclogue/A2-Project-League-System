@@ -6,6 +6,7 @@
 		<div class="head">
 			<span ng-bind="n.date"></span>
 			<a class="u-pull-right" href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a><br>
+			<a class="u-pull-right" href ng-click="eventDelete(n.id)">Delete</a>
 		</div>
 
 		<!-- Displays player names and score -->
