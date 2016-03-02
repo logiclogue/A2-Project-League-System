@@ -32,6 +32,19 @@ class Register extends Model
 		INSERT INTO users (email, first_name, last_name, hash)
 		VALUES (:email, :first_name, :last_name, :hash)
 SQL;
+
+	/**
+	 * SQL query string for checking whether email is already in use.
+	 *
+	 * @property query_email
+	 * @type String
+	 * @private
+	 */
+	private $query_email = <<<SQL
+		SELECT COUNT(*) count
+		FROM users
+		WHERE email = :email
+SQL;
 	
 	/**
 	 * For executing the query string.
@@ -66,6 +79,24 @@ SQL;
 	}
 
 	/**
+	 * Method that will check whether email is already in use.
+	 *
+	 * @method checkEmail
+	 * @return {Boolean} Whether email is already used.
+	 */
+	private function checkEmail() {
+		$stmt = Database::$conn->prepare($this->query_email);
+
+		$stmt->bindParam(':email', $this->data['email']);
+
+		if ($stmt->execute()) {
+			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['count'];
+		}
+
+		return false;
+	}
+
+	/**
 	 * Validate email, first name, last name, and password.
 	 *
 	 * @method validate
@@ -90,6 +121,11 @@ SQL;
 		}
 		if (!$validateEmail['success']) {
 			$this->error_msg = $validateEmail['error_msg'];
+
+			return false;
+		}
+		if ($this->checkEmail()) {
+			$this->error_msg = "Email already in use";
 
 			return false;
 		}
