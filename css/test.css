@@ -1,0 +1,11 @@
+.test {
+	margin: 4rem;
+}
+
+.test tr.true {
+	color: green;
+}
+
+.test tr.false {
+	color: red;
+}

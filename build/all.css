@@ -1108,3 +1108,14 @@ a:link {
 hr {
 	margin: 2rem 0 2rem;
 }
+.test {
+	margin: 4rem;
+}
+
+.test tr.true {
+	color: green;
+}
+
+.test tr.false {
+	color: red;
+}
