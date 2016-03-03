@@ -8,6 +8,7 @@
 <table>
 	<thead>
 		<th>Test</th>
+		<th>Description</th>
 		<th>Input data</th>
 		<th>Expected result</th>
 		<th>Result</th>
@@ -47,12 +48,13 @@ class Test
 	 *
 	 *
 	 */
-	private static function unitTest($modelName, $data) {
+	private static function unitTest($modelName, $description, $data) {
 		$model = new $modelName(true);
 		
 		echo '<tr>';
 		echo '<td>' . $modelName . '</td>';
-		echo '<td>' . json_encode($data) . '</td>';
+		echo '<td>' . $description . '</td>';
+		echo '<td>' . nl2br(json_encode($data, JSON_PRETTY_PRINT)) . '</td>';
 		echo '</tr>';
 	}
 
@@ -69,161 +71,214 @@ class Test
 		// Database reset
 		Database::reset();
 
-		echo 'Register user: ';
-		self::unitTest('Register', array(
-			'email' => 'me@email.com',
-			'password' => 'password',
-			'first_name' => 'Jordan',
-			'last_name' => 'Lord'
-		));
+		self::unitTest(
+			'Register',
+			'Register user',
+			array(
+				'email' => 'me@email.com',
+				'password' => 'password',
+				'first_name' => 'Jordan',
+				'last_name' => 'Lord'
+			)
+		);
 
-		echo 'Register user: ';
-		self::unitTest('Register', array(
-			'email' => 'new@email.com',
-			'password' => 'pass123',
-			'first_name' => 'New',
-			'last_name' => 'User'
-		));
+		self::unitTest(
+			'Register',
+			'Register user',
+			array(
+				'email' => 'new@email.com',
+				'password' => 'pass123',
+				'first_name' => 'New',
+				'last_name' => 'User'
+			)
+		);
 
-		echo 'Register user: ';
-		self::unitTest('Register', array(
-			'email' => 'another@user.com',
-			'password' => 'password',
-			'first_name' => 'Another',
-			'last_name' => 'User'
-		));
+		self::unitTest(
+			'Register',
+			'Register user',
+			array(
+				'email' => 'another@user.com',
+				'password' => 'password',
+				'first_name' => 'Another',
+				'last_name' => 'User'
+			)
+		);
 
-		echo 'Login: ';
-		self::unitTest($Login->call(array(
-			'email' => 'me@email.com',
-			'password' => 'password'
-		)));
+		self::unitTest(
+			'Login',
+			'Login',
+			array(
+				'email' => 'me@email.com',
+				'password' => 'password'
+			)
+		);
 
-		echo 'Create tournament: ';
-		self::unitTest($TournamentCreate->call(array(
-			'name' => 'Premier League',
-			'description' => 'A league'
-		)));
+		self::unitTest(
+			'TournamentCreate',
+			'Create tournament',
+			array(
+				'name' => 'Premier League',
+				'description' => 'A league'
+			)
+		);
 
-		echo 'Update tournament info: ';
-		self::unitTest($TournamentUpdate->call(array(
-			'id' => 1,
-			'name' => 'Premier League',
-			'description' => 'Top tier of Primrose Squash Leagues'
-		)));
+		self::unitTest(
+			'TournamentUpdate',
+			'Update tournament info',
+			array(
+				'id' => 1,
+				'name' => 'Premier League',
+				'description' => 'Top tier of Primrose Squash Leagues'
+			)
+		);
 
-		echo 'Tournament data: ';
-		self::unitTest($TournamentGet->call(array(
-			'id' => 1
-		)));
+		self::unitTest(
+			'TournamentGet',
+			'Tournament data',
+			array(
+				'id' => 1
+			)
+		);
 
-		echo 'Add player in tournament: ';
-		self::unitTest($TournamentPlayerAttach->call(array(
-			'user_id' => 1,
-			'tournament_id' => 1
-		)));
+		self::unitTest(
+			'TournamentPlayerAttach',
+			'Add player in tournament',
+			array(
+				'user_id' => 1,
+				'tournament_id' => 1
+			)
+		);
 
-		/*echo 'Remove player from touranment: ';
-		self::unitTest($TournamentPlayerRemove->call(array(
-			'user_id' => 1,
-			'tournament_id' => 1
-		)));*/
+		self::unitTest(
+			'TournamentManagerRemove',
+			'Remove league manager',
+			array(
+				'user_id' => 1,
+				'tournament_id' => 1
+			)
+		);
 
-		echo 'Remove league manager: ';
-		self::unitTest($TournamentManagerRemove->call(array(
-			'user_id' => 1,
-			'tournament_id' => 1
-		)));
+		self::unitTest(
+			'TournamentManagerAttach',
+			'Add league manager',
+			array(
+				'user_id' => 1,
+				'tournament_id' => 1
+			)
+		);
 
-		echo 'Add league manager: ';
-		self::unitTest($TournamentManagerAttach->call(array(
-			'user_id' => 1,
-			'tournament_id' => 1
-		)));
+		self::unitTest(
+			'TournamentManagerAttach',
+			'Add league_manager',
+			array(
+				'user_id' => 2,
+				'tournament_id' => 1
+			)
+		);
 
-		/*echo 'Logout: ';
-		self::unitTest($Logout->call(array()));
+		self::unitTest(
+			'TournamentPlayerAttach',
+			'Add player in tournament',
+			array(
+				'user_id' => 2,
+				'tournament_id' => 1
+			)
+		);
 
+		self::unitTest(
+			'TournamentPlayerAttach',
+			'Add player in tournament',
+			array(
+				'user_id' => 3,
+				'tournament_id' => 1
+			)
+		);
 
-		echo 'Login as new user: ';
-		self::unitTest($Login->call(array(
-			'email' => 'new@email.com',
-			'password' => 'pass1'
-		)));*/
+		self::unitTest(
+			'ResultEnter',
+			'Input result',
+			array(
+				'tournament_id' => 1,
+				'player1_id' => 3,
+				'player2_id' => 2,
+				'player1_score' => 3,
+				'player2_score' => 1
+			)
+		);
 
-		echo 'Add league_manager: ';
-		self::unitTest($TournamentManagerAttach->call(array(
-			'user_id' => 2,
-			'tournament_id' => 1
-		)));
+		self::unitTest(
+			'ResultGet',
+			'Get result',
+			array(
+				'tournament_id' => 1
+			)
+		);
 
-		echo 'Add player in tournament: ';
-		self::unitTest($TournamentPlayerAttach->call(array(
-			'user_id' => 2,
-			'tournament_id' => 1
-		)));
+		self::unitTest(
+			'UserGet',
+			'Get user',
+			array(
+				'id' => 1
+			)
+		);
 
-		echo 'Add player in tournament: ';
-		self::unitTest($TournamentPlayerAttach->call(array(
-			'user_id' => 3,
-			'tournament_id' => 1
-		)));
+		self::unitTest(
+			'UserSearch',
+			'Search for user',
+			array(
+				'name' => 'a'
+			)
+		);
 
-		echo 'Input result: ';
-		self::unitTest($ResultEnter->call(array(
-			'tournament_id' => 1,
-			'player1_id' => 3,
-			'player2_id' => 2,
-			'player1_score' => 3,
-			'player2_score' => 1
-		)));
+		self::unitTest(
+			'TournamentSearch',
+			'Search for tournament',
+			array(
+				'name' => 'a'
+			)
+		);
 
-		echo 'Get result: ';
-		self::unitTest($ResultGet->call(array(
-			'tournament_id' => 1
-		)));
+		self::unitTest(
+			'FixturesGet',
+			'Get fixtures',
+			array(
+				'user_id' => 1
+			)
+		);
 
-		echo 'Get user: ';
-		self::unitTest($UserGet->call(array(
-			'id' => 1
-		)));
+		self::unitTest(
+			'TournamentLeagueTable',
+			'League table',
+			array(
+				'id' => 1
+			)
+		);
 
-		echo 'Search for user: ';
-		self::unitTest($UserSearch->call(array(
-			'name' => 'a'
-		)));
+		self::unitTest(
+			'UserRatings',
+			'User ratings',
+			array()
+		);
 
-		echo 'Search for tournament: ';
-		self::unitTest($TournamentSearch->call(array(
-			'name' => 'a'
-		)));
+		self::unitTest(
+			'ResultEnter',
+			'Enter result',
+			array(
+				'tournament_id' => 1,
+				'player1_id' => 1,
+				'player2_id' => 2,
+				'player1_score' => 1,
+				'player2_score' => 3
+			)
+		);
 
-		echo 'Get fixtures: ';
-		self::unitTest($FixturesGet->call(array(
-			'user_id' => 1
-		)));
-
-		echo 'League table: ';
-		self::unitTest($TournamentLeagueTable->call(array(
-			'id' => 1
-		)));
-
-		echo 'User ratings: ';
-		self::unitTest($UserRatings->call(array()));
-
-		echo 'Enter result: ';
-		self::unitTest($ResultEnter->call(array(
-			'tournament_id' => 1,
-			'player1_id' => 1,
-			'player2_id' => 2,
-			'player1_score' => 1,
-			'player2_score' => 3
-		)));
-
-		echo 'Delete result: ';
-		self::unitTest($ResultDelete->call(array(
-			'id' => 2
-		)));
+		self::unitTest(
+			'ResultDelete',
+			'Delete result',
+			array(
+				'id' => 2
+			)
+		);
 	}
 }
 
