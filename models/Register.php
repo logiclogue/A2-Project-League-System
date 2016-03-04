@@ -92,7 +92,7 @@ SQL;
 		$stmt->bindParam(':email', $this->data['email']);
 
 		if ($stmt->execute()) {
-			$this->return_data['id'] = Database::$conn->lastInsertId();
+			$this->return_data['id'] = Database::$conn->lastInsertId($stmt);
 
 			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['count'];
 		}
