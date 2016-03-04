@@ -7,16 +7,7 @@
 </head>
 <body>
 
-<table class="test">
-	<thead>
-		<th>Test</th>
-		<th>Description</th>
-		<th>Input data</th>
-		<th>Expected result</th>
-		<th>Result</th>
-		<th>Pass</th>
-	</thead>
-	<tbody>
+
 <?php
 
 /**
@@ -46,9 +37,53 @@ class Test
 	}
 
 	/**
+	 * Method that should be called when starting a test.
 	 *
+	 * @method testStart
+	 * @param testName {String}
+	 * @private
+	 * @static
+	 */
+	private static function testStart($testName) {
+		$startHTML = <<<HTML
+		<h1>$testName</h1>
+
+		<table class="test">
+			<thead>
+				<th>Test</th>
+				<th>Description</th>
+				<th>Input data</th>
+				<th>Expected result</th>
+				<th>Result</th>
+				<th>Pass</th>
+			</thead>
+			<tbody>
+HTML;
+
+		echo $startHTML;
+	}
+
+	/**
+	 * Method that should be called when finished a test.
 	 *
+	 * @method testEnd
+	 */
+	private static function testEnd() {
+		$endHTML = <<<HTML
+			</tbody>
+		</table>
+HTML;
+
+		echo $endHTML;
+	}
+
+	/**
+	 * When making a single test, call this method.
+	 * Puts row in table.
 	 *
+	 * @method unitTest
+	 * @private
+	 * @static
 	 */
 	private static function unitTest($modelName, $description, $data, $expected) {
 		$model = new $modelName(true);
@@ -73,6 +108,7 @@ class Test
 	 */
 	public static function init() {
 		self::requireAll();
+		self::testStart('Main test');
 		
 
 		// Database reset
@@ -309,14 +345,16 @@ class Test
 			),
 			'{"success":true}'
 		);
+
+
+		self::testEnd();
 	}
 }
 
 Test::init();
 
 ?>
-	</tbody>
-</table>
+
 
 </body>
 </html>
