@@ -18,6 +18,8 @@ session_start();
  * @param first_name {String} The first name of the user.
  * @param last_name {String} The last name of the user.
  * @param password {String} The password of the user.
+ *
+ * @return id {Integer} Id of the user just registered.
  */
 class Register extends Model
 {
@@ -90,6 +92,8 @@ SQL;
 		$stmt->bindParam(':email', $this->data['email']);
 
 		if ($stmt->execute()) {
+			$this->return_data['id'] = Database::$conn->lastInsertId();
+
 			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['count'];
 		}
 
