@@ -4,7 +4,7 @@
 	<input class="u-full-width" type="text" placeholder="Search" ng-model="inputName" ng-change="eventInputChange()"></input>
 
 	<!-- Error shows when no league found -->
-	<div class="error-container" ng-show="results.length === 0">
+	<div class="error-container" ng-show="results.length === 0 && inputName.length !== 0">
 		<ul>
 			<li>No results</li>
 		</ul>

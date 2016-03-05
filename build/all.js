@@ -834,6 +834,14 @@ app.directive('cpUserSearch', function (CallModel)
 		},
 		link: function (scope, element, attrs) {
 			/**
+			 * Search name
+			 *
+			 * @property scope.inputName
+			 * @type String
+			 */
+			scope.inputName = '';
+
+			/**
 			 * Method that is called when text in input field is changed.
 			 * Updates search for user when input is changed.
 			 *

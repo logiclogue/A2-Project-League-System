@@ -898,6 +898,8 @@ there.
 	margin: 0;
 }
 .league-table {
+	margin-bottom: 2rem;
+
 	table-layout: fixed;
 }
 .list-side {
@@ -917,6 +919,18 @@ there.
 }
 .create-league {
 	margin-bottom: 2rem;
+}
+
+.two-rem {
+	margin-bottom: 2rem;
+}
+
+.one-rem {
+	margin-bottom: 1rem;
+}
+
+.half-rem {
+	margin-bottom: 0.5rem;
 }
 .nav {
 	list-style: none;

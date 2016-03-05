@@ -1,3 +1,15 @@
 .create-league {
 	margin-bottom: 2rem;
 }
+
+.two-rem {
+	margin-bottom: 2rem;
+}
+
+.one-rem {
+	margin-bottom: 1rem;
+}
+
+.half-rem {
+	margin-bottom: 0.5rem;
+}

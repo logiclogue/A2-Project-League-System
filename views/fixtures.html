@@ -13,4 +13,7 @@
 			<a ng-bind="n.player2_name" ng-href="#/profile/{{ n.player2_id }}"></a><span> ({{ n.player2_rating }})</span>
 		</div>
 	</div>
+
+	<!-- Error message box if no fixtures -->
+	<div class="error-container two-rem" ng-show="fixtures.length === 0">No fixtures yet</div>
 </div>
