@@ -127,6 +127,11 @@ SQL;
 	 *
 	 * @method __construct
 	 * @public
+	 * @param player_a_id {Integer} Id of player A.
+	 * @param player_b_id {Integer} Id of player B.
+	 * @param tournament_id {Integer} Id of tournament.
+	 * @param player_a_score {Integer} Score that player A achieved.
+	 * @param player_b_score {Integer} Score that player B achieved.
 	 */
 	public function __construct($player_a_id, $player_b_id, $tournament_id, $player_a_score, $player_b_score) {
 		$player_a_rating = self::userRating($player_a_id, $tournament_id);
