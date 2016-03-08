@@ -3,7 +3,7 @@
 <head>
 
 	<meta charset="utf-8">
-	<title>Computing Project</title>
+	<title>Squash League System</title>
 	<meta name="author" content="Jordan Lord">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +17,7 @@
 	<!-- Navbar -->
 	<div id="div-navbar" class="u-full-width" ng-controller="NavCtrl">
 		<div class="ten columns offset-by-one">
-			<a id="a-title">Computing Project</a>
+			<a id="a-title">Squash League System</a>
 			<ul>
 				<li><a href="#/login" ng-hide="loggedIn">Login/Register</a></li>
 				<li><a href="#/" ng-show="loggedIn" ng-click="btnLogout()">Logout</a></li>
