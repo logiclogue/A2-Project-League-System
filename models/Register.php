@@ -92,8 +92,6 @@ SQL;
 		$stmt->bindParam(':email', $this->data['email']);
 
 		if ($stmt->execute()) {
-			$this->return_data['id'] = Database::$conn->lastInsertId($stmt);
-
 			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['count'];
 		}
 
@@ -156,10 +154,12 @@ SQL;
 			$this->hash = password_hash($this->data['password'], PASSWORD_BCRYPT);
 
 			$this->bindParams();
-			
+
 			if (!$this->stmt->execute()) {
 				$this->success = false;
 			}
+
+			$this->return_data['id'] = Database::$conn->lastInsertId($stmt);
 		}
 		else {
 			$this->success = false;

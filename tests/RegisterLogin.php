@@ -15,7 +15,7 @@ self::unitTest(
 		'first_name' => 'Jordan',
 		'last_name' => 'Lord'
 	),
-	'{"id":"0","success":true}'
+	'{"id":"1","success":true}'
 );
 
 self::unitTest(
@@ -44,7 +44,7 @@ self::unitTest(
 		'first_name' => 'New',
 		'last_name' => 'User'
 	),
-	'{"id":"1","success":true}'
+	'{"id":"2","success":true}'
 );
 
 self::unitTest(
@@ -53,7 +53,7 @@ self::unitTest(
 	array(
 		'id' => '1'
 	),
-	''
+	'{"first_name":"Jordan","last_name":"Lord","id":"1","rating":1300,"leagues_playing":[],"leagues_managing":[],"success":true}'
 );
 
 self::unitTest(
@@ -65,7 +65,7 @@ self::unitTest(
 		'first_name' => 'Another',
 		'last_name' => 'User'
 	),
-	'{"id":"2","success":true}'
+	'{"id":"3","success":true}'
 );
 
 
