@@ -28,11 +28,11 @@ class TournamentDelete extends Tournament
 	private $query_league = <<<SQL
 		DELETE t.*, tu.*, ru.*, r.*
 		FROM tournaments t
-		INNER JOIN tournament_user_maps tu
+		LEFT JOIN tournament_user_maps tu
 		ON t.id = tu.tournament_id
-		INNER JOIN results r
+		LEFT JOIN results r
 		ON r.tournament_id = t.id
-		INNER JOIN result_user_maps ru
+		LEFT JOIN result_user_maps ru
 		ON ru.result_id = r.id
 		WHERE t.id = :id
 SQL;
