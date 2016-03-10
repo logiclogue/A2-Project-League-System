@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var watch = require('gulp-watch');
+var yuidoc = require('gulp-yuidoc');
 var del = require('del');
 
 var paths = {
@@ -17,6 +18,11 @@ var paths = {
 		'lib/normalize.css',
 		'lib/skeleton.css',
 		'css/*.css'
+	],
+	php: [
+		'models/*.php',
+		'php/*.php',
+		'superclasses/*.php'
 	]
 }
 
@@ -40,6 +46,14 @@ gulp.task('css', function () {
 	return gulp.src(paths.css)
 		.pipe(concat('all.css'))
 		.pipe(gulp.dest('build'));
+});
+
+
+// Creates the documentation
+gulp.task('docs', function () {
+	return gulp.src(paths.php)
+		.pipe(yuidoc.parser())
+		.pipe(gulp.dest('documentation'));
 });
 
 

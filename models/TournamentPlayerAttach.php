@@ -9,7 +9,7 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentPlayerAlter.php');
  * @class TournamentPlayerAttach
  * @extends TournamentPlayerAlter
  */
-/**
+/*&
  * @param user_id {Integer} Id of the user to be added to the tournament.
  * @param tournament_id {Integer} Id of the tournament.
  */

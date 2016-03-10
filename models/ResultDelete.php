@@ -13,7 +13,7 @@ session_start();
  * @method ResultDelete
  * @extends Tournament
  */
-/**
+/*&
  * @param id {Integer} Id of the result to delete.
  */
 class ResultDelete extends Tournament

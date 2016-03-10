@@ -14,7 +14,7 @@ session_start();
  * @class FixturesGet
  * @extends Model
  */
-/**
+/*&
  * @param player_id {Integer} Find all matches that a user still has to play.
  * @param tournament_id {Integer} Find all matches that still need to be played in a tournament.
  *

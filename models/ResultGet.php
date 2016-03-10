@@ -10,7 +10,7 @@ require_once(dirname(__DIR__) . '/php/Model.php');
  * @class ResultGet
  * @extends Model
  */
-/**
+/*&
  * @param result_id {Integer} Id of the result.
  * @param player1_id {Integer} Id of player 1.
  * @param player2_id {Integer} Id of player 2.

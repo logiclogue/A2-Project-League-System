@@ -10,7 +10,7 @@ require_once(dirname(__DIR__) . '/php/Database.php');
  * @class TournamentSearch
  * @extends Model
  */
-/**
+/*&
  * @param name {String} Search for tournament with similar name.
  *
  * @return tournaments {Array} Array of all tournaments that match.

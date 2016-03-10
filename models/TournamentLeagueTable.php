@@ -12,7 +12,7 @@ require_once(dirname(__DIR__) . '/models/ResultGet.php');
  * @class TournamentLeagueTable
  * @extends Model
  */
-/**
+/*&
  * @param id {Integer} If of the tournament.
  *
  * @return table {Array} Array that holds all the players in order.

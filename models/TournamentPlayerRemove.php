@@ -9,7 +9,7 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentPlayerAlter.php');
  * @class TournamentPlayerRemove
  * @extends TournamentPlayerAlter
  */
-/**
+/*&
  * @param user_id {Integer} Id of the user to be removed from the tournament.
  * @param tournament_id {Integer} Id of the tournament.
  */

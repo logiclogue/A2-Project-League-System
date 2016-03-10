@@ -10,7 +10,7 @@ require_once(dirname(__DIR__) . '/php/Model.php');
  * @class UserSearch
  * @extends Model
  */
-/**
+/*&
  * @param name {String} Search for user with similar name.
  *
  * @return users {Array} Array of all users that match.

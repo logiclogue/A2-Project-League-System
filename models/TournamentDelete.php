@@ -11,7 +11,7 @@ session_start();
  * @class TournamentDelete
  * @extends Tournament
  */
-/**
+/*&
  * @param id {Integer} Id of the tournament
  */
 class TournamentDelete extends Tournament

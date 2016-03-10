@@ -12,11 +12,10 @@ session_start();
  * @class TournamentCreate
  * @extends Tournament
  */
-/**
+/*&
  * @param name {String} The name of the tournament.
  * @param description {String} The description of the tournament.
- */
-/**
+ *
  * @return id {Integer} Id of the tournament just created.
  */
 class TournamentCreate extends Tournament
