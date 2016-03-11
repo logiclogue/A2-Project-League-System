@@ -1,0 +1,5 @@
+<?php
+
+self::testStart('Leagues');
+
+?>
