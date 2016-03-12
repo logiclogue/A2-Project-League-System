@@ -123,7 +123,7 @@ HTML;
 		Database::reset();
 
 		self::loadTest('RegisterLogin');
-		sefl::loadTest('Leagues');
+		self::loadTest('Leagues');
 		//self::loadTest('Main.php');
 
 		// Resets the database
