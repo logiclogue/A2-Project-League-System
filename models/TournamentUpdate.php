@@ -12,7 +12,7 @@ session_start();
  * @class TournamentUpdate
  * @extends Tournament
  */
-/**
+/*&
  * @param id {Integer} Id of tournament.
  * @param name {String} New name of the tournament.
  * @param description {String} New description of the tournament.

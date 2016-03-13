@@ -9,7 +9,7 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentManagerAlter.php');
  * @class TournamentManagerAttach
  * @extends TournamentManagerAlter
  */
-/**
+/*&
  * @param user_id {Integer} Id of the user to make a manager.
  * @param tournament_id {Integer} Id of the tournament.
  */
@@ -27,7 +27,7 @@ class TournamentManagerAttach extends TournamentManagerAlter
 	/**
 	 * Main method calls @method subMain.
 	 *
-	 * @property main
+	 * @method main
 	 * @protected
 	 */
 	protected function main() {

@@ -100,6 +100,17 @@ HTML;
 		echo '</tr>';
 	}
 
+	/**
+	 * Method that loads the test.
+	 *
+	 * @method loadTest
+	 * @private
+	 * @static
+	 */
+	private static function loadTest($file_name) {
+		require_once(dirname(__DIR__) . '/tests/' . $file_name . '.php');
+	}
+
 
 	/**
 	 *
@@ -109,8 +120,14 @@ HTML;
 	public static function init() {
 		self::requireAll();
 		
-		require_once(dirname(__DIR__) . '/tests/RegisterLogin.php');
-		//require_once(dirname(__DIR__) . '/tests/Main.php');
+		Database::reset();
+
+		self::loadTest('RegisterLogin');
+		self::loadTest('Leagues');
+		//self::loadTest('Main.php');
+
+		// Resets the database
+		Database::reset();
 	}
 }
 

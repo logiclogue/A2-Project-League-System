@@ -13,7 +13,7 @@ session_start();
  * @class UserGet
  * @extends Model
  */
-/**
+/*&
  * @param id {Integer} Id of the user to be fetched.
  *
  * @return id {Integer} Id of the user.

@@ -13,7 +13,7 @@ session_start();
  * @class Register
  * @extends Model
  */
-/**
+/*&
  * @param email {String} The email of the user.
  * @param first_name {String} The first name of the user.
  * @param last_name {String} The last name of the user.

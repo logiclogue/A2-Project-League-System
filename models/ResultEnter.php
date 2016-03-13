@@ -15,7 +15,7 @@ session_start();
  * @class ResultEnter
  * @extends Tournament
  */
-/**
+/*&
  * @param tournament_id {Integer} Id of the tournament.
  * @param player1_id {Integer} Id of player 1.
  * @param player2_id {Integer} Id of player 2.

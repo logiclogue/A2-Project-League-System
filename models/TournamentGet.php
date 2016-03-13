@@ -11,7 +11,7 @@ session_start();
  * @class TournamentGet
  * @extends Tournament
  */
-/**
+/*&
  * @param id {Integer} Id of the tournament.
  *
  * @return id {Integer} Id of the tournament.

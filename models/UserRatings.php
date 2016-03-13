@@ -12,7 +12,7 @@ session_start();
  * @class UserRatings
  * @extends Model
  */
-/**
+/*&
  * @param user_id {Integer} Id of the user to query.
  *
  * @return ratings {Array} Array of all the ratings over time.

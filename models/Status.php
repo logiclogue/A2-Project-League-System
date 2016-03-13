@@ -12,7 +12,7 @@ session_start();
  * @class Status
  * @extends Model
  */
-/**
+/*&
  * @return logged_in {Boolean} Whether you are logged in.
  * @return user {Array} User data if logged in:
  *  @return user.id {Integer} Your id.

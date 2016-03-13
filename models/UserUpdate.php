@@ -13,7 +13,7 @@ session_start();
  * @class UserUpdate
  * @extends Model
  */
-/**
+/*&
  * @param first_name {String} The new first name of the user.
  * @param last_name {String} The new last name of the user.
  * @param home_phone {String} The new home phone number of the user.

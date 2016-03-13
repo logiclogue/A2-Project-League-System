@@ -11,7 +11,7 @@ session_start();
  * @class Logout
  * @extends Model
  */
-/**
+/*&
  */
 class Logout extends Model
 {

@@ -9,7 +9,7 @@ require_once(dirname(__DIR__) . '/superclasses/TournamentManagerAlter.php');
  * @class TournamentManagerRemove
  * @extends TournamentManagerAlter
  */
-/**
+/*&
  * @param user_id {Integer} Id of the league manager to remove.
  * @param tournament_id {Integer} Id of the tournament
  */

@@ -12,7 +12,7 @@ session_start();
  * @class Login
  * @extends Model
  */
-/**
+/*&
  * @param email {String} Email of the user.
  * @param password {String} Password of the user.
  */
