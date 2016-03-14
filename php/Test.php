@@ -113,9 +113,11 @@ HTML;
 
 
 	/**
+	 * Method that is called first.
+	 * Calls all tests individually.
 	 *
-	 *
-	 *
+	 * @method init
+	 * @public
 	 */
 	public static function init() {
 		self::requireAll();
