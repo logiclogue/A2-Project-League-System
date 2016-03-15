@@ -22,6 +22,7 @@
 				<li><a href="#/login" ng-hide="loggedIn">Login/Register</a></li>
 				<li><a href="#/" ng-show="loggedIn" ng-click="btnLogout()">Logout</a></li>
 				<li><a href="#/profile" ng-show="loggedIn">Profile</a></li>
+				<li><a href="#/user" ng-show="loggedIn">User</a></li>
 				<li><a href="#/league" ng-show="loggedIn">League</a></li>
 				<li><a href="#/">Home</a></li>
 			</ul>
