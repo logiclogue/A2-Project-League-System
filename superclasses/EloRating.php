@@ -15,6 +15,7 @@ class EloRating
 	 *
 	 * @property new_rating
 	 * @public
+	 * @type Integer
 	 */
 	public $new_rating;
 	/**
@@ -23,6 +24,7 @@ class EloRating
 	 *
 	 * @property rating_change
 	 * @public
+	 * @type Integer
 	 */
 	public $rating_change;
 	/**
@@ -30,6 +32,7 @@ class EloRating
 	 *
 	 * @property k_factor
 	 * @public
+	 * @type Integer
 	 */
 	public $k_factor = 20;
 
@@ -58,6 +61,7 @@ SQL;
 	 * Start rating for all players.
 	 *
 	 * @property default_rating
+	 * @type Integer
 	 * @public
 	 * @static
 	 */
@@ -97,6 +101,7 @@ SQL;
 	 * Method that calculates a probability of a player winning.
 	 *
 	 * @method expected
+	 * @public
 	 * @param rating_a {Integer} Rating of player A.
 	 * @param rating_b {Integer} Rating of player B.
 	 * @return {Float} Odds of player A beating player B.
@@ -110,6 +115,7 @@ SQL;
 	 * Method that calculates a new rating based on the score.
 	 *
 	 * @method newRating
+	 * @public
 	 * @param rating_a {Integer} Rating of player A.
 	 * @param k_factor {Integer} The k factor of the match.
 	 * @param points_a {Float} Result of the match (0 = defeat, 0.5 = draw, 1 = win).

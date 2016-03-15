@@ -67,6 +67,8 @@ HTML;
 	 * Method that should be called when finished a test.
 	 *
 	 * @method testEnd
+	 * @private
+	 * @static
 	 */
 	private static function testEnd() {
 		$endHTML = <<<HTML
