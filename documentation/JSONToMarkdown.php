@@ -8,19 +8,33 @@ class JSONToMarkdown
 	private $file;
 	private $data;
 	private $text;
+	private $path = "/home/jordan/workspace/sites/computing-project";
 
 
 	private function printLine($text) {
 		$this->text .= $text . "\r\n\n";
 	}
 
+	private function getModelParams() {
+		$code = file_get_contents(dirname(__FILE__) . "/../models/Login.php");
+
+		preg_match("/\/\*\&(.|\n)*?\*\//", $code, $matches);
+
+		$this->printLine($matches[0]);
+	}
+
 	private function getClasses() {
 		foreach($this->data->classes as &$class) {
+			$class->file = str_replace($this->path, "", $class->file);
+
 			$this->printLine("## " . $class->name);
 			$this->printLine("*" . $class->description . "*");
 			$this->printLine("Line: " . $class->line . " in file " . $class->file);
 			$this->printLine("Extends: " . $class->extends);
-			$this->printLine("### Properties:");
+
+			if (count($class->classitems["property"]) != 0) {
+				$this->printLine("### Properties:");
+			}
 
 			foreach($class->classitems["property"] as &$property) {
 				$this->printLine("#### " . $property->name);
@@ -30,10 +44,23 @@ class JSONToMarkdown
 				$this->printLine("Access: " . $property->access);
 				$this->printLine("Type: " . $property->type);
 			}
-			$this->printLine("### Methods:");
+
+			if (count($class->classitems["method"]) != 0) {
+				$this->printLine("### Methods:");
+			}
 
 			foreach($class->classitems["method"] as &$method) {
-				$this->printLine("#### " . $method->name);
+				$params = "";
+
+				foreach($method->params as &$param) {
+					if ($params != "") {
+						$params .= ", ";
+					}
+
+					$params .= $param->name;
+				}
+
+				$this->printLine("#### " . $method->name . "($params)");
 
 				$this->printLine("*" . $method->description . "*");
 				$this->printLine("Line: " . $method->line);
@@ -47,6 +74,8 @@ class JSONToMarkdown
 					$this->printLine("* " . $param->name . ": " . $param->type . " (*" . $param->description . "*)");
 				}
 			}
+
+			$this->printLine("<hr>");
 		}
 	}
 
@@ -61,8 +90,8 @@ class JSONToMarkdown
 	private function markdownToHTML() {
 		$parsedown = new Parsedown();
 
-		//echo $parsedown->text($this->text);
-		echo $this->text;
+		echo $parsedown->text($this->text);
+		//echo $this->text;
 	}
 
 
@@ -70,8 +99,9 @@ class JSONToMarkdown
 		$this->file = file_get_contents(dirname(__FILE__) . "/yuidoc.json");
 		$this->data = json_decode($this->file);
 
-		$this->getClassItems();
-		$this->getClasses();
+		$this->getModelParams();
+		//$this->getClassItems();
+		//$this->getClasses();
 		$this->markdownToHTML();
 	}
 }

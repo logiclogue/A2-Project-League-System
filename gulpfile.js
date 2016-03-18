@@ -51,7 +51,7 @@ gulp.task('css', function () {
 
 // Creates the documentation
 gulp.task('docs', function () {
-	return gulp.src(paths.php)
+	return gulp.src([paths.php, paths.javascript])
 		.pipe(yuidoc.parser())
 		.pipe(gulp.dest('documentation'));
 });
