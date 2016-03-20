@@ -1,0 +1,6062 @@
+\subsection{PHP}
+\subsubsection{Models}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
+
+session_start();
+
+
+/**
+ * Model that returns fixture list for a tournament or user.
+ * Lists all matches that are still to be played.
+ *
+ * @class FixturesGet
+ * @extends Model
+ */
+/*&
+ * @param player_id {Integer} Find all matches that a user still has to play.
+ * @param tournament_id {Integer} Find all matches that still need to be played in a tournament.
+ *
+ * @return fixtures
+ *   @return [].player1_id {Integer} Id of player 1.
+ *   @return [].player2_id {Integer} Id of player 2.
+ *   @return [].player1_name {String} Full name of player 1.
+ *   @return [].player2_name {String} Full name of player 2.
+ *   @return [].player1_rating {Integer} Rating of player 1.
+ *   @return [].player2_rating {Integer} Rating of player 2.
+ *   @return [].expected {Float} Odds of player 1 winning.
+ *   @return [].expected_percent {Integer} Percentage chance of player 1 winning.
+ *   @return [].tournament_id {Integer} Id of tournament that the match is in.
+ *   @return [].tournament_name {String} Name of tournament that the match is in.
+ *   @return [].is_league_manager {Boolean} Whether the user is a league manager.
+ */
+class FixturesGet extends Model
+{
+	/**
+	 * SQL query string that fetches the matches to be played.
+	 *
+	 * @property query
+	 * @private
+	 */
+	private $query = <<<SQL
+		SELECT
+		u1.id player1_id,
+		u2.id player2_id,
+		CONCAT(u1.first_name, ' ', u1.last_name) player1_name,
+		CONCAT(u2.first_name, ' ', u2.last_name) player2_name,
+		t.id tournament_id,
+		t.name tournament_name,
+		CASE WHEN tuu.is_league_manager IS NULL THEN FALSE ELSE tuu.is_league_manager END is_league_manager
+		FROM users u1
+
+		INNER JOIN users u2
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u1.id
+		INNER JOIN tournament_user_maps tu2
+		ON tu2.user_id = u2.id AND tu.tournament_id = tu2.tournament_id
+		INNER JOIN tournaments t
+		ON t.id = tu.tournament_id
+		LEFT JOIN tournament_user_maps tuu
+		ON tuu.user_id = :user_id AND t.id = tuu.tournament_id
+
+		WHERE
+		tu.is_player = TRUE AND
+		tu2.is_player = TRUE AND
+		u1.id <> u2.id AND
+		CASE WHEN :tournament_id IS NULL THEN TRUE ELSE t.id = :tournament_id END AND
+		CASE WHEN :player_id IS NULL THEN u1.id > u2.id ELSE u1.id = :player_id END AND
+		(
+			SELECT COUNT(*)
+			FROM result_user_maps ru1
+			INNER JOIN result_user_maps ru2
+			ON ru2.result_id = ru1.result_id
+			INNER JOIN results r
+			ON r.id = ru1.result_id
+			WHERE
+			ru1.user_id <> ru2.user_id AND
+			r.tournament_id = tu.tournament_id AND
+			ru1.user_id = u1.id AND
+			ru2.user_id = u2.id
+		) = 0
+SQL;
+
+
+	/**
+	 * Method that gets the user ratings and puts them in every fixture including the expected result for player 1.
+	 *
+	 * @method attachRatings
+	 * @private
+	 */
+	private function attachRatings() {
+		foreach($this->return_data['fixtures'] as &$fixture) {
+			$fixture['player1_rating'] = EloRating::userRating($fixture['player1_id'], $this->data['tournament_id']);
+			$fixture['player2_rating'] = EloRating::userRating($fixture['player2_id'], $this->data['tournament_id']);
+			$fixture['expected'] = EloRating::expected($fixture['player1_rating'], $fixture['player2_rating']);
+			$fixture['expected_percent'] = round($fixture['expected'] * 100);
+		}
+	}
+
+	/**
+	 * Main method that execute @property query and binds input data.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':player_id', $this->data['player_id']);
+		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+		$stmt->bindParam(':user_id', $_SESSION['user']['id']);
+
+		if ($stmt->execute()) {
+			$this->return_data['fixtures'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$this->attachRatings();
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = "Failed to execute query";
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+
+session_start();
+
+
+/**
+ * Login model for logging into the system.
+ * 
+ * @class Login
+ * @extends Model
+ */
+/*&
+ * @param email {String} Email of the user.
+ * @param password {String} Password of the user.
+ */
+class Login extends Model
+{
+	/**
+	 * SQL query string for getting the details of the user.
+	 * Finds user by email.
+	 *
+	 * @property query
+	 * @type String
+	 */
+	private $query = <<<SQL
+		SELECT id, email, first_name, last_name, hash
+		FROM users
+		WHERE email=:email
+SQL;
+
+	/**
+	 * Connects to the database.
+	 * Binds query and parameters.
+	 *
+	 * @property stmt
+	 * @type Object
+	 * @private
+	 */
+	private $stmt;
+	/**
+	 * Stores result from database.
+	 * User data.
+	 *
+	 * @property user
+	 * @type Object
+	 * @private
+	 */
+	private $user = array();
+
+
+	/**
+	 * Stores the user details in the current user session.
+	 *
+	 * @method storeSession
+	 * @private
+	 */
+	private function storeSession() {
+		$_SESSION['user'] = array();
+		$_SESSION['user']['id'] = $this->user['id'];
+		$_SESSION['user']['email'] = $this->user['email'];
+		$_SESSION['user']['first_name'] = $this->user['first_name'];
+		$_SESSION['user']['last_name'] = $this->user['last_name'];
+	}
+
+	/**
+	 * Checks to see if password entered matches the password associated to the email entered.
+	 *
+	 * @method verify
+	 * @private
+	 */
+	private function verify() {
+		$this->user = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+
+		// check if password matches
+		if (password_verify($this->data['password'], $this->user['hash'])) {
+			$this->storeSession();
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = 'Incorrect email or password';
+		}
+	}
+
+
+	/**
+	 * Defines @property result.
+	 * Binds parameters to @property query.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->stmt = Database::$conn->prepare($this->query);
+
+		$this->stmt->bindParam(':email', $this->data['email']);
+		
+		// check if query is successful
+		if ($this->stmt->execute()) {
+			$this->verify();
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = 'Failed to execute query';
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+
+session_start();
+
+
+/**
+ * Logout model called when the user logs out.
+ *
+ * @class Logout
+ * @extends Model
+ */
+/*&
+ */
+class Logout extends Model
+{
+	/**
+	 * Method that destroys the session.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		session_unset();
+		session_destroy();
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
+
+session_start();
+
+
+/**
+ * Register model used to register onto the system.
+ *
+ * @class Register
+ * @extends Model
+ */
+/*&
+ * @param email {String} The email of the user.
+ * @param first_name {String} The first name of the user.
+ * @param last_name {String} The last name of the user.
+ * @param password {String} The password of the user.
+ *
+ * @return id {Integer} Id of the user just registered.
+ */
+class Register extends Model
+{
+	/**
+	 * SQL query string for inserting user data into the database.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		INSERT INTO users (email, first_name, last_name, hash)
+		VALUES (:email, :first_name, :last_name, :hash)
+SQL;
+
+	/**
+	 * SQL query string for checking whether email is already in use.
+	 *
+	 * @property query_email
+	 * @type String
+	 * @private
+	 */
+	private $query_email = <<<SQL
+		SELECT COUNT(*) count
+		FROM users
+		WHERE email = :email
+SQL;
+	
+	/**
+	 * For executing the query string.
+	 *
+	 * @property result
+	 * @type Object
+	 * @private
+	 */
+	private $stmt;
+	/**
+	 * Hash of the password entered.
+	 *
+	 * @property hash
+	 * @type String
+	 * @private
+	 */
+	private $hash;
+
+
+	/**
+	 * Used to bind the parameters to @property query.
+	 * Data inputted by user is bound.
+	 *
+	 * @method bindParams
+	 * @private
+	 */
+	private function bindParams() {
+		$this->stmt->bindParam(':email', $this->data['email']);
+		$this->stmt->bindParam(':first_name', $this->data['first_name']);
+		$this->stmt->bindParam(':last_name', $this->data['last_name']);
+		$this->stmt->bindParam(':hash', $this->hash);
+	}
+
+	/**
+	 * Method that will check whether email is already in use.
+	 *
+	 * @method checkEmail
+	 * @return {Boolean} Whether email is already used.
+	 */
+	private function checkEmail() {
+		$stmt = Database::$conn->prepare($this->query_email);
+
+		$stmt->bindParam(':email', $this->data['email']);
+
+		if ($stmt->execute()) {
+			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['count'];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Validate email, first name, last name, and password.
+	 *
+	 * @method validate
+	 * @private
+	 * @return {Boolean} Whether all is valid.
+	 */
+	private function validate() {
+		$validateFirstName = Validate::userName($this->data['first_name'], 'First name');
+		$validateLastName = Validate::userName($this->data['last_name'], 'Last name');
+		$validateEmail = Validate::email($this->data['email']);
+		$validatePassword = Validate::password($this->data['password']);
+
+		if (!$validateFirstName['success']) {
+			$this->error_msg = $validateFirstName['error_msg'];
+
+			return false;
+		}
+		if (!$validateLastName['success']) {
+			$this->error_msg = $validateLastName['error_msg'];
+
+			return false;
+		}
+		if (!$validateEmail['success']) {
+			$this->error_msg = $validateEmail['error_msg'];
+
+			return false;
+		}
+		if ($this->checkEmail()) {
+			$this->error_msg = "Email already in use";
+
+			return false;
+		}
+		if (!$validatePassword['success']) {
+			$this->error_msg = $validatePassword['error_msg'];
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Prepares query.
+	 * Hashes password.
+	 * Executes query.
+	 *
+	 * @method main
+	 * @public
+	 */
+	public function main() {
+		if ($this->validate()) {
+			$this->stmt = Database::$conn->prepare($this->query);
+			$this->hash = password_hash($this->data['password'], PASSWORD_BCRYPT);
+
+			$this->bindParams();
+
+			if (!$this->stmt->execute()) {
+				$this->success = false;
+			}
+
+			$this->return_data['id'] = Database::$conn->lastInsertId($stmt);
+		}
+		else {
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+
+session_start();
+
+
+/**
+ * Model that is called to delete a particular result.
+ *
+ * @method ResultDelete
+ * @extends Tournament
+ */
+/*&
+ * @param id {Integer} Id of the result to delete.
+ */
+class ResultDelete extends Tournament
+{
+	/**
+	 * SQL query string for deleting a result.
+	 * Also deletes the users' association with the result.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		DELETE r.*, ru.*
+		FROM results r
+		INNER JOIN result_user_maps ru
+		ON ru.result_id = r.id
+		WHERE r.id = :id
+SQL;
+
+	/**
+	 * Data associated with the result that the user wants to delete.
+	 *
+	 * @property result_data
+	 * @type Array
+	 * @private
+	 */
+	private $result_data;
+
+
+	/**
+	 * Method that actually deletes the result.
+	 *
+	 * @method delete
+	 * @private
+	 */
+	private function delete() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if (!$stmt->execute()) {
+			$this->success = false;
+			$this->error_msg = "Failed to execute SQL query";
+		}
+	}
+
+	/**
+	 * Validates whether the user can delete the result.
+	 *
+	 * @method validate
+	 * @private
+	 */
+	private function validate() {
+		// Check if user is logged in.
+		if (!isset($_SESSION['user'])) {
+			$this->error_msg = "You must be logged in";
+
+			return false;
+		}
+		// Check if user is league manager.
+		if ($this->isLeagueManager($_SESSION['user']['id'], $this->result_data['tournament_id'])) {
+			return true;
+		}
+		// If not, check if it is the user's result.
+		else if ($this->result_data['player1_id'] == $_SESSION['user']['id'] || $this->result_data['player2_id'] == $_SESSION['user']['id']) {
+			return true;
+		}
+		else {
+			$this->error_msg = "You don't have permission";
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method that gets the result data from @class ResultGet.
+	 *
+	 * @method getResult
+	 * @private
+	 */
+	private function getResult() {
+		$ResultGet = new ResultGet(true);
+
+		$this->result_data = $ResultGet->call(array(
+			'result_id' => $this->data['id']
+		))['results'][0];
+	}
+
+	/**
+	 * Main method.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->getResult();
+
+		if ($this->validate()) {
+			$this->delete();
+		}
+		else {
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
+require_once(dirname(__DIR__) . '/superclasses/ResultMethods.php');
+
+session_start();
+
+
+/**
+ * Model used for entering a result.
+ *
+ * @class ResultEnter
+ * @extends Tournament
+ */
+/*&
+ * @param tournament_id {Integer} Id of the tournament.
+ * @param player1_id {Integer} Id of player 1.
+ * @param player2_id {Integer} Id of player 2.
+ * @param player1_score {Integer} Player 1's score.
+ * @param player2_score {Integer} Player 2's score.
+ */
+class ResultEnter extends Tournament
+{
+	/**
+	 * SQL query string for inserting result info.
+	 *
+	 * @property query_info
+	 * @type String
+	 * @private
+	 */
+	private $query_info = <<<SQL
+		INSERT INTO results (tournament_id, date)
+		VALUES (:tournament_id, :date)
+SQL;
+	/**
+	 * SQL query string for inserting result score.
+	 *
+	 * @property query_score
+	 * @type String
+	 * @private
+	 */
+	private $query_score = <<<SQL
+		INSERT INTO result_user_maps (result_id, user_id, score, rating, rating_change)
+		VALUES (:result_id, :user_id, :score, :new_rating, :rating_change)
+SQL;
+
+	/**
+	 * Id of the result that is being entered.
+	 *
+	 * @property id_of_result
+	 * @type Integer
+	 * @private
+	 */
+	private $id_of_result;
+
+
+	/**
+	 * Method that checks whether the entered score is valid.
+	 *
+	 * @method validScore
+	 * @private
+	 */
+	private function validScore() {
+		if (!is_int($this->data['player1_score']) || !is_int($this->data['player2_score'])) {
+			return false;
+		}
+
+		if ($this->data['player1_score'] >= 0 && $this->data['player1_score'] <= 3 && $this->data['player2_score'] >= 0 && $this->data['player2_score'] <= 3) {
+			if (($this->data['player1_score'] != 3 && $this->data['player2_score'] == 3) || ($this->data['player2_score'] != 3 && $this->data['player1_score'] == 3)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Main validation method.
+	 *
+	 * @method validate
+	 * @private
+	 * @return {Boolean} Whether valid to enter result.
+	 */
+	private function validate() {
+		// Check if player 1 is in league.
+		if (!$this->isPlayer($this->data['player1_id'], $this->data['tournament_id'])) {
+			$this->error_msg = "Player 1 is not in the league";
+
+			return false;
+		}		
+		// Check if player 2 is in league.
+		if (!$this->isPlayer($this->data['player2_id'], $this->data['tournament_id'])) {
+			$this->error_msg = "Player 2 is not in the league";
+
+			return false;
+		}
+
+		// Check if player 1 is not player 2.
+		if ($this->data['player1_id'] == $this->data['player2_id']) {
+			$this->error_msg = "You can't enter a result against the same player";
+
+			return false;
+		}
+
+		// Check if user is one of the players.
+		if ($_SESSION['user']['id'] != $this->data['player1_id'] &&
+			$_SESSION['user']['id'] != $this->data['player2_id'] &&
+			!$this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id'])) {
+			$this->error_msg = "You must be a player or league manager to enter this result";
+
+			return false;
+		}
+		
+		// Check if result already exists.
+		if (ResultMethods::resultExists($this->data['player1_id'], $this->data['player2_id'], $this->data['tournament_id'])) {
+			$this->error_msg = "Result already exists";
+
+			return false;
+		}
+		// Check if score is valid.
+		if (!$this->validScore()) {
+			$this->error_msg = "Not a valid score";
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method for inserting the score of a player.
+	 *
+	 * @method insertScore
+	 * @param user_id {Integer} Id of the user whose score to input.
+	 * @param score {Integer} Score that the user achieved.
+	 * @param new_rating {Integer} New rating of the user.
+	 * @param rating_change {Integer} Rating change.
+	 * @private
+	 */
+	private function insertScore($user_id, $score, $new_rating, $rating_change) {
+		$stmt = Database::$conn->prepare($this->query_score);
+
+		$stmt->bindParam(':result_id', $this->id_of_result);
+		$stmt->bindParam(':user_id', $user_id);
+		$stmt->bindParam(':score', $score);
+		$stmt->bindParam(':new_rating', $new_rating);
+		$stmt->bindParam(':rating_change', $rating_change);
+
+		$stmt->execute();
+	}
+
+	/**
+	 * Method used to insert general result info.
+	 *
+	 * @method insertInfo
+	 * @private
+	 */
+	private function insertInfo() {
+		$stmt = Database::$conn->prepare($this->query_info);
+
+		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+		// date is format yymmdd_hhmmss
+		$stmt->bindParam(':date', date('ymdHis'));
+
+		if ($stmt->execute()) {
+			$this->id_of_result = Database::$conn->lastInsertId();
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = "Failed to execute query";
+		}
+	}
+
+	/**
+	 * Calls all general methods.
+	 *
+	 * @method general
+	 * @private
+	 */
+	private function general() {
+		if ($this->validate()) {
+			$player1_elo = new EloRating($this->data['player1_id'], $this->data['player2_id'], $this->data['tournament_id'], $this->data['player1_score'], $this->data['player2_score']);
+			$player2_elo = new EloRating($this->data['player2_id'], $this->data['player1_id'], $this->data['tournament_id'], $this->data['player2_score'], $this->data['player1_score']);
+
+			$this->insertInfo();
+			$this->insertScore($this->data['player1_id'], $this->data['player1_score'], $player1_elo->new_rating, $player1_elo->rating_change);
+			$this->insertScore($this->data['player2_id'], $this->data['player2_score'], $player2_elo->new_rating, $player2_elo->rating_change);
+		}
+		else {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Checks login.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if (isset($_SESSION['user'])) {
+			$this->general();
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = "You must be logged in";
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/php/Model.php');
+
+
+/**
+ * Model for retrieving information on a particular result.
+ *
+ * @class ResultGet
+ * @extends Model
+ */
+/*&
+ * @param result_id {Integer} Id of the result.
+ * @param player1_id {Integer} Id of player 1.
+ * @param player2_id {Integer} Id of player 2.
+ * @param tournament_id {Integer} Id of tournament.
+ *
+ * @return results {Array}
+ *   @return [].id {Integer} Id of the result.
+ *   @return [].tournament_id {Integer} Id of the tournament.
+ *   @return [].tournament_name {String} Name of the tournament.
+ *   @return [].date {String} Date-time the match was played.
+ *   @return [].player1_id {Integer} Id of player 1.
+ *   @return [].player2_id {Integer} Id of player 2.
+ *   @return [].player1_name {String} Name of player 1.
+ *   @return [].player2_name {String} Name of player 2.
+ *   @return [].player1_rating {Integer} Player 1 rating before the match.
+ *   @return [].player2_rating {Integer} Player 2 rating before the match.
+ *   @return [].player1_rating_change {Integer} Player 1 rating change.
+ *   @return [].player2_rating_change {Integer} Player 2 rating change.
+ *   @return [].score1 {Integer} Score of player 1.
+ *   @return [].score2 {Integer} Score of player 2.
+ */
+class ResultGet extends Model
+{
+	/**
+	 * SQL query string for getting result information.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		SELECT
+		r.id,
+		r.tournament_id,
+		t.name tournament_name,
+		r.date,
+		ru1.user_id player1_id,
+		ru2.user_id player2_id,
+		CONCAT(u1.first_name, ' ', u1.last_name) player1_name,
+		CONCAT(u2.first_name, ' ', u2.last_name) player2_name,
+		ru1.rating - ru1.rating_change player1_rating,
+		ru2.rating - ru2.rating_change player2_rating,
+		ru1.rating_change player1_rating_change,
+		ru2.rating_change player2_rating_change,
+		ru1.score score1,
+		ru2.score score2
+		FROM result_user_maps ru1
+
+		INNER JOIN result_user_maps ru2
+		ON ru2.result_id = ru1.result_id
+		INNER JOIN results r
+		ON r.id = ru1.result_id
+		
+		INNER JOIN users u1
+		ON ru1.user_id = u1.id
+		INNER JOIN users u2
+		ON ru2.user_id = u2.id
+		INNER JOIN tournaments t
+		ON r.tournament_id = t.id
+		INNER JOIN tournament_user_maps tu1
+		ON tu1.user_id = u1.id AND tu1.tournament_id = t.id
+		INNER JOIN tournament_user_maps tu2
+		ON tu2.user_id = u2.id AND tu2.tournament_id = t.id
+
+		WHERE
+		ru1.user_id <> ru2.user_id AND
+		CASE WHEN :player1_id IS NULL AND :player2_id IS NULL THEN ru1.user_id > ru2.user_id ELSE TRUE END AND
+		r.id = CASE WHEN :result_id IS NULL THEN r.id ELSE :result_id END AND
+		ru1.user_id = CASE WHEN :player1_id IS NULL THEN ru1.user_id ELSE :player1_id END AND
+		ru2.user_id = CASE WHEN :player2_id IS NULL THEN ru2.user_id ELSE :player2_id END AND
+		tu1.is_player = TRUE AND
+		tu2.is_player = TRUE AND
+		r.tournament_id = CASE WHEN :tournament_id IS NULL THEN r.tournament_id ELSE :tournament_id END
+
+		ORDER BY r.date DESC
+SQL;
+
+
+	/**
+	 * Main method that executes @property query.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':result_id', $this->data['result_id']);
+		$stmt->bindParam(':player1_id', $this->data['player1_id']);
+		$stmt->bindParam(':player2_id', $this->data['player2_id']);
+		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+
+		if ($stmt->execute()) {
+			$this->return_data['results'] = array();
+			$this->return_data['results'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/php/Model.php');
+
+session_start();
+
+
+/**
+ * Model for getting the status of the current user.
+ *
+ * @class Status
+ * @extends Model
+ */
+/*&
+ * @return logged_in {Boolean} Whether you are logged in.
+ * @return user {Array} User data if logged in:
+ *  @return user.id {Integer} Your id.
+ *  @return user.email {String} Your email address.
+ *  @return user.first_name {String} Your first name.
+ *  @return user.last_name {String} Your last name.
+ *
+ */
+class Status extends Model
+{
+	/**
+	 * Method that stores user data in @property return_data.
+	 *
+	 * @method logged_in
+	 * @private
+	 */
+	private function logged_in() {
+		$this->return_data['user'] = $_SESSION['user'];
+	}
+
+	/**
+	 * Method that checks if the user is logged in.
+	 * Then sets @property return_data.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->return_data['logged_in'] = false;
+
+		// if logged in
+		if (isset($_SESSION['user'])) {
+			$this->return_data['logged_in'] = true;
+			$this->logged_in();
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
+
+session_start();
+
+
+/**
+ * Model for users to create tournaments.
+ *
+ * @class TournamentCreate
+ * @extends Tournament
+ */
+/*&
+ * @param name {String} The name of the tournament.
+ * @param description {String} The description of the tournament.
+ *
+ * @return id {Integer} Id of the tournament just created.
+ */
+class TournamentCreate extends Tournament
+{
+	/**
+	 * SQL query string for creating a tournament.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		INSERT INTO tournaments (name, description)
+		VALUES (:name, :description)
+SQL;
+	/**
+	 * Query for making the creator of the league a league manager.
+	 *
+	 * @property query_add_league_manager
+	 * @type String
+	 * @private
+	 */
+	private $query_add_league_manager = <<<SQL
+		INSERT INTO tournament_user_maps (tournament_id, user_id, is_league_manager, is_player)
+		VALUES (:tournament_id, :user_id, 1, 0)
+SQL;
+
+	/**
+	 * Statement object for executing @property query.
+	 *
+	 * @property stmt
+	 * @type Object
+	 * @private
+	 */
+	private $stmt;
+
+	/**
+	 * Id of the tournament that has just been created.
+	 *
+	 * @property tournament_id
+	 * @private
+	 */
+	private $tournament_id;
+
+
+	/**
+	 * Method which returns the tournament data.
+	 * Data collected from @class TournamentGet.
+	 *
+	 * @method returnTournamentData
+	 * @private
+	 */
+	private function returnTournamentData() {
+		$this->return_data['id'] = $this->tournament_id;
+	}
+
+	/**
+	 * Method for attaching the current user as the league manager.
+	 *
+	 * @method addLeagueManager
+	 * @private
+	 */
+	private function addLeagueManager() {
+		$stmt = Database::$conn->prepare($this->query_add_league_manager);
+
+		$stmt->bindParam(':user_id', $_SESSION['user']['id']);
+		// Bind the tournament id as the last insert id.
+		$stmt->bindParam(':tournament_id', $this->tournament_id);
+
+		if (!$stmt->execute() || $stmt->rowCount() != 1) {
+			$this->error_msg = "Failed to add you as a league manager";
+			$this->success = false;
+		}
+		else {
+			$this->returnTournamentData();
+		}
+	}
+
+	/**
+	 * Main function for creating database object, binding params, and executing query.
+	 *
+	 * @method create
+	 * @private
+	 */
+	private function create() {
+		$this->stmt = Database::$conn->prepare($this->query);
+
+		$this->stmt->bindParam(':name', $this->data['name']);
+		$this->stmt->bindParam(':description', $this->data['description']);
+
+		if (!$this->stmt->execute()) {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+		else {
+			// Sets @property tournament_id
+			$this->tournament_id = Database::$conn->lastInsertId();
+
+			// Add league manager if didn't fail.
+			$this->addLeagueManager();
+		}
+	}
+
+	/**
+	 * Main function for checking whether user is logged in.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if (isset($_SESSION['user'])) {
+			$validateName = Validate::tournamentName($this->data['name']);
+			$validateDescription = Validate::tournamentDescription($this->data['description']);
+
+			if (!$validateName['success']) {
+				$this->error_msg = $validateName['error_msg'];
+				$this->success = false;
+			}
+			else if (!$validateDescription['success']) {
+				$this->error_msg = $validateDescription['error_msg'];
+				$this->success = false;
+			}
+			else {
+				$this->create();
+			}
+		}
+		else {
+			$this->error_msg = "You must be logged in";
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+
+session_start();
+
+
+/**
+ * Class that deletes a tournament.
+ *
+ * @class TournamentDelete
+ * @extends Tournament
+ */
+/*&
+ * @param id {Integer} Id of the tournament
+ */
+class TournamentDelete extends Tournament
+{
+	/**
+	 * SQL query string for deleting the league.
+	 * Also deletes all associations with the league.
+	 * This includes results.
+	 *
+	 * @property query_league
+	 * @type String
+	 * @private
+	 */
+	private $query_league = <<<SQL
+		DELETE t.*, tu.*, ru.*, r.*
+		FROM tournaments t
+		LEFT JOIN tournament_user_maps tu
+		ON t.id = tu.tournament_id
+		LEFT JOIN results r
+		ON r.tournament_id = t.id
+		LEFT JOIN result_user_maps ru
+		ON ru.result_id = r.id
+		WHERE t.id = :id
+SQL;
+
+	/**
+	 * Method that uses @property query_league to delete the league.
+	 *
+	 * @method delete
+	 * @private
+	 */
+	private function delete() {
+		$stmt = Database::$conn->prepare($this->query_league);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if (!$stmt->execute()) {
+			$this->success = false;
+			$this->error_msg = "Failed to delete the league";
+		}
+	}
+
+	/**
+	 * Checks whether the user can delete the league.
+	 *
+	 * @method verify
+	 * @private
+	 * @return {Boolean} Whether the league is deletable.
+	 */
+	private function verify() {
+		if (!isset($_SESSION['user'])) {
+			$this->error_msg = "You must be logged in";
+
+			return false;
+		}
+		if (!$this->isLeagueManager($_SESSION['user']['id'], $this->data['id'])) {
+			$this->error_msg = "You must be a league manager";
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Result of @method verify determines whether it calls @method delete.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if ($this->verify()) {
+			$this->delete();
+		}
+		else {
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+
+session_start();
+
+
+/**
+ * Model that fetches tournament data based on id.
+ *
+ * @class TournamentGet
+ * @extends Tournament
+ */
+/*&
+ * @param id {Integer} Id of the tournament.
+ *
+ * @return id {Integer} Id of the tournament.
+ * @return name {String} Name of the tournament.
+ * @return description {String} Description of the tournament.
+ * @return is_league_manager {Boolean} Whether the user calling is a league manager.
+ * @return league_managers {Array} Array of league managers.
+ *  @return league_managers[].id {Integer} Id of the league manager.
+ *  @return league_managers[].first_name {String} First name of the league manager.
+ *  @return league_managers[].last_name {String} Last name of the league manager.
+ * @return players {Array} Array of players in the tournament.
+ *  @return players[].id {Integer} Id of the player.
+ *  @return players[].first_name {String} First name of the player.
+ *  @return players[].last_name {String} Last name of the player.
+ */
+class TournamentGet extends Tournament
+{
+	/**
+	 * SQL query string for fetching tournament data.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		SELECT id, name, description
+		FROM tournaments
+		WHERE id = :id
+SQL;
+	/**
+	 * SQL query string for fetching the players in the tournament.
+	 *
+	 * @property query_players
+	 * @type String
+	 * @private
+	 */
+	private $query_players = <<<SQL
+		SELECT u.id, u.first_name, u.last_name
+		FROM users u
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u.id
+		WHERE tu.tournament_id = :id AND tu.is_player = true
+SQL;
+	/**
+	 * SQL query string for fetching the league managers of the tournament.
+	 *
+	 * @property query_leauge_managers
+	 * @type String
+	 * @private
+	 */
+	private $query_league_managers = <<<SQL
+		SELECT u.id, u.first_name, u.last_name
+		FROM users u
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u.id
+		WHERE tu.tournament_id = :id AND tu.is_league_manager = true
+SQL;
+
+
+	/**
+	 * Method that queries players in the tournament.
+	 *
+	 * @method getPlayers
+	 * @private
+	 */
+	private function getPlayers() {
+		$stmt = Database::$conn->prepare($this->query_players);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if ($stmt->execute()) {
+			$this->return_data['players'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method that queries league managers in the tournament.
+	 *
+	 * @method getLeagueManagers
+	 * @private
+	 */
+	private function getLeagueManagers() {
+		$stmt = Database::$conn->prepare($this->query_league_managers);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if ($stmt->execute()) {
+			$this->return_data['league_managers'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method that gets the data about the tournament.
+	 *
+	 * @method getTournamentData
+	 * @private
+	 */
+	private function getTournamentData() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if ($stmt->execute()) {
+			$this->return_data = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+		}
+		else {
+			$this->success = false;
+		}
+
+
+		// Shows whether the current user is a league manager.
+		$this->return_data['is_league_manager'] = $this->isLeagueManager($_SESSION['user']['id'], $this->data['id']);
+	}
+
+	/**
+	 * Method that fetches the database info.
+	 *
+	 * @method main
+	 * @protected
+	 * @return {Array} Tournament data.
+	 */
+	protected function main() {
+		if ($this->tournamentExistsId($this->data['id'])) {
+			$this->getTournamentData();
+			$this->getPlayers();
+			$this->getLeagueManagers();
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = "Tournament doesn't exist";
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
+require_once(dirname(__DIR__) . '/models/ResultGet.php');
+
+
+/**
+ * Class for generating a league table.
+ *
+ * @class TournamentLeagueTable
+ * @extends Model
+ */
+/*&
+ * @param id {Integer} If of the tournament.
+ *
+ * @return table {Array} Array that holds all the players in order.
+ *   @return [].user_id {Integer} Id of player.
+ *   @return [].name {String} Full name of player.
+ *   @return [].played {Integer} Number of games played.
+ *   @return [].wins {Integer} Number of games won.
+ *   @return [].loses {Integer} Number of games lost.
+ *   @return [].points {Integer} Number of points from games played.
+ *   @return [].rating {Integer} Rating of player in the specific tournament.
+ */
+class TournamentLeagueTable extends Model
+{
+	/**
+	 * Array that stores the table data.
+	 *
+	 * @property table
+	 * @private
+	 * @type Array
+	 */
+	private $table = array();
+
+	/**
+	 * SQL query string for getting the players in the leauge.
+	 *
+	 * @property query
+	 * @private
+	 * @type String
+	 */
+	private $query = <<<SQL
+		SELECT
+		u.id user_id,
+		CONCAT(u.first_name, ' ', u.last_name) name,
+		0 played,
+		0 wins,
+		0 loses,
+		0 points,
+		null rating
+		FROM tournament_user_maps tu
+		INNER JOIN users u
+		ON u.id = tu.user_id
+		WHERE
+		tu.tournament_id = :id AND
+		tu.is_player = TRUE
+SQL;
+
+
+	/**
+	 * If that player is unpopulated, then populate the table.
+	 *
+	 * @method populateTable
+	 * @private
+	 */
+	private function populateTable() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if ($stmt->execute()) {
+			$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			foreach($users as &$user) {
+				$this->table[$user['user_id']] = $user;
+			}
+		}
+		else {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Calculate points and put in table.
+	 *
+	 * @method calcuate
+	 * @private
+	 */
+	private function calculate() {
+		$ResultGet = new ResultGet(true);
+		$results = $ResultGet->call(array(
+			'tournament_id' => $this->data['id']
+		))['results'];
+
+		foreach ($results as &$result) {
+			$points1 = 0;
+			$points2 = 0;
+			$this->table[$result['player1_id']]['played'] += 1;
+			$this->table[$result['player2_id']]['played'] += 1;
+
+			// Player 1 wins.
+			if ($result['score1'] == 3) {
+				$points1 = 6 - $result['score2'];
+				$points2 = 1 + $result['score2'];
+				$this->table[$result['player1_id']]['wins'] += 1;
+				$this->table[$result['player2_id']]['loses'] += 1;
+			}
+			// Player 2 wins.
+			else if ($result['score2'] == 3) {
+				$points1 = 1 + $result['score1'];
+				$points2 = 6 - $result['score1'];
+				$this->table[$result['player2_id']]['wins'] += 1;
+				$this->table[$result['player1_id']]['loses'] += 1;
+			}
+
+			// Add points to total.
+			$this->table[$result['player1_id']]['points'] += $points1;
+			$this->table[$result['player2_id']]['points'] += $points2;
+		}
+	}
+
+	/**
+	 * Order table and return.
+	 *
+	 * @method order
+	 * @private
+	 */
+	private function order() {
+		// Set table to return data.
+		foreach ($this->table as &$user) {
+			$this->table[$user['user_id']]['rating'] = EloRating::userRating($user['user_id']);
+
+			array_push($this->return_data['table'], $user);
+		}
+
+		// Order table.
+		usort($this->return_data['table'], function($a, $b) {
+			// If level on points then order by wins.
+			if ($a['points'] == $b['points']) {
+				return $b['wins'] > $a['wins'];
+			}
+
+			// Else order by points.
+			return $b['points'] > $a['points'];
+		});
+	}
+
+	/**
+	 * Method the executes @property query.
+	 * Returns league table.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->return_data['table'] = array();
+
+		$this->populateTable();
+		$this->calculate();
+		$this->order();		
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/TournamentManagerAlter.php');
+
+
+/**
+ * Model for adding a user as a manager of a tournament.
+ *
+ * @class TournamentManagerAttach
+ * @extends TournamentManagerAlter
+ */
+/*&
+ * @param user_id {Integer} Id of the user to make a manager.
+ * @param tournament_id {Integer} Id of the tournament.
+ */
+class TournamentManagerAttach extends TournamentManagerAlter
+{
+	/**
+	 * User becomes a league manager.
+	 *
+	 * @property is_league_manager
+	 * @protected
+	 */
+	protected $is_league_manager = true;
+
+
+	/**
+	 * Main method calls @method subMain.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->subMain();
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/TournamentManagerAlter.php');
+
+
+/**
+ * Model for removing a league manager from a tournament.
+ *
+ * @class TournamentManagerRemove
+ * @extends TournamentManagerAlter
+ */
+/*&
+ * @param user_id {Integer} Id of the league manager to remove.
+ * @param tournament_id {Integer} Id of the tournament
+ */
+class TournamentManagerRemove extends TournamentManagerAlter
+{
+	/**
+	 * No longer a league manager.
+	 *
+	 * @property is_league_manager
+	 * @protected
+	 */
+	protected $is_league_manager = false;
+
+
+	/**
+	 * Main method that calls @method subMain.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->subMain();
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/TournamentPlayerAlter.php');
+
+
+/**
+ * Model for adding a user as a player to a tournament.
+ *
+ * @class TournamentPlayerAttach
+ * @extends TournamentPlayerAlter
+ */
+/*&
+ * @param user_id {Integer} Id of the user to be added to the tournament.
+ * @param tournament_id {Integer} Id of the tournament.
+ */
+class TournamentPlayerAttach extends TournamentPlayerAlter
+{
+	/**
+	 * Player becomes true when adding a player.
+	 *
+	 * @property is_player
+	 * @protected
+	 */
+	protected $is_player = true;
+
+
+	/**
+	 * Calls @method subMain.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->subMain();
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/TournamentPlayerAlter.php');
+
+
+/**
+ * Model for removing a player from a tournament.
+ *
+ * @class TournamentPlayerRemove
+ * @extends TournamentPlayerAlter
+ */
+/*&
+ * @param user_id {Integer} Id of the user to be removed from the tournament.
+ * @param tournament_id {Integer} Id of the tournament.
+ */
+class TournamentPlayerRemove extends TournamentPlayerAlter
+{
+	/**
+	 * Player becomes false when removing a player.
+	 *
+	 * @property is_player
+	 * @protected
+	 */
+	protected $is_player = false;
+
+
+	/**
+	 * Calls @method subMain
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		$this->subMain();
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+
+
+/**
+ * Model that is used to search for a tournament by name.
+ *
+ * @class TournamentSearch
+ * @extends Model
+ */
+/*&
+ * @param name {String} Search for tournament with similar name.
+ *
+ * @return tournaments {Array} Array of all tournaments that match.
+ *   @return [].id {Integer} Id of the tournament.
+ *   @return [].name {String} Name of the tournament.
+ */
+class TournamentSearch extends Model
+{
+	/**
+	 * SQL query string for searching for tournaments and returning their name and id.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		SELECT id, name
+		FROM tournaments
+		WHERE
+		name LIKE :name
+SQL;
+
+
+	/**
+	 * Main method.
+	 * Used to execute @property query.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		// Redefine @param name, SQL syntax for searching with 'LIKE'.
+		$this->data['name'] = '%' . $this->data['name'] . '%';
+
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':name', $this->data['name']);
+
+		if ($stmt->execute()) {
+			$this->return_data['tournaments'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
+
+session_start();
+
+
+/**
+ * Model that updates tournament info.
+ *
+ * @class TournamentUpdate
+ * @extends Tournament
+ */
+/*&
+ * @param id {Integer} Id of tournament.
+ * @param name {String} New name of the tournament.
+ * @param description {String} New description of the tournament.
+ */
+class TournamentUpdate extends Tournament
+{
+	/**
+	 * SQL query string that updates tournament info.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		UPDATE tournaments
+		SET name = :name, description = :description
+		WHERE id = :id
+SQL;
+
+
+	/**
+	 * Validates whether the user can update tournament info.
+	 *
+	 * @method validate
+	 * @private
+	 * @return {Boolean} Whether the user has permission.
+	 */
+	private function validate() {
+		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['id']);
+		$tournament_exists = $this->tournamentExistsId($this->data['id']);
+		$validateName = Validate::tournamentName($this->data['name']);
+		$validateDescription = Validate::tournamentDescription($this->data['description']);
+
+		if (!$tournament_exists) {
+			$this->error_msg = "Tournament doesn't exists";
+
+			return false;
+		}
+		if (!$is_league_manager) {
+			$this->error_msg = "You don't have permission to do that";
+
+			return false;
+		}
+		if (!$validateName['success']) {
+			$this->error_msg = $validateName['error_msg'];
+
+			return false;
+		}
+		if (!$validateDescription['success']) {
+			$this->error_msg = $validateDescription['error_msg'];
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method that executes @property query.
+	 * Thus updating tournament info.
+	 *
+	 * @method update
+	 * @private
+	 */
+	private function update() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':id', $this->data['id']);
+		$stmt->bindParam(':name', $this->data['name']);
+		$stmt->bindParam(':description', $this->data['description']);
+
+		if (!$stmt->execute()) {
+			$this->success = false;
+			$this->error_msg = "Failed to update tournament";
+		}
+	}
+
+	/**
+	 * Method that checks login, then calls @method update.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if (isset($_SESSION['user'])) {
+			if ($this->validate()) {
+				$this->update();
+			}
+			else {
+				$this->success = false;
+			}
+		}
+		else {
+			$this->success = false;
+			$this->error_msg = "You must be logged in";
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/superclasses/EloRating.php');
+
+session_start();
+
+
+/**
+ * Model for querying a user based on the id.
+ *
+ * @class UserGet
+ * @extends Model
+ */
+/*&
+ * @param id {Integer} Id of the user to be fetched.
+ *
+ * @return id {Integer} Id of the user.
+ * @return first_name {String} First name of the user.
+ * @return last_name {String} Last name of the user.
+ * @return rating {Integer} The user's rating.
+ * @return leagues_playing {Array}
+ *   @return leagues_playing[].id {Integer} Id of league playing in.
+ *   @return leagues_playing[].name {String} Name of league playing in.
+ * @return  leagues_managing {Array}
+ *   @return leagues_managing[].id {Integer} Id of league managing.
+ *   @return leagues_managing[].name {String} Name of league managing.
+ */
+class UserGet extends Model
+{
+	/**
+	 * SQL query string for fetching the user's data.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		SELECT first_name, last_name, id
+		FROM users
+		WHERE
+		id = :id
+SQL;
+
+	/**
+	 * SQL query string for getting tournaments that the user is managing.
+	 *
+	 * @property query_managing
+	 * @type String
+	 * @private
+	 */
+	private $query_managing = <<<SQL
+		SELECT t.id, t.name
+		FROM tournaments t
+		INNER JOIN tournament_user_maps tu
+		ON tu.tournament_id = t.id
+		WHERE
+		tu.user_id = :id AND
+		tu.is_league_manager = TRUE
+SQL;
+
+	/**
+	 * SQL query string for getting tournaments that the user is playing in.
+	 *
+	 * @property query_playing
+	 * @type String
+	 * @private
+	 */
+	private $query_playing = <<<SQL
+		SELECT t.id, t.name
+		FROM tournaments t
+		INNER JOIN tournament_user_maps tu
+		ON tu.tournament_id = t.id
+		WHERE
+		tu.user_id = :id AND
+		tu.is_player = TRUE
+SQL;
+
+	/**
+	 * Database object for executing query.
+	 *
+	 * @property stmt
+	 * @type Object
+	 * @private
+	 */
+	private $stmt;
+
+
+	/**
+	 * Method that verifies whether the requested user is the one returned.
+	 *
+	 * @method verifyResult
+	 * @private
+	 * @return {Boolean} Whether the result matches request.
+	 */
+	private function verifyResult() {
+		if ($this->return_data['id'] == $this->data['id']) {
+			return true;
+		}
+		else {
+			$this->error_msg = "User doesn't exist";
+			$this->success = false;
+
+			return false;
+		}
+	}
+
+	/**
+	 * Method that executes the query.
+	 *
+	 * @method executeQuery
+	 * @private
+	 * @return {Boolean} Whether executed query successfully.
+	 */
+	private function executeQuery() {
+		if ($this->stmt->execute()) {
+			$this->return_data = $this->stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+
+			return true;
+		}
+		else {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+
+			return false;
+		}
+	}
+
+	/**
+	 * Get tournament playing in.
+	 *
+	 * @method getPlaying
+	 * @private
+	 */
+	private function getPlaying() {
+		$stmt = Database::$conn->prepare($this->query_playing);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if ($stmt->execute()) {
+			$this->return_data['leagues_playing'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+	}
+
+	/**
+	 * Method for getting tournaments managing
+	 *
+	 * @method getManaging
+	 * @private
+	 */
+	private function getManaging() {
+		$stmt = Database::$conn->prepare($this->query_managing);
+
+		$stmt->bindParam(':id', $this->data['id']);
+
+		if ($stmt->execute()) {
+			$this->return_data['leagues_managing'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+	}
+
+	/**
+	 * Method for getting user data.
+	 *
+	 * @method getUserData
+	 * @private
+	 * @return {Boolean} Whether user exists
+	 */
+	private function getUserData() {
+		$this->stmt = Database::$conn->prepare($this->query);
+
+		$this->stmt->bindParam(':id', $this->data['id']);
+
+		if ($this->executeQuery()) {
+			return $this->verifyResult();
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Main method.
+	 * If the user exists, it gets tournament data.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if ($this->getUserData()) {
+			$this->return_data['rating'] = EloRating::userRating($this->data['id']);
+			
+			$this->getPlaying();
+			$this->getManaging();
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+
+session_start();
+
+
+/**
+ * Model when called will return all the user's ratings over time.
+ *
+ * @class UserRatings
+ * @extends Model
+ */
+/*&
+ * @param user_id {Integer} Id of the user to query.
+ *
+ * @return ratings {Array} Array of all the ratings over time.
+ *   @return [].rating {Integer} Rating at that moment in time.
+ *   @return [].rating_change {Integer} Change of rating.
+ *   @return [].date {String} Date and time when rating was the value.
+ */
+class UserRatings extends Model
+{
+	/**
+	 * SQL query string that fetches all the user's ratings over time.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		SELECT
+		ru.rating,
+		ru.rating_change,
+		r.date
+		FROM result_user_maps ru
+		INNER JOIN results r
+		ON r.id = ru.result_id
+		WHERE ru.user_id = :id
+		ORDER BY r.date DESC
+SQL;
+
+
+	/**
+	 * Method that executes @property query.
+	 *
+	 * @method general
+	 * @private
+	 */
+	private function general() {
+		$stmt = Database::$conn->prepare($this->query);
+
+		$stmt->bindParam(':id', $this->data['user_id']);
+
+		if ($stmt->execute()) {
+			$this->return_data['ratings'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Checks whether user is logged in then calls @method general.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if (isset($_SESSION['user'])) {
+			$this->general();
+		}
+		else {
+			$this->error_msg = "You must be logged in";
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/php/Model.php');
+
+
+/**
+ * Model that is used to search for a user.
+ *
+ * @class UserSearch
+ * @extends Model
+ */
+/*&
+ * @param name {String} Search for user with similar name.
+ *
+ * @return users {Array} Array of all users that match.
+ *    @return [].id {Integer} Id of the user.
+ *    @return [].name {String} Full name of the user.
+ */
+class UserSearch extends Model
+{
+	/**
+	 * SQL query string for searching for users and returning their name and id.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		SELECT id, CONCAT(first_name, ' ', last_name) name
+		FROM users
+		WHERE
+		CONCAT(first_name, ' ', last_name) LIKE :name
+SQL;
+
+
+	/**
+	 * Main method.
+	 * Used to execute @property query.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		// Redefine @param name, SQL syntax for searching with 'LIKE'.
+		$this->data['name'] = '%' . $this->data['name'] . '%';
+
+		$stmt = Database::$conn->prepare($this->query);
+		
+		$stmt->bindParam(':name', $this->data['name']);
+
+		if ($stmt->execute()) {
+			$this->return_data['users'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		}
+		else {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+	}
+}
+
+?>
+\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Model.php');
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/superclasses/Validate.php');
+
+session_start();
+
+
+/**
+ * This model is used to update user details.
+ *
+ * @class UserUpdate
+ * @extends Model
+ */
+/*&
+ * @param first_name {String} The new first name of the user.
+ * @param last_name {String} The new last name of the user.
+ * @param home_phone {String} The new home phone number of the user.
+ * @param mobile_phone {String} THe new mobile phone number of the user.
+ */
+class UserUpdate extends Model
+{
+	/**
+	 * SQL query string to update the user's data.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		UPDATE users
+		SET
+		first_name = CASE WHEN :first_name IS NULL THEN first_name ELSE :first_name END,
+		last_name = CASE WHEN :last_name IS NULL THEN last_name ELSE :last_name END,
+		home_phone = :home_phone,
+		mobile_phone = :mobile_phone
+		WHERE id = :id
+SQL;
+
+	/**
+	 * Database object variable.
+	 *
+	 * @property stmt
+	 * @type Object
+	 * @private
+	 */
+	private $stmt;
+
+
+	/**
+	 * Main method once @method main has checked login.
+	 *
+	 * @method update
+	 * @private
+	 */
+	private function update() {
+		$this->stmt = Database::$conn->prepare($this->query);
+
+		$this->stmt->bindParam(':id', $_SESSION['user']['id']);
+		$this->stmt->bindParam(':first_name', $this->data['first_name']);
+		$this->stmt->bindParam(':last_name', $this->data['last_name']);
+		$this->stmt->bindParam(':home_phone', $this->data['home_phone']);
+		$this->stmt->bindParam(':mobile_phone', $this->data['mobile_phone']);
+
+		if (!$this->stmt->execute()) {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method that validates the inputs.
+	 * Validating first name, last name, and phone numbers.
+	 *
+	 * @method validate
+	 * @private
+	 * @return {Boolean} Whether valid.
+	 */
+	private function validate() {
+		$validateFirstName = Validate::userName($this->data['first_name'], 'First name');
+		$validateLastName = Validate::userName($this->data['last_name'], 'Last name');
+		$validateHomePhone = Validate::phoneNumber($this->data['home_phone']);
+		$validateMobilePhone = Validate::phoneNumber($this->data['mobile_phone']);
+
+		if (!$validateFirstName['success']) {
+			$this->error_msg = $validateFirstName['error_msg'];
+
+			return false;
+		}
+		if (!$validateLastName['success']) {
+			$this->error_msg = $validateLastName['error_msg'];
+
+			return false;
+		}
+		if (!$validateHomePhone['success'] && isset($this->data['home_phone'])) {
+			$this->error_msg = $validateHomePhone['error_msg'];
+
+			return false;
+		}
+		if (!$validateMobilePhone['success'] && isset($this->data['mobile_phone'])) {
+			$this->error_msg = $validateMobilePhone['error_msg'];
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks to see if the user is logged in.
+	 * Calls @method update if true.
+	 *
+	 * @method main
+	 * @protected
+	 */
+	protected function main() {
+		if (isset($_SESSION['user']) && $this->validate()) {
+			$this->update();
+		}
+		else {
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\subsubsection{Important Classes}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+/**
+ * Allows the JavaScript to communicate with the PHP models.
+ *
+ * @class API
+ */
+class API
+{
+	/**
+	 * Name of the model to be called.
+	 *
+	 * @property modelName
+	 * @private
+	 * @type String
+	 */
+	private $modelName;
+
+
+	/**
+	 * Creates an instance of the class requested.
+	 * Therefore calling the model.
+	 *
+	 * @method execute
+	 * @private
+	 */
+	private function execute() {
+		$model = new $this->modelName();
+	}
+
+	/**
+	 * Gets the data from GET or POST.
+	 *
+	 * @method getData
+	 * @private
+	 */
+	private function getData() {
+		if (isset($_POST)) {
+			$this->modelName = $_POST['model'];
+		}
+	}
+
+	/**
+	 * Method that requires all the files.
+	 *
+	 * @method requireAll
+	 * @private
+	 */
+	private function requireAll() {
+		// Require all models.
+		foreach (scandir(dirname(__DIR__) . '/models/') as $filename) {
+			$path = dirname(__DIR__) . '/models/' . $filename;
+
+			if (is_file($path)) {
+				require_once($path);
+			}
+		}
+	}
+
+
+	/**
+	 * Method that is executed when the API is called.
+	 * Calls all of the other methods.
+	 *
+	 * @method __construct
+	 * @public
+	 */
+	public function __construct() {
+		$this->requireAll();
+		$this->getData();
+		$this->execute();
+	}
+}
+
+$API = new API();
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+/**
+ * The Database class connects the the database when the file is included.
+ *
+ * @class Database
+ */
+class Database
+{
+	/**
+	 * This variable is the connection variable for connecting to the database.
+	 *
+	 * @property conn
+	 * @type Object
+	 * @static
+	 */
+	public static $conn;
+	/**
+	 * SQL query string for deleting all tables
+	 *
+	 * @property query_delete
+	 * @type String
+	 * @private
+	 * @static
+	 */
+	private static $query_delete = <<<SQL
+		DROP TABLE `results`, `result_user_maps`, `tournaments`, `tournament_user_maps`, `users`
+SQL;
+
+
+	/**
+	 * This method is used to create the tables and columns in the database.
+	 * The `database.sql` file provides the SQL query string to do this.
+	 *
+	 * @method create
+	 * @public
+	 * @static
+	 * @return {Boolean} Whether success.
+	 */
+	public static function create() {
+		$query = file_get_contents(dirname(__DIR__) . '/database.sql');
+		$stmt = self::$conn->prepare($query);
+
+		return $stmt->execute();
+	}
+
+	/**
+	 * Method that deletes all the tables in the database.
+	 *
+	 * @method delete
+	 * @public
+	 * @static
+	 * @return {Boolean} Whether success.
+	 */
+	public static function delete() {
+		$stmt = self::$conn->prepare(self::$query_delete);
+
+		$stmt->execute();
+
+		// Issues when with this query because it doesn't change any rows.
+		return true;
+	}
+
+	/**
+	 * Resets database.
+	 * Deletes then recreates.
+	 *
+	 * @method reset
+	 * @public
+	 * @static
+	 * @return {Boolean} Whether success.
+	 */
+	public static function reset() {
+		$delete_success = self::delete();
+		$create_success = self::create();
+
+		return $delete_success && $create_success;
+	}
+
+	/**
+	 * This method is called when the file is included.
+	 * It is used to connect to the database.
+	 * Also to set @property conn to new PDO.
+	 *
+	 * @method init
+	 * @public
+	 * @static
+	 */
+	public static function init() {
+		$string = file_get_contents(dirname(__DIR__) . '/env.json');
+		$data = json_decode($string, true);
+		$connData = $data['database'];
+
+		self::$conn = new PDO('mysql:host=' . $connData['servername'] . ';dbname=' . $connData['database'], $connData['username'], $connData['password']);
+	}
+}
+
+
+// @method init called straight away.
+Database::init();
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+/**
+ * Model class, the class is extended by all models.
+ * It provides a foundation for all models.
+ *
+ * @class Model
+ */
+class Model
+{
+	/**
+	 * The name of the data variable in POST.
+	 *
+	 * @property name
+	 * @private
+	 */
+	private $name = 'JSON';
+
+	/**
+	 * The data object is used to store.
+	 *
+	 * @property data
+	 * @type Array
+	 * @protected
+	 */
+	protected $data = array();
+
+	/**
+	 * The object for holding all data that wants to be returned.
+	 *
+	 * @property return_data
+	 * @type Array
+	 * @protected
+	 */
+	protected $return_data;
+
+	/**
+	 * Whether model executed successfully.
+	 *
+	 * @property success
+	 * @type {Boolean} Default true.
+	 * @protected
+	 */
+	protected $success;
+
+	/**
+	 * Error message string, if error.
+	 *
+	 * @property error_msg
+	 * @type String
+	 * @protected
+	 */
+	protected $error_msg;
+
+
+	/**
+	 * Method that assembles the return object.
+	 *
+	 * @method returnObj
+	 * @private
+	 * @return {Array} Return object.
+	 */
+	private function returnObj() {
+		$obj = array();
+
+		if ($this->success) {
+			$obj = $this->return_data;
+		}
+		else {
+			$obj['error_msg'] = $this->error_msg;
+		}
+
+		$obj['success'] = $this->success;
+
+		return $obj;
+	}
+
+	/**
+	 * This method is used to decode the JSON data in the post.
+	 *
+	 * @method
+	 * @private
+	 * @return {Object} The decoded JSON.
+	 */
+	private function decodePost() {
+		if (isset($_POST[$this->name])) {
+			return json_decode($_POST[$this->name], true);
+		}
+	}
+
+	/**
+	 * This returns whether the post data variable is set.
+	 *
+	 * @method isPost
+	 * @private
+	 * @return {Boolean} Whether it's set.
+	 */
+	private function isPost() {
+		return isset($_POST[$this->name]);
+	}
+
+	/**
+	 * Resets variables when model is called.
+	 *
+	 * @method setVars
+	 * @private
+	 */
+	protected function setVars() {
+		$this->return_data = array();
+		$this->success = true;
+		$this->error_msg = '';
+	}
+
+
+	/**
+	 * Call allows PHP to pass data into the model.
+	 *
+	 * @method call
+	 * @public
+	 * @param {Object} Data object to interact with the model.
+	 * @return {Object} Return data.
+	 */
+	public function call($data) {
+		$this->data = $data;
+
+		$this->setVars();
+		$this->main();
+
+		return $this->returnObj();
+	}
+
+	/**
+	 * Function that is called to check if it is called with Post.
+	 *
+	 * @method __construct
+	 * @public
+	 * @param notAPI {Boolean}
+	 */
+	public function __construct($notAPI) {
+		// If not being called as API, then unset POST.
+		if ($notAPI) {
+			unset($_POST);
+		}
+
+		// If called as API.
+		if ($this->isPost()) {
+			$this->data = $this->decodePost();
+
+			$this->setVars();
+			$this->main();
+
+			echo json_encode($this->returnObj());
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Unit tests</title>
+
+<link rel="stylesheet" href="../build/all.css">
+</head>
+<body>
+
+
+<?php
+
+/**
+ * Class for testing PHP models.
+ *
+ * @class Test
+ * @static
+ */
+class Test
+{
+	/**
+	 * Method that requires all the files.
+	 *
+	 * @method requireAll
+	 * @private
+	 * @static
+	 */
+	private static function requireAll() {
+		// Require all models.
+		foreach (scandir(dirname(__DIR__) . '/models/') as $filename) {
+			$path = dirname(__DIR__) . '/models/' . $filename;
+
+			if (is_file($path)) {
+				require_once($path);
+			}
+		}
+	}
+
+	/**
+	 * Method that should be called when starting a test.
+	 *
+	 * @method testStart
+	 * @param testName {String}
+	 * @private
+	 * @static
+	 */
+	private static function testStart($testName) {
+		$startHTML = <<<HTML
+		<h1>$testName</h1>
+
+		<table class="test">
+			<thead>
+				<th>Test</th>
+				<th>Description</th>
+				<th>Input data</th>
+				<th>Expected result</th>
+				<th>Result</th>
+				<th>Pass</th>
+			</thead>
+			<tbody>
+HTML;
+
+		echo $startHTML;
+	}
+
+	/**
+	 * Method that should be called when finished a test.
+	 *
+	 * @method testEnd
+	 * @private
+	 * @static
+	 */
+	private static function testEnd() {
+		$endHTML = <<<HTML
+			</tbody>
+		</table>
+HTML;
+
+		echo $endHTML;
+	}
+
+	/**
+	 * When making a single test, call this method.
+	 * Puts row in table.
+	 *
+	 * @method unitTest
+	 * @private
+	 * @static
+	 */
+	private static function unitTest($modelName, $description, $data, $expected) {
+		$model = new $modelName(true);
+		$result = json_encode($model->call($data));
+		$isPass = json_encode($result == $expected);
+
+		echo '<tr class="' . $isPass . '">';
+		echo '<td>' . $modelName . '</td>';
+		echo '<td>' . $description . '</td>';
+		echo '<td>' . json_encode($data) . '</td>';
+		echo '<td>' . $expected . '</td>';
+		echo '<td>' . $result . '</td>';
+		echo '<td>' . $isPass . '</td>';
+		echo '</tr>';
+	}
+
+	/**
+	 * Method that loads the test.
+	 *
+	 * @method loadTest
+	 * @private
+	 * @static
+	 */
+	private static function loadTest($file_name) {
+		require_once(dirname(__DIR__) . '/tests/' . $file_name . '.php');
+	}
+
+
+	/**
+	 * Method that is called first.
+	 * Calls all tests individually.
+	 *
+	 * @method init
+	 * @public
+	 */
+	public static function init() {
+		self::requireAll();
+		
+		Database::reset();
+
+		self::loadTest('RegisterLogin');
+		self::loadTest('Leagues');
+		//self::loadTest('Main.php');
+
+		// Resets the database
+		Database::reset();
+	}
+}
+
+Test::init();
+
+?>
+
+
+</body>
+</html>\end{lstlisting}
+\subsubsection{Parent Classes}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Database.php');
+
+
+/**
+ * Class with functions for calculating new elo rating.
+ *
+ * @class EloRating
+ */
+class EloRating
+{
+	/**
+	 * New rating of the player.
+	 *
+	 * @property new_rating
+	 * @public
+	 * @type Integer
+	 */
+	public $new_rating;
+	/**
+	 * Rating change.
+	 * New rating - old rating.
+	 *
+	 * @property rating_change
+	 * @public
+	 * @type Integer
+	 */
+	public $rating_change;
+	/**
+	 * K factor for the weight of rating change.
+	 *
+	 * @property k_factor
+	 * @public
+	 * @type Integer
+	 */
+	public $k_factor = 20;
+
+
+	/**
+	 * SQL query for getting the player's latest rating.
+	 *
+	 * @property query_get_rating
+	 * @type String
+	 * @private
+	 * @static
+	 */
+	private static $query_get_rating = <<<SQL
+		SELECT
+		ru.rating rating
+		FROM result_user_maps ru
+		INNER JOIN results r
+		ON r.id = ru.result_id
+		WHERE
+		ru.user_id = :user_id
+		ORDER BY r.date DESC
+		LIMIT 1
+SQL;
+
+	/**
+	 * Start rating for all players.
+	 *
+	 * @property default_rating
+	 * @type Integer
+	 * @public
+	 * @static
+	 */
+	public static $default_rating = 1300;
+
+
+	/**
+	 * Method gets rating of a user using @property query_get_rating.
+	 *
+	 * @method getPlayerRating
+	 * @public
+	 * @static
+	 * @param user_id {Integer} Id of the user to get rating.
+	 * @return {Integer} Latest rating of the user.
+	 */
+	public static function userRating($user_id) {
+		$stmt = Database::$conn->prepare(self::$query_get_rating);
+
+		$stmt->bindParam(':user_id', $user_id);
+
+		if ($stmt->execute()) {
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if (count($result) == 0) {
+				return self::$default_rating;
+			}
+			else {
+				return $result[0]['rating'];
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Method that calculates a probability of a player winning.
+	 *
+	 * @method expected
+	 * @public
+	 * @param rating_a {Integer} Rating of player A.
+	 * @param rating_b {Integer} Rating of player B.
+	 * @return {Float} Odds of player A beating player B.
+	 * @static
+	 */
+	public static function expected($rating_a, $rating_b) {
+		return 1 / (1 + pow(10, ($rating_b - $rating_a) / 400));
+	}
+
+	/**
+	 * Method that calculates a new rating based on the score.
+	 *
+	 * @method newRating
+	 * @public
+	 * @param rating_a {Integer} Rating of player A.
+	 * @param k_factor {Integer} The k factor of the match.
+	 * @param points_a {Float} Result of the match (0 = defeat, 0.5 = draw, 1 = win).
+	 * @param expected_a {Float} Expected result as calculated from @method expected.
+	 * @return {Integer} New rating of player A.
+	 * @static
+	 */
+	public static function newRating($rating_a, $k_factor, $points_a, $expected_a) {
+		return $rating_a + $k_factor * ($points_a - $expected_a);
+	}
+
+
+	/**
+	 * Method that is called when an instance of the class is made.
+	 *
+	 * @method __construct
+	 * @public
+	 * @param player_a_id {Integer} Id of player A.
+	 * @param player_b_id {Integer} Id of player B.
+	 * @param tournament_id {Integer} Id of tournament.
+	 * @param player_a_score {Integer} Score that player A achieved.
+	 * @param player_b_score {Integer} Score that player B achieved.
+	 */
+	public function __construct($player_a_id, $player_b_id, $tournament_id, $player_a_score, $player_b_score) {
+		$player_a_rating = self::userRating($player_a_id, $tournament_id);
+		$player_b_rating = self::userRating($player_b_id, $tournament_id);
+		$points;
+
+		// Calculate new score
+		if ($player_a_score > $player_b_score) {
+			$points = 1;
+		}
+		else if ($player_a_score == $player_b_score) {
+			$points = 0.5;
+		}
+		else {
+			$points = 0;
+		}
+
+		$expected = self::expected($player_a_rating, $player_b_rating);
+		$this->new_rating = self::newRating($player_a_rating, $this->k_factor, $points, $expected);
+		$this->rating_change = $this->new_rating - $player_a_rating;
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Database.php');
+
+
+/**
+ * Helpful functions for dealing with results.
+ *
+ * @class ResultMethods
+ */
+class ResultMethods
+{
+	/**
+	 * SQL query that checks whether a result exists or not.
+	 *
+	 * @property query_result_exists
+	 * @type String
+	 * @private
+	 * @static
+	 */
+	private static $query_result_exists = <<<SQL
+		SELECT COUNT(*) result_exists
+		FROM results r
+		INNER JOIN result_user_maps ru1
+		ON r.id = ru1.result_id
+		INNER JOIN result_user_maps ru2
+		ON r.id = ru2.result_id
+		WHERE
+		ru1.user_id <> ru2.user_id AND
+		ru1.user_id = :player1_id AND
+		ru2.user_id = :player2_id AND
+		r.tournament_id = :tournament_id
+SQL;
+
+
+	/**
+	 * Method that tests whether a match has already been played.
+	 *
+	 * @method resultExists
+	 * @public
+	 * @static
+	 * @param player1_id {Integer} Id of player in match.
+	 * @param player2_id {Integer} Id of player in match.
+	 * @param tournament_id {Integer} Id of tournament the match is in.
+	 * @return {Boolean} Whether that result has been entered.
+	 */
+	public static function resultExists($player1_id, $player2_id, $tournament_id) {
+		$stmt = Database::$conn->prepare(self::$query_result_exists);
+
+		$stmt->bindParam(':player1_id', $player1_id);
+		$stmt->bindParam(':player2_id', $player2_id);
+		$stmt->bindParam(':tournament_id', $tournament_id);
+
+		$stmt->execute();
+
+		if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['result_exists']) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/php/Database.php');
+require_once(dirname(__DIR__) . '/php/Model.php');
+
+
+/**
+ * Parent class for general tournament stuff.
+ *
+ * @class Tournament
+ * @extends Model
+ */
+class Tournament extends Model
+{
+	/**
+	 * SQL query string for fetching the players in the tournament.
+	 *
+	 * @property query_players
+	 * @type String
+	 * @private
+	 */
+	private $query_players = <<<SQL
+		SELECT u.id, u.first_name, u.last_name
+		FROM users u
+		INNER JOIN tournament_user_maps tu
+		ON tu.user_id = u.id
+		WHERE tu.tournament_id = :id AND tu.is_player = true
+SQL;
+	/**
+	 * SQL query string for checking whether the user is a player in a particular league.
+	 *
+	 * @property query_player_count
+	 * @type String
+	 * @private
+	 */
+	private $query_player_count = <<<SQL
+		SELECT COUNT(*)
+		FROM tournament_user_maps
+		WHERE
+		tournament_id = :tournament_id AND
+		user_id = :user_id AND
+		is_player = 1
+SQL;
+	/**
+	 * SQL query string for telling whether a user exists.
+	 *
+	 * @property query_user_exist
+	 * @type String
+	 * @private
+	 */
+	private $query_user_exist = <<<SQL
+		SELECT COUNT(*)
+		FROM users
+		WHERE id = :id
+SQL;
+	/**
+	 * SQL query string for checking whether the user is league manager of a particular league.
+	 *
+	 * @property query_league_manager_count
+	 * @type String
+	 * @private
+	 */
+	private $query_league_manager_count = <<<SQL
+		SELECT COUNT(*)
+		FROM tournament_user_maps
+		WHERE
+		tournament_id = :tournament_id AND
+		user_id = :user_id AND
+		is_league_manager = 1
+SQL;
+	/**
+	 * SQL query string for checking whether a tournament exists.
+	 *
+	 * @property query_tournament_count
+	 * @type String
+	 * @private
+	 */
+	private $query_tournament_count = <<<SQL
+		SELECT COUNT(*)
+		FROM tournaments
+		WHERE id = :id
+SQL;
+	/**
+	 * SQL query for attaching a user to a tournament.
+	 *
+	 * @property query_attach
+	 * @type String
+	 * @private
+	 */
+	private $query_attach = <<<SQL
+		INSERT INTO tournament_user_maps (tournament_id, user_id, is_player, is_league_manager)
+		VALUES (:tournament_id, :user_id, FALSE, FALSE)
+SQL;
+
+
+	/**
+	 * Method for telling whether the current user is a player in the tournament.
+	 *
+	 * @method isPlayer
+	 * @protected
+	 * @param user_id {Integer} Id of the user to query.
+	 * @param tournament_id {Integer} Id of the tournament to query.
+	 * @return {Boolean} Whether the user is a player in that tournament.
+	 */
+	protected function isPlayer($user_id, $tournament_id) {
+		$stmt = Database::$conn->prepare($this->query_player_count);
+
+		$stmt->bindParam(':user_id', $user_id);
+		$stmt->bindParam(':tournament_id', $tournament_id);
+
+		if ($stmt->execute()) {
+			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Method for telling whether the current user is a league manager is the tournament.
+	 *
+	 * @method isLeagueManager
+	 * @protected
+	 * @param user_id {Integer} Id of the user to query.
+	 * @param tournament_id {Integer} Id of the tournament to query.
+	 * @return {Boolean} Whether the user is a league manager in that tournament.
+	 */
+	protected function isLeagueManager($user_id, $tournament_id) {
+		$stmt = Database::$conn->prepare($this->query_league_manager_count);
+
+		$stmt->bindParam(':user_id', $user_id);
+		$stmt->bindParam(':tournament_id', $tournament_id);
+
+		if ($stmt->execute()) {
+			if ($stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Attaches a user to a tournament.
+	 *
+	 * @method attachUser
+	 * @protected
+	 * @param tournament_id {Integer} Id of the tournament.
+	 * @param user_id {Integer} Id of the user.
+	 * @return {Boolean} Whether successful.
+	 */
+	protected function attachUser($tournament_id, $user_id) {
+		$stmt = Database::$conn->prepare($this->query_attach);
+
+		$stmt->bindParam(':tournament_id', $tournament_id);
+		$stmt->bindParam(':user_id', $user_id);
+
+		if ($stmt->execute()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks whether a tournament exists from parameter id.
+	 *
+	 * @method tournamentExistsId
+	 * @protected
+	 * @param tournament_id {Integer} Id of tournament
+	 * @return {Boolean} Whether tournament exists.
+	 */
+	protected function tournamentExistsId($tournament_id) {
+		$stmt = Database::$conn->prepare($this->query_tournament_count);
+
+		$stmt->bindParam(':id', $tournament_id);
+
+		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks whether a tournament exists.
+	 *
+	 * @method tournamentExists
+	 * @protected
+	 * @return {Boolean} Whether tournament exists.
+	 */
+	protected function tournamentExists() {
+		return $this->tournamentExistsId($this->data['tournament_id']);
+	}
+
+	/**
+	 * Checks whether a user exists.
+	 *
+	 * @method userExists
+	 * @protected
+	 * @param user_id {Integer} Id of the user to test.
+	 * @return {Boolean} Whether a user exists.
+	 */
+	protected function userExists($user_id) {
+		$stmt = Database::$conn->prepare($this->query_user_exist);
+
+		$stmt->bindParam(':id', $user_id);
+
+		if ($stmt->execute() && $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'] == '1') {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+
+
+session_start();
+
+
+/**
+ * Parent class of classes that add or remove league managers.
+ *
+ * @class TournamentManagerAlter
+ * @extends Tournament
+ */
+class TournamentManagerAlter extends Tournament
+{
+	/**
+	 * SQL query string for changing league manager status.
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		UPDATE tournament_user_maps
+		SET is_league_manager = :is_league_manager
+		WHERE
+		user_id = :user_id AND
+		tournament_id = :tournament_id
+SQL;
+
+	/**
+	 * SQL query string for counting the number of league managers.
+	 *
+	 * @property query_managers_count
+	 * @type String
+	 * @private
+	 */
+	private $query_managers_count = <<<SQL
+		SELECT COUNT(*)
+		FROM tournament_user_maps
+		WHERE
+		is_league_manager = TRUE AND
+		tournament_id = :tournament_id
+SQL;
+
+	/**
+	 * Database object for executing @property query.
+	 *
+	 * @property stmt
+	 * @type Object
+	 * @private
+	 */
+	private $stmt;
+
+
+	/**
+	 * Method for finding the number of league manager.
+	 *
+	 * @method noOfLeagueManagers
+	 * @private
+	 * @return {Integer} Number of league managers.
+	 */
+	private function noOfLeagueManagers() {
+		$stmt = Database::$conn->prepare($this->query_managers_count);
+
+		$stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+
+		if ($stmt->execute()) {
+			return $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
+		}
+		else {
+			// 1 - so can't claim league if error.
+			return 1;
+		}
+	}
+
+	/**
+	 * Checks any faults and executes query.
+	 *
+	 * @method executeQuery
+	 * @private
+	 */
+	private function executeQuery() {
+		if (!$this->stmt->execute() || $this->stmt->rowCount() != 1) {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Verifies whether the user can carry out the task.
+	 * Returns false if:
+	 * - User doesn't exist.
+	 * - Tournament doesn't exist.
+	 * - Not a league manager.
+	 *
+	 * @method verifyManager
+	 * @private
+	 * @return {Boolean} Whether can.
+	 */
+	private function verifyManager() {
+		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
+		$does_tournament_exist = $this->tournamentExists();
+		$does_user_exist = $this->userExists($this->data['user_id']);
+
+		// If there are no league managers, then the league is free to be claimed.
+		if ($this->noOfLeagueManagers() == 0) {
+			return true;
+		}
+
+		if (!$does_tournament_exist) {
+			$this->error_msg = "Tournament doesn't exist";
+
+			return false;
+		}
+		else if (!$does_user_exist) {
+			$this->error_msg = "User doesn't exist";
+
+			return false;
+		}
+		else if ($is_league_manager) {
+			return true;
+		}
+		else {
+			$this->error_msg = "You don't have permission to do that";
+
+			return false;
+		}
+	}
+
+	/**
+	 * Main method for making the user a league manager
+	 *
+	 * @method general
+	 * @private
+	 */
+	private function general() {
+		$this->stmt = Database::$conn->prepare($this->query);
+
+		$this->stmt->bindParam(':user_id', $this->data['user_id']);
+		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+		$this->stmt->bindParam(':is_league_manager', $this->is_league_manager);
+
+		// Verify whether the user can carry out the action.
+		if ($this->verifyManager()) {
+			// Attach user if not already.
+			$this->attachUser($this->data['tournament_id'], $this->data['user_id']);
+			// Execute query
+			$this->executeQuery();
+		}
+		else {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method that checks whether the user is logged in.
+	 *
+	 * @method subMain
+	 * @protected
+	 */
+	protected function subMain() {
+		if (isset($_SESSION['user'])) {
+			$this->general();
+		}
+		else {
+			$this->error_msg = "You must be logged in";
+
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+require_once(dirname(__DIR__) . '/superclasses/Tournament.php');
+
+session_start();
+
+
+/**
+ * Parent class of classes that add or remove players.
+ *
+ * @class TournamentPlayerAlter
+ * @extends Tournament
+ */
+class TournamentPlayerAlter extends Tournament
+{
+	/**
+	 * SQL query string for updating a player
+	 *
+	 * @property query
+	 * @type String
+	 * @private
+	 */
+	private $query = <<<SQL
+		UPDATE tournament_user_maps
+		SET is_player = :is_player
+		WHERE
+		user_id = :user_id AND
+		tournament_id = :tournament_id
+SQL;
+
+	/**
+	 * Database object for executing @property query.
+	 *
+	 * @property stmt
+	 * @type Object
+	 * @private
+	 */
+	private $stmt;
+
+
+	/**
+	 * Checks any faults and executes query.
+	 *
+	 * @method executeQuery
+	 * @private
+	 */
+	private function executeQuery() {
+		if (!$this->stmt->execute() || $this->stmt->rowCount() != 1) {
+			$this->error_msg = "Failed to execute query";
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method for verifying whether the user can carry out the task.
+	 * Returns false if:
+	 * - User doesn't exist.
+	 * - Tournament doesn't exist.
+	 * - Either:
+	 *   - Not a league manager.
+	 *   - Altering someone else.
+	 *
+	 * @method verifyPlayer
+	 * @private
+	 * @return {Boolean} Whether can.
+	 */
+	private function verifyPlayer() {
+		$is_league_manager = $this->isLeagueManager($_SESSION['user']['id'], $this->data['tournament_id']);
+		$does_tournament_exist = $this->tournamentExists();
+		$does_user_exist = $this->userExists($this->data['user_id']);
+
+		if (!$does_tournament_exist) {
+			$this->error_msg = "Tournament doesn't exist";
+
+			return false;
+		}
+		else if (!$does_user_exist) {
+			$this->error_msg = "User doesn't exist";
+
+			return false;
+		}
+		else if ($is_league_manager || $this->data['user_id'] == $_SESSION['user']['id']) {
+			return true;
+		}
+		else {
+			$this->error_msg = "You don't have permission to do that";
+
+			return false;
+		}
+	}
+
+	/**
+	 * Method that creates database object.
+	 * Binds parameters.
+	 * Checks to see if able to execute query.
+	 * Then execute query.
+	 * 
+	 * @method general
+	 * @private
+	 */
+	private function general() {
+		$this->stmt = Database::$conn->prepare($this->query);
+
+		$this->stmt->bindParam(':user_id', $this->data['user_id']);
+		$this->stmt->bindParam(':tournament_id', $this->data['tournament_id']);
+		$this->stmt->bindParam(':is_player', $this->is_player);
+
+		// Verify whether the user can carry out the action.
+		if ($this->verifyPlayer()) {
+			// Attach user if not already.
+			$this->attachUser($this->data['tournament_id'], $this->data['user_id']);
+			// Execute query
+			$this->executeQuery();
+		}
+		else {
+			$this->success = false;
+		}
+	}
+
+	/**
+	 * Method that checks login.
+	 * Then calls @method general
+	 *
+	 * @method subMain
+	 * @protected
+	 */
+	protected function subMain() {
+		if (isset($_SESSION['user'])) {
+			$this->general();
+		}
+		else {
+			$this->error_msg = "You must be logged in";
+
+			$this->success = false;
+		}
+	}
+}
+
+?>\end{lstlisting}
+\begin{lstlisting}
+<?php
+
+/**
+ * Class used to validate input text.
+ *
+ * @class Validate
+ */
+class Validate
+{
+	/**
+	 * Returns standard data such as whether success, error message, and correction.
+	 *
+	 * @method returnData
+	 * @private
+	 * @static
+	 * @param success {Boolean} Whether a success or not.
+	 * @param error_msg {String} Error message.
+	 * @return {Array}
+	 *   @return [].success {Boolean} Whether a success or not.
+	 *   @return [].error_msg {String} Error message.
+	 */
+	private static function returnData($success, $error_msg) {
+		return array(
+			'success' => $success,
+			'error_msg' => $error_msg
+		);
+	}
+
+
+	/**
+	 * Valididates user's name.
+	 * Can be first or last name.
+	 *
+	 * @method userName
+	 * @static
+	 * @param name {String} Name to be checked.
+	 * @param variableName {String} Name of variable e.g. 'First name' or 'Last name'.
+	 * @return {Object} Return of @method returnData
+	 */
+	public static function userName($name, $variableName) {
+		// Regex, matching name.
+		preg_match("/^[A-z']+$/", $name, $match);
+
+		// Check only alphabetical characters using regex.
+		if ($match[0] != $name) {
+			return self::returnData(false, $variableName . ' must only be alphabetical characters');
+		}
+		// Check length > 1.
+		if (strlen($name) < 2) {
+			return self::returnData(false, $variableName . ' must contain at least 2 characters');
+		}
+		// Check length <= 30.
+		if (strlen($name) > 30) {
+			return self::returnData(false, $variableName . ' must contain at most 30 characters');
+		}
+
+		return self::returnData(true, null);
+	}
+
+	/**
+	 * Validates tournament name.
+	 *
+	 * @method tournamentName
+	 * @static
+	 * @param name {String}
+	 * @return {Object} Return of @method returnData
+	 */
+	public static function tournamentName($name) {
+		// Regex
+		preg_match("/^[A-z0-9' !@#$%^&*()£\/?,.]+$/", $name, $match);
+
+		// Check only a-zA-Z0-9 and spaces using regex.
+		if ($match[0] != $name) {
+			return self::returnData(false, 'League name can only contain alphanumerical or !@#$%^&*()£/?,. characters');
+		}
+		// Check length > 5.
+		if (strlen($name) < 5) {
+			return self::returnData(false, 'League name must be at least 5 characters');
+		}
+		// Check length <= 40.
+		if (strlen($name) > 40) {
+			return self::returnData(false, 'League name must be at most 40 characters');
+		}
+
+		return self::returnData(true, null);
+	}
+
+	/**
+	 * Validates tournament description.
+	 *
+	 * @method tournamentDescription
+	 * @static
+	 * @param description {String}
+	 * @return {Object} Return of @method returnData
+	 */
+	public static function tournamentDescription($description) {
+		if (strlen($description) > 255) {
+			return self::returnData(false, 'League description must be at most 255 characters');
+		}
+
+		return self::returnData(true, null);
+	}
+
+	/**
+	 * Validates email address.
+	 *
+	 * @method email
+	 * @static
+	 * @param email {String}
+	 * @return {Object} Return of @method returnData
+	 */
+	public static function email($email) {
+		// Regex
+		preg_match("/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/", $email, $match);
+
+		// Check email is entered
+		if (strlen($email) < 1) {
+			return self::returnData(false, 'You must enter an email');
+		}
+		// Check using valid email regex.
+		if ($match[0] != $email) {
+			return self::returnData(false, 'Email is not valid');
+		}
+
+		return self::returnData(true, null);
+	}
+
+	/**
+	 * Validates password.
+	 *
+	 * @method password
+	 * @static
+	 * @param password {String}
+	 * @return {Object} Return of @method returnData
+	 */
+	public static function password($password) {
+		// Check length > 5.
+		if (strlen($password) < 6) {
+			return self::returnData(false, 'Password must be at least 6 characters');
+		}
+
+		return self::returnData(true, null);
+	}
+
+	/**
+	 * Validates phone number.
+	 *
+	 * @method phoneNumber
+	 * @static
+	 * @param phoneNumber {String}
+	 * @return {Object} Return of @method returnData
+	 */
+	public static function phoneNumber($number) {
+		// Regex
+		preg_match("/^[0-9 ]+$/", $number, $match);
+
+		// Check only numerical characters, using regex.
+		if ($match[0] != $number) {
+			return self::returnData(false, 'Phone number must only contain numerical characters and spaces');
+		}
+		// Check length < 5.
+		if (strlen($number) < 5) {
+			return self::returnData(false, 'Phone number must be at least 6 characters long');
+		}
+		// Check length > 20.
+		if (strlen($number) > 20) {
+			return self::returnData(false, 'Phone number must be at most 20 characters long');
+		}
+
+		return self::returnData(true, null);
+	}
+}
+
+?>\end{lstlisting}
+\subsection{JavaScript}
+\subsubsection{Configuration}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Main Angular object.
+ *
+ * @var app
+ */
+var app = angular.module('computing-project', ['ngRoute']);\end{lstlisting}
+\begin{lstlisting}
+/****************************************
+ * Angular config.                      *
+ * Mainly used to configure the routes. *
+ ****************************************/
+app.config(['$routeProvider', function ($routeProvider)
+{
+	$routeProvider
+	.when('/', {
+		templateUrl: 'views/home.html',
+		controller: 'HomeCtrl'
+	})
+	.when('/user', {
+		templateUrl: 'views/user-search-page.html',
+		controller: 'UserSearchCtrl'
+	})
+	.when('/profile', {
+		templateUrl: 'views/profile.html',
+		controller: 'ProfileCtrl'
+	})
+	.when('/profile/edit', {
+		templateUrl: 'views/profile-edit.html',
+		controller: 'ProfileEditCtrl'
+	})
+	.when('/profile/:userId', {
+		templateUrl: 'views/profile.html',
+		controller: 'ProfileCtrl'
+	})
+	.when('/league', {
+		templateUrl: 'views/league-search-page.html',
+		controller: 'LeagueSearchCtrl'
+	})
+	.when('/league/create', {
+		templateUrl: 'views/league-edit.html',
+		controller: 'LeagueCreateCtrl'
+	})
+	.when('/league/:leagueId/edit', {
+		templateUrl: 'views/league-edit.html',
+		controller: 'LeagueEditCtrl'
+	})
+	.when('/league/:leagueId', {
+		templateUrl: 'views/league.html',
+		controller: 'LeagueCtrl'
+	})
+	.when('/result/enter/:tournamentId/:player1Id/:player2Id', {
+		templateUrl: 'views/result-enter.html',
+		controller: 'ResultEnterCtrl'
+	})
+	.when('/login', {
+		templateUrl: 'views/login.html',
+		controller: 'LoginCtrl'
+	})
+	.when('/register', {
+		templateUrl: 'views/login.html',
+		controller: 'LoginCtrl'
+	})
+	.otherwise({
+		redirectTo: '/'
+	});
+}]);\end{lstlisting}
+\subsubsection{Controllers}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller for the home page.
+ *
+ * @controller HomeCtrl
+ */
+app.controller('HomeCtrl', function ()
+{
+	
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller for creating a league.
+ *
+ * @controller LeagueCreateCtrl
+ */
+app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
+{
+	/**
+	 * The text that goes in the edit page.
+	 *
+	 * @var $scope.editOrCreate
+	 * @type String
+	 */
+	$scope.editOrCreate = 'Create';
+	/**
+	 * Object where error message is and tells whether there is an error message.
+	 *
+	 * @property $scope.response
+	 * @type Object
+	 */
+	$scope.response = {
+		success: true
+	}
+	
+	
+	/**
+	 * Event that is called when 'Create' button is clicked.
+	 * Creating the league.
+	 *
+	 * @method $scope.eventUpdate
+	 */
+	$scope.eventUpdate = function () {
+		CallModel.fetch('TournamentCreate', {
+			name: $scope.name,
+			description: $scope.description
+		},
+		{
+			success: function (response) {
+				alert('Successfully created the league');
+
+				$location.path('/league/' + response.id);
+			},
+			fail: function (response) {
+				$scope.response = response;
+			}
+		});
+	};
+
+
+	(function () {
+		CallModel.redirectIfNotLoggedIn();
+	}());
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * League page controller.
+ *
+ * @controller LeagueCtrl
+ */
+app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
+{
+	/**
+	 * String that determines which sub page the user is on.
+	 *
+	 * @var $scope.subPage
+	 * type String
+	 */
+	$scope.subPage = 'table';
+	/**
+	 * Object that contains the table data.
+	 *
+	 * @var $scope.table
+	 * type Object
+	 */
+	$scope.table;
+
+
+	/**
+	 * Method for getting league data from @class TournamentGet.
+	 *
+	 * @method getLeague
+	 */
+	function getLeague() {
+		CallModel.fetch('TournamentGet', {
+			id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.data = response;
+			},
+			fail: function (response) {
+				alert(response.error_msg);
+
+				$location.path('/');
+			}
+		});
+
+		CallModel.fetch('TournamentLeagueTable', {
+			id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.table = response.table;
+			}
+		});
+	}
+
+
+	(function () {
+		CallModel.redirectIfNotLoggedIn();
+		getLeague();
+	}());
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller for editing a league.
+ *
+ * @controller LeagueEditCtrl
+ */
+app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routeParams, CallModel)
+{
+	/**
+	 * The text that goes in the edit page.
+	 *
+	 * @var $scope.editOrCreate
+	 * @type String
+	 */
+	$scope.editOrCreate = 'Edit';
+	/**
+	 * Id of the user.
+	 * Used to prevent the user from removing themselves as a league manager.
+	 *
+	 * @var $scope.yourId
+	 * @type Integer
+	 */
+	$scope.yourId = $window.sessionStorage.yourId;
+	/**
+	 * Variable that is used to tell the view whether the adding manager dialog is open.
+	 *
+	 * @var $scope.addingManager
+	 * @type Boolean
+	 */
+	$scope.addingManager = false;
+	/**
+	 * Variable that is used to tell the view whether the adding player dialog is open.
+	 *
+	 * @var $scope.addingPlayer
+	 * @type Boolean
+	 */
+	$scope.addingPlayer = false;
+	/**
+	 * Object where error message is and tells whether there is an error message.
+	 *
+	 * @property $scope.response
+	 * @type Object
+	 */
+	$scope.response = {
+		success: true
+	}
+
+	/**
+	 * Method that redirects to home page and prints error message.
+	 *
+	 * @method redirect
+	 */
+	function redirect(response) {
+		alert(response.error_msg);
+
+		$location.path('/');
+	}
+
+	/**
+	 * Method for getting league data from @class TournamentGet.
+	 *
+	 * @method getLeague
+	 */
+	function getLeague() {
+		CallModel.fetch('TournamentGet', {
+			id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.data = response;
+				// Fill fields with current league info.
+				$scope.name = response.name;
+				$scope.description = response.description;
+
+				// Check to see if user isn't a league manager, and then redirect
+				if (!response.is_league_manager) {
+					response.error_msg = "You must be a league manager to edit the league";
+
+					redirect(response);
+				}
+			},
+			fail: redirect
+		});
+	}
+
+
+	/**
+	 * Function that is called when the update button is pressed.
+	 *
+	 * @method $scope.eventUpdate
+	 */
+	$scope.eventUpdate = function () {
+		// Calls @class TournamentUpdate with info from name and description fields.
+		CallModel.fetch('TournamentUpdate', {
+			id: $routeParams.leagueId,
+			name: $scope.name,
+			description: $scope.description
+		},
+		{
+			success: function (response) {
+				$location.path('/league/' + $routeParams.leagueId);
+			},
+			fail: function (response) {
+				$scope.response = response;
+			}
+		});
+	}
+
+	/**
+	 * Function that is called when a player is removed from the league.
+	 *
+	 * @method $scope.eventRemoveUser
+	 * @param userId {Integer} Id of the player to remove.
+	 */
+	$scope.eventRemovePlayer = function (userId) {
+		CallModel.fetch('TournamentPlayerRemove', {
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				getLeague();
+			},
+			fail: function (response) {
+				alert(response.error_msg);
+			}
+		});
+	};
+
+	/**
+	 * Function that is called when a league manager is removed.
+	 *
+	 * @method $scope.eventRemoveManager
+	 * @param userId {Integer} Id of the league manager to remove.
+	 */
+	$scope.eventRemoveManager = function (userId) {
+		CallModel.fetch('TournamentManagerRemove', {
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				getLeague();
+			}
+		});
+	};
+
+	/**
+	 * Function that is called by @directive cpUserSearch when adding a player.
+	 *
+	 * @method $scope.eventAddSpecificPlayer
+	 * @param userId {Integer} Id of the player to add.
+	 */
+	$scope.eventAddSpecificPlayer = function (userId) {
+		CallModel.fetch('TournamentPlayerAttach', {
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.eventCancelAdding();
+				getLeague();
+			},
+			fail: function () {
+				alert("User already a player");
+			}
+		});
+	};
+
+	/**
+	 * Function that is called by @directive cpUserSearch when adding a league manager.
+	 *
+	 * @method $scope.eventAddSpecificManager
+	 * @param userId {Integer} Id of the player to add.
+	 */
+	$scope.eventAddSpecificManager = function (userId) {
+		CallModel.fetch('TournamentManagerAttach', {
+			user_id: userId,
+			tournament_id: $routeParams.leagueId
+		},
+		{
+			success: function (response) {
+				$scope.eventCancelAdding();
+				getLeague();
+			},
+			fail: function () {
+				alert("User already a league manager");
+			}
+		})
+	}
+
+	/**
+	 * Function that opens adding league manager dialog but closes others.
+	 *
+	 * @method $scope.eventAddManager
+	 */
+	$scope.eventAddManager = function () {
+		$scope.addingManager = true;
+		$scope.addingPlayer = false;
+	};
+
+	/**
+	 * Function that opens adding player dialog but closes others.
+	 *
+	 * @method $scope.eventAddPlayer
+	 */
+	$scope.eventAddPlayer = function () {
+		$scope.addingManager = false;
+		$scope.addingPlayer = true;
+	};
+
+	/**
+	 * Function that closes all adding user dialogs.
+	 *
+	 * @method $scope.eventCancelAdding
+	 */
+	$scope.eventCancelAdding = function () {
+		$scope.addingManager = false;
+		$scope.addingPlayer = false;
+	};
+
+	/**
+	 * Function that calls @class TournamentDelete, to delete the league.
+	 *
+	 * @method $scope.eventDelete
+	 */
+	 $scope.eventDelete = function () {
+	 	CallModel.fetch('TournamentDelete', {
+	 		id: $routeParams.leagueId
+	 	}, {
+	 		success: function (response) {
+	 			alert('Successfully deleted the league');
+
+	 			$location.path('/profile');
+	 		}
+	 	})
+	 };
+
+
+
+	(function () {
+		/* 
+		 * Checks to see if logged in.
+		 * If not, redirects to login page.
+		 */
+		CallModel.redirectIfNotLoggedIn();
+
+		getLeague();
+	}());
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller used to search for a leauge.
+ *
+ * @controller UserSearchCtrl
+ */
+app.controller('LeagueSearchCtrl', function ($scope, $location)
+{
+	/**
+	 * Method that is called when a league is clicked.
+	 * Clicked from @directive cpLeagueSearch.
+	 *
+	 * @method $scope.eventClickLeague
+	 * @param leagueId
+	 */
+	$scope.eventClickLeague = function (leagueId) {
+		$location.path('/league/' + leagueId);
+	}
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller for managing user login.
+ * Also manages user registering.
+ *
+ * @controller LoginCtrl
+ */
+app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route, CallModel)
+{
+	$scope.response = {
+		success: true
+	};
+
+	$scope.responseRegister = {
+		success: true
+	};
+
+	/*
+	 * If user is logged in, redirects to home page.
+	 */
+	 CallModel.ifLoggedIn(function () {
+	 	$location.path('/');
+	 },
+	 function () {});
+
+
+	 /**
+	  * Method for getting user data and storing it in a session.
+	  *
+	  * @method getUserData
+	  */
+	 function getUserData() {
+	 	CallModel.fetch('Status', {},
+	 	{
+	 		success: function (response) {
+	 			$window.sessionStorage.yourId = response.user.id;
+	 		}
+	 	});
+	 }
+
+
+	/**
+	 * Method that logs the user in.
+	 *
+	 * @method eventLogin
+	 */
+	$scope.eventLogin = function () {
+		CallModel.fetch('Login', {
+			email: $scope.inputEmailLogin,
+			password: $scope.inputPasswordLogin
+		},
+		{
+			success: function (response) {
+				getUserData();
+
+				alert('You have successfully logged in');
+				
+				$location.path('/');
+			},
+			fail: function (response) {
+				$scope.response = response;
+			}
+		});
+	};
+
+	/**
+	 * Method that registers the user.
+	 *
+	 * @method eventRegister
+	 */
+	$scope.eventRegister = function () {
+		if ($scope.inputPasswordRegister === $scope.inputPasswordRepeatRegister) {
+			CallModel.fetch('Register', {
+				first_name: $scope.inputFirstName,
+				last_name: $scope.inputLastName,
+				email: $scope.inputEmailRegister,
+				password: $scope.inputPasswordRegister
+			},
+			{
+				success: function (response) {
+					alert('You have successfully registered. You must now login.');
+					
+					$route.reload();
+				},
+				fail: function (response) {
+					$scope.responseRegister = response;
+				}
+			});
+		}
+		else {
+			$scope.responseRegister = {
+				success: false,
+				error_msg: 'Passwords do not match'
+			}
+		}
+	};
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller for managing the navbar.
+ *
+ * @controller NavCtrl
+ */
+app.controller('NavCtrl', function ($scope, $window, $location, CallModel)
+{
+	/**
+	 * Changes login boolean depending whether logged in or not.
+	 *
+	 * @method loginButtonText
+	 */
+	function loginButtonCheck() {
+		CallModel.ifLoggedIn(function () {
+			$scope.loggedIn = true;
+		},
+		function () {
+			$scope.loggedIn = false;
+		});
+	}
+
+
+	/**
+	 * Event when logout button is clicked.
+	 * Calls model 'Logout' then redirects to login page.
+	 *
+	 * @method $scope.btnLogout
+	 */
+	$scope.btnLogout = function () {
+		CallModel.fetch('Logout', {}, {
+			success: function () {
+				$location.path('/login');
+			}
+		});
+	};
+
+
+	$scope.$on('$routeChangeSuccess', loginButtonCheck);
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Profile page controller.
+ *
+ * @controller ProfileCtrl
+ */
+app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, $window, CallModel, RatingChart)
+{
+	/**
+	 * Id of the user.
+	 *
+	 * @var userId
+	 * @type Integer
+	 */
+	var userId;
+
+	/**
+	 * Variable for storing the name of the current subpage.
+	 *
+	 * @var $scope.currentSubPage
+	 * @type String
+	 */
+	$scope.subPage = 'results';
+	/**
+	 * Is user.
+	 *
+	 * @var $scope.isUser
+	 * @type Boolean
+	 */
+	 $scope.isUser = false;
+
+
+	/**
+	 * Method that gets user data from UserGet model.
+	 *
+	 * @method getUser
+	 * @param user_id {Integer} Id of user to get.
+	 */
+	function getUser(user_id) {
+		CallModel.fetch('UserGet', {
+			id: user_id
+		},
+		{
+			success: function (response) {
+				$scope.data = response;
+				$scope.data.full_name = response.first_name + ' ' + response.last_name;
+			},
+			fail: function (response) {
+				alert(response.error_msg);
+
+				$location.path('/');
+			}
+		});
+	}
+
+	/**
+	 * Method the gets the id of the current user.
+	 * Then calls @method getUser with id of current user.
+	 *
+	 * @method getStatus
+	 * @param callback {Function} Executes after response from server.
+	 */
+	function getStatus(callback) {
+		CallModel.fetch('Status', {}, {
+			success: function (response) {
+				userId = response.user.id;
+
+				getUser(userId);
+				callback();
+			}
+		});
+	}
+
+	/**
+	 * Method that gets the users ratings for the graph.
+	 *
+	 * @method getRatings
+	 */
+	function getRatings() {
+		CallModel.fetch('UserRatings', {
+			user_id: userId
+		}, {
+			success: function (response) {
+				RatingChart.inputRatings(response.ratings);
+				RatingChart.draw();
+			}
+		});
+	}
+
+
+	/*
+	 * Redirects if not logged in.
+	 * Checks whether url user id is set.
+	 * If not, calls @method getStatus.
+	 * Else, calls @method getUser with id of user.
+	 */
+	(function () {
+		CallModel.redirectIfNotLoggedIn();
+
+		RatingChart.init();
+		
+		if ($routeParams.userId === undefined) {
+			$scope.isUser = true;
+
+			getStatus(function () {
+				getRatings();
+			});
+		}
+		else {
+			userId = $routeParams.userId;
+			$scope.isUser = $window.sessionStorage.yourId === userId;
+
+			getUser(userId);
+			getRatings();
+		}
+	}());
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller for editing a user.
+ *
+ * @controller
+ */
+app.controller('ProfileEditCtrl', function ($scope, $window, $location, CallModel)
+{
+	/**
+	 * The user id.
+	 *
+	 * @property $scope.yourId
+	 * @type Integer
+	 */
+	$scope.yourId = $window.sessionStorage.yourId;
+	/**
+	 * Error message to be displayed if there is an error.
+	 *
+	 * @property $scope.errorMsg
+	 * @type String
+	 */
+	$scope.errorMsg;
+
+
+	/**
+	 * Method that is called when submit button is pressed.
+	 *
+	 * @method $scope.eventSubmit
+	 */
+	$scope.eventSubmit = function () {
+		CallModel.fetch('UserUpdate', {
+			first_name: $scope.first_name,
+			last_name: $scope.last_name,
+			home_phone: $scope.home_phone,
+			mobile_phone: $scope.mobile_phone
+		},
+		{
+			success: function (response) {
+				alert("Successfully updated your profile");
+
+				$location.path('/profile');
+			},
+			fail: function (response) {
+				$scope.errorMsg = response.error_msg;
+			}
+		})
+	};
+
+
+	/**
+	 * Method the gets the data of the user.
+	 *
+	 * @method getUserData
+	 */
+	function getUserData() {
+		CallModel.fetch('UserGet', {
+			id: $scope.yourId
+		},
+		{
+			success: function (response) {
+				$scope.first_name = response.first_name;
+				$scope.last_name = response.last_name;
+			},
+			fail: function (response) {
+				alert(response.error_msg);
+
+				$location.path('/profile');
+			}
+		});
+	}
+
+
+	/*
+	 * Redirects if not logged in.
+	 * Then gets the user data to fill in the fields.
+	 */
+	 (function () {
+	 	CallModel.redirectIfNotLoggedIn();
+	 	getUserData();
+	 }());
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller that allows a user to input a result.
+ *
+ * @controller ResultEnterCtrl
+ */
+app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, CallModel, DateFormat)
+{
+	/**
+	 * The id of the tournament as defined by the route parametre.
+	 *
+	 * @var $scope.tournamentId
+	 * @type Integer
+	 */
+	$scope.tournamentId = $routeParams.tournamentId;
+	/**
+	 * Name of the tournament.
+	 *
+	 * @var $scope.tournamentName
+	 * @type String
+	 */
+	$scope.tournamentName;
+	/**
+	 * Player 1 data object.
+	 *
+	 * @var $scope.player1
+	 * @type Integer
+	 */
+	$scope.player1 = {};
+	/**
+	 * Player 2 data object.
+	 *
+	 * @var $scope.player2
+	 * @type Integer
+	 */
+	$scope.player2 = {};
+	/**
+	 * The date that the result will be entered.
+	 *
+	 * @var $scope.date
+	 * @type String
+	 */
+	$scope.date = DateFormat.getString(Date.now());
+	/**
+	 * Error message, if there is one.
+	 *
+	 * @var $scope.errorMsg
+	 * @type String
+	 */
+	$scope.errorMsg = '';
+
+
+	/**
+	 * Method that is called when submit button is pressed.
+	 * Enters a result.
+	 *
+	 * @method $scope.eventSubmitResult
+	 */
+	$scope.eventSubmitResult = function () {
+		CallModel.fetch('ResultEnter', {
+			tournament_id: $routeParams.tournamentId,
+			player1_id: $routeParams.player1Id,
+			player2_id: $routeParams.player2Id,
+			player1_score: $scope.player1.score,
+			player2_score: $scope.player2.score
+		},
+		{
+			success: function (response) {
+				alert('Successfully entered result');
+
+				$location.path('/league/' + $routeParams.tournamentId);
+			},
+			fail: function (response) {
+				$scope.errorMsg = response.error_msg;
+			}
+		})
+	};
+
+
+	/**
+	 * Method for getting information about the tournament.
+	 *
+	 * @method getTournamentData
+	 */
+	function getTournamentData() {
+		CallModel.fetch('TournamentGet', {
+			id: $routeParams.tournamentId
+		},
+		{
+			success: function (response) {
+				$scope.tournamentName = response.name;
+			}
+		});
+	}
+
+	/**
+	 * Method that gets the player data.
+	 *
+	 * @method getPlayerData
+	 */
+	function getPlayerData() {
+		CallModel.fetch('UserGet', {
+			id: $routeParams.player1Id
+		},
+		{
+			success: function (response) {
+				$scope.player1.fullName = response.first_name + ' ' + response.last_name;
+				$scope.player1.id = response.id;
+			}
+		});
+
+		CallModel.fetch('UserGet', {
+			id: $routeParams.player2Id
+		},
+		{
+			success: function (response) {
+				$scope.player2.fullName = response.first_name + ' ' + response.last_name;
+				$scope.player2.id = response.id;
+			}
+		})
+	}
+
+
+	/*
+	 * Redirects if not logged in.
+	 * Gets data about tournament and user.
+	 */
+	(function () {
+		CallModel.redirectIfNotLoggedIn();
+		getTournamentData();
+		getPlayerData();
+	}());
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Controller used to search for a user.
+ *
+ * @controller UserSearchCtrl
+ */
+app.controller('UserSearchCtrl', function ($scope, $location)
+{
+	/**
+	 * Method that is called when a user is clicked.
+	 * Clicked from @directive cpUserSearch.
+	 *
+	 * @method $scope.eventClickUser
+	 * @param userId
+	 */
+	$scope.eventClickUser = function (userId) {
+		$location.path('/profile/' + userId);
+	}
+});\end{lstlisting}
+\subsubsection{Directives}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Directive for displaying fixtures.
+ *
+ * @directive cpFixtures
+ */
+app.directive('cpFixtures', function ($window, CallModel)
+{
+	/**
+	 * Varaibe for storing scope.
+	 *
+	 * @var self
+	 */
+	var self;
+
+
+	/**
+	 * Method that gets data about fixtures from @class FixturesGet.
+	 *
+	 * @method getFixtures
+	 */
+	function getFixtures() {
+		CallModel.fetch('FixturesGet', {
+			player_id: self.playerId,
+			tournament_id: self.tournamentId
+		},
+		{
+			success: function (response) {
+				self.fixtures = response.fixtures;
+			}
+		});
+	}
+
+
+	return {
+		templateUrl: 'views/fixtures.html',
+		scope: {
+			playerId: '=',
+			tournamentId: '=',
+			isReady: '='
+		},
+		link: function ($scope) {
+			self = $scope;
+
+			$scope.yourId = $window.sessionStorage.yourId;
+
+			// When loaded call @method getFixtures
+			var waiting = $scope.$watch('isReady', function (success) {
+				if (success === true) {
+					waiting();
+					getFixtures();
+				}
+			});
+		}
+	}
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Directive used to search for a tournament.
+ *
+ * @directive cpLeagueSearch
+ */
+app.directive('cpLeagueSearch', function (CallModel)
+{
+	return {
+		templateUrl: 'views/search.html',
+		scope: {
+			eventClickName: '=',
+			theName: '@'
+		},
+		link: function (scope) {
+			/**
+			 * Must be empty string for search results box to fully hide
+			 *
+			 * @property scope.inputName
+			 * @type String
+			 */
+			scope.inputName = '';
+			
+
+			/**
+			 * Method that is called when text in input field is changed.
+			 * Updates search for tournament when input is changed.
+			 *
+			 * @method scope.eventInputChange
+			 */
+			scope.eventInputChange = function () {
+				CallModel.fetch('TournamentSearch', {
+					name: scope.inputName
+				},
+				{
+					success: function (response) {
+						scope.results = response.tournaments;
+					}
+				});
+			};
+		}
+	}
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Directive for handling results.
+ *
+ * @directive cpResult
+ */
+app.directive('cpResult', function ($route, CallModel, DateFormat)
+{
+	/**
+	 * Variable for storing scope.
+	 *
+	 * @var self
+	 */
+	var self;
+
+
+	/**
+	 * Function that sets CSS class for colouring result.
+	 * Also calls @method getDateString for each result.
+	 *
+	 * @method sortResults
+	 */
+	function sortResults() {
+		self.results.forEach(function (result) {
+			if (result.score1 > result.score2) {
+				result.winOrLoss = 'win';
+			}
+			else {
+				result.winOrLoss = 'loss';
+			}
+
+			result.date = DateFormat.getString(result.date);
+		});
+	}
+
+	/**
+	 * Function that gets the results data from @class ResultGet.
+	 *
+	 * @method getResults
+	 */
+	function getResults() {
+		CallModel.fetch('ResultGet', {
+			result_id: self.resultId,
+			tournament_id: self.tournamentId,
+			player1_id: self.playerOneId,
+			player2_id: self.playerTwoId
+		},
+		{
+			success: function (response) {
+				self.results = response.results;
+
+				sortResults();
+			}
+		});
+	}
+
+
+	return {
+		templateUrl: 'views/results.html',
+		scope: {
+			resultId: '=',
+			tournamentId: '=',
+			playerOneId: '=',
+			playerTwoId: '=',
+			isReady: '='
+		},
+		link: function ($scope) {
+			self = $scope;
+
+
+			/**
+			 * Function that deletes a result when delete button is clicked.
+			 *
+			 * @method $scope.eventDelete
+			 * @param id {Integer} Id of the result to be deleted.
+			 */
+			$scope.eventDelete = function (id) {
+				CallModel.fetch('ResultDelete', {
+					id: id
+				},
+				{
+					success: function (response) {
+						alert("Successfully deleted the result");
+
+						$route.reload();
+					},
+					fail: function (response) {
+						alert(response.error_msg);
+					}
+				});
+			};
+
+
+			// When loaded call @method getResults.
+			var waiting = $scope.$watch('isReady', function (success) {
+				if (success === true) {
+					waiting();
+					getResults();
+				}
+			});
+		}
+	}
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Directive used to search for a user.
+ *
+ * @directive cpUserSearch
+ */
+app.directive('cpUserSearch', function (CallModel)
+{
+	return {
+		templateUrl: 'views/search.html',
+		scope: {
+			eventClickName: '=',
+			theName: '@'
+		},
+		link: function (scope, element, attrs) {
+			/**
+			 * Search name
+			 *
+			 * @property scope.inputName
+			 * @type String
+			 */
+			scope.inputName = '';
+
+			/**
+			 * Method that is called when text in input field is changed.
+			 * Updates search for user when input is changed.
+			 *
+			 * @method scope.eventInputChange
+			 */
+			scope.eventInputChange = function () {
+				CallModel.fetch('UserSearch', {
+					name: scope.inputName
+				},
+				{
+					success: function (response) {
+						scope.results = response.users;
+					}
+				});
+			};
+		}
+	}
+});\end{lstlisting}
+\subsubsection{Services}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Factory for calling the PHP models.
+ *
+ * @factory CallModel
+ */
+app.factory('CallModel', function ($http, $location)
+{
+	return {
+		/**
+		 * Method for fetching a result from a model.
+		 * Sends data to the model.
+		 *
+		 * @method fetch
+		 * @param modelName {String} Name of the model to call.
+		 * @param data {Object} Data to pass to the model.
+		 * @param callbacks {Object} Collection of functions that will be called depending on the result.
+		 *   @param success {Function} Function that is called on success.
+		 *   @param fail {Function} Function that is called on fail.
+		 *   @param normal {Function} Function that is called regardless.
+		 */
+		fetch: function (modelName, data, callbacks) {
+			$http({
+				url: 'php/API.php',
+				method: 'POST',
+				data: 'JSON=' + encodeURIComponent(JSON.stringify(data)) + '&model=' + modelName,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			})
+			.then(function (response) {
+				if (response.data.success && typeof callbacks.success == 'function') {
+					callbacks.success(response.data);
+				}
+				else if (!response.data.success && typeof callbacks.fail == 'function') {
+					callbacks.fail(response.data);
+				}
+
+				if (typeof callbacks.normal == 'function') {
+					callbacks.normal(response.data);
+				}
+			});
+		},
+		/**
+		 * Method that accepts two functions.
+		 * One is executed if the user is logged in.
+		 * The other is called if the user is not logged in.
+		 *
+		 * @method ifLoggedIn
+		 * @param callbackTrue {Function} Called if logged in.
+		 * @param callbackFalse {Function} Called if not logged in.
+		 */
+		ifLoggedIn: function (callbackTrue, callbackFalse) {
+			this.fetch('Status', {}, {
+				success: function (response) {
+					if (response.logged_in) {
+						callbackTrue();
+					}
+					else {
+						callbackFalse();
+					}
+				}
+			});
+		},
+		/**
+		 * Method that redirects to login page if not logged in.
+		 *
+		 * @method redirectIfNotLoggedIn
+		 */
+		redirectIfNotLoggedIn: function () {
+			this.ifLoggedIn(function () {}, function () {
+				$location.path('/login');
+			});
+		}
+	};
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Factory that returns the site's format of date.
+ *
+ * @factory DateFormat
+ */
+app.factory('DateFormat', function ()
+{
+	/**
+	 * Days of the week for date format.
+	 *
+	 * @var days
+	 */
+	var days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+	/**
+	 * Months of the year for date format.
+	 *
+	 * @var months
+	 */
+	var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+
+	return {
+		/**
+		 * Function that returns formated output date from input date.
+		 *
+		 * @method getDateString
+		 * @param dateString {String} Input date string.
+		 * @return {String} Output formated date string.
+		 */
+		getString: function (dateString) {
+			var date = new Date(dateString);
+
+			return days[date.getDay()] + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+		}
+	}
+});\end{lstlisting}
+\begin{lstlisting}
+/**
+ * Factory for handling the rating graph.
+ *
+ * @factory RatingChart
+ */
+app.factory('RatingChart', function ()
+{
+	/**	 *
+	 * @var ctx
+	 * @private
+	 */
+	var ctx;
+	/**
+	 * Chart object for talking to Chart.JS library.
+	 *
+	 * @var chart
+	 * @private
+	 */
+	var chart;
+	/**
+	 * List of dates corresponding to a rating.
+	 *
+	 * @var dates
+	 * @private
+	 */
+	var dates = [];
+	/**
+	 * List of ratings for the graph.
+	 *
+	 * @var averageRating
+	 * @private
+	 */
+	var averageRating = [];
+	/**
+	 * Data object for drawing the chart.
+	 *
+	 * @var data
+	 * @private
+	 */
+	var data = {
+		labels: dates,
+		datasets: [
+			{
+				label: "Average rating",
+				fillColor: "rgba(220,220,220,0.2)",
+				strokeColor: "rgba(220,220,220,1)",
+				pointColor: "rgba(220,220,220,1)",
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(220,220,220,1)",
+				data: averageRating
+			}
+		]
+	};
+	/**
+	 * Configuration for drawing the chart.
+	 *
+	 * @var options
+	 * @private
+	 */
+	var options = {
+		scaleShowGridLines : true,
+		scaleGridLineColor : "rgba(0,0,0,.05)",
+		scaleGridLineWidth : 1,
+		scaleShowHorizontalLines: true,
+		scaleShowVerticalLines: true,
+		bezierCurve : true,
+		bezierCurveTension : 0.4,
+		pointDot : true,
+		pointDotRadius : 4,
+		pointDotStrokeWidth : 1,
+		pointHitDetectionRadius : 20,
+		datasetStroke : true,
+		datasetStrokeWidth : 2,
+		datasetFill : true,
+		legendTemplate : ""
+	};
+
+
+	return {
+		/**
+		 * Method that filters the ratings into different tournaments.
+		 *
+		 * @method inputRatings
+		 * @param ratings {Array} Array of all the ratings over time.
+		 */
+		inputRatings: function (ratings) {
+			// Sort rating in reverse order.
+			ratings.sort(function (a, b) {
+				return a.date > b.date;
+			});
+
+			// Calculate average rating.
+			ratings.forEach(function (rating) {
+				averageRating.push(parseInt(rating.rating));
+				dates.push(rating.date);
+			});
+		},
+		/**
+		 * Call this method when initialising the graph.
+		 *
+		 * @method init
+		 */
+		init: function () {
+			ctx = document.getElementById('canvas-rating-chart').getContext('2d');
+			chart = new Chart(ctx);
+
+			// Reset arrays without deleting reference
+			dates.splice(0, dates.length);
+			averageRating.splice(0, averageRating.length);
+
+			dates.push('');
+			averageRating.push(1300);
+		},
+		/**
+		 * This method is called when drawing the graph.
+		 *
+		 * @method draw
+		 */
+		draw: function () {
+			chart.Line(data, options);
+		}
+	}
+});\end{lstlisting}
+\subsection{CSS}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+.box-container {
+	padding: 2rem 2rem 0rem 2rem;
+	margin-bottom: 4rem;
+
+	border-radius: 1rem;
+
+	background-color: #FFF;
+}
+
+.box-container.side {
+	padding-bottom: 0;
+
+	border-width: 0.3rem;
+	border-color: #DADADA;
+	border-style: solid;
+
+	background-color: #E9E9E9;
+}
+
+.box-container.side h2 {
+	color: #999;
+	text-transform: uppercase;
+}
+
+.box-container.side span {
+	line-height: auto;
+}
+
+.box-container .buffer {
+	height: 1.5rem;
+}
+
+
+.error-container {
+	background-color: #FFD4CC;
+	color: #DD381D;
+
+	border-radius: 1rem;
+
+	padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+
+	margin-bottom: 1rem;
+}
+
+.error-container ul {
+	margin: 0;
+
+	list-style: none;
+}
+
+.error-container li {
+	margin: 0;
+}\end{lstlisting}
+\begin{lstlisting}
+.league-table {
+	margin-bottom: 2rem;
+
+	table-layout: fixed;
+}\end{lstlisting}
+\begin{lstlisting}
+.list-side {
+	margin-bottom: 2rem;
+}
+
+.list-side li {
+	margin: 0;
+	margin-bottom: 0.5rem;
+
+	list-style: none;
+	line-height: normal;
+}
+
+.list-side a {
+	text-decoration: none;
+}\end{lstlisting}
+\begin{lstlisting}
+.create-league {
+	margin-bottom: 2rem;
+}
+
+.two-rem {
+	margin-bottom: 2rem;
+}
+
+.one-rem {
+	margin-bottom: 1rem;
+}
+
+.half-rem {
+	margin-bottom: 0.5rem;
+}\end{lstlisting}
+\begin{lstlisting}
+.nav {
+	list-style: none;
+
+	margin-bottom: 2rem;
+	overflow: hidden;
+}
+
+.nav li {
+	display: inline-block;
+	float: left;
+}
+
+.nav.sub a {
+	color: #999;
+
+	padding: 1rem;
+
+	border-style: solid;
+	border-width: 0 0 0.3rem 0;
+	border-color: #E9E9E9;
+}
+
+.nav.sub a.active {
+	color: #1EAEDB;
+
+	border-color: #1EAEDB;
+}
+
+
+#div-navbar {
+	background-color: #2AA8E5;
+	height: 6rem;
+	margin-bottom: 4rem;
+}
+
+#div-navbar ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#div-navbar li {
+	display: inline;
+	float: right;
+}
+
+#div-navbar a {
+	padding: 1.5rem;
+	margin: 0;
+	color: white;
+	text-decoration: none;
+	display: block;
+	font-size: 2rem;
+}
+
+#div-navbar li a:hover {
+	background-color: #1493D1;
+	color: white;
+}
+
+#div-navbar #a-title {
+	float: left;
+}
+
+@media (max-width: 750px) {
+	#div-navbar {
+		height: auto;
+		overflow: auto;
+	}
+
+	#div-navbar ul {
+		display: inline-block;
+		width: 100%;
+		transform: rotate(180deg);
+	}
+
+	#div-navbar li {
+		float: none;
+	}
+
+	#div-navbar li a {
+		transform: rotate(180deg);
+	}
+
+	#div-navbar #a-title {
+		width: auto;
+	}
+}\end{lstlisting}
+\begin{lstlisting}
+.result {
+	margin-bottom: 2rem;
+}
+
+.result .head {
+	padding: 0.5rem;
+
+	color: #999;
+}
+
+.result .body {
+	padding: 0.5rem;
+}
+
+.result td {
+	padding: 0;
+}
+
+.result .centre-align {
+	text-align: center;
+}
+
+.result .player1-name {
+	float: right;
+	text-align: right;
+}
+
+.result .player2-name {
+	float: left;
+	text-align: left;
+}
+
+.result .score {
+	color: white;
+	padding: 0.5rem;
+	border-radius: 0.3rem;
+}
+
+.result .score.win {
+	background-color: #63C016;
+}
+
+.result .score.loss {
+	background-color: #D81D18;
+}\end{lstlisting}
+\begin{lstlisting}
+body {
+	background-color: #E9E9E9;
+	font-family: 'Open Sans', sans-serif;
+	line-height: 3rem;
+	font-color: #3C3C3C;
+}
+
+
+h1 {
+	font-size: 3rem;
+}
+
+
+h2 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+}
+
+
+input {
+	margin-bottom: 2rem;
+
+	border-radius: 0.5rem !important;
+}
+
+
+td {
+	border-style: none;
+}
+
+
+button {
+	margin-bottom: 2rem;
+
+	text-transform: none;
+	font-size: 1.5rem;
+
+	background-color: #1CAFF6;
+	color: #FFF;
+
+	border-width: 0;
+	border-radius: 0.5rem;
+}
+
+button:hover {
+	background-color: #3BBAF7;
+	color: #FFF;
+}
+
+a:link {
+	text-decoration: none;
+}
+
+
+hr {
+	margin: 2rem 0 2rem;
+}\end{lstlisting}
+\begin{lstlisting}
+.test {
+	margin: 4rem;
+}
+
+.test tr.true {
+	color: green;
+}
+
+.test tr.false {
+	color: red;
+}\end{lstlisting}
+\subsection{HTML}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+<!-- View for @directive cpFixtures -->
+<div>
+	<!-- Repeats for every fixture -->
+	<div class="result" ng-repeat="n in fixtures">
+		<div class="head">
+			<a ng-href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a>
+			<a class="u-pull-right" ng-href="#/result/enter/{{ n.tournament_id }}/{{ n.player1_id }}/{{ n.player2_id }}" ng-show="yourId == n.player1_id || yourId == n.player2_id || n.is_league_manager == '1'">ENTER RESULT</a><br>
+		</div>
+
+		<div class="body">
+			<span class="u-pull-right">{{ n.expected_percent }}%</span>
+			<a ng-bind="n.player1_name" ng-href="#/profile/{{ n.player1_id }}"></a><span> ({{ n.player1_rating }})</span><br>
+			<a ng-bind="n.player2_name" ng-href="#/profile/{{ n.player2_id }}"></a><span> ({{ n.player2_rating }})</span>
+		</div>
+	</div>
+
+	<!-- Error message box if no fixtures -->
+	<div class="error-container two-rem" ng-show="fixtures.length === 0">No fixtures yet</div>
+</div>\end{lstlisting}
+\begin{lstlisting}
+<div class="container">
+
+	<div class="box-container offset-by-two eight columns">
+		<h1>A2 Computing Project</h1>
+		<small>Jordan Lord</small>
+	</div>
+
+</div>\end{lstlisting}
+\begin{lstlisting}
+<div class="container">
+
+	<div class="box-container seven columns" ng-class="{'offset-by-two eight columns': editOrCreate == 'Create'}">
+		<h1>{{ editOrCreate }} League</h1>
+
+		<!-- Error message box -->
+		<div class="error-container" ng-hide="response.success">
+			<ul>
+				<li ng-bind="response.error_msg"></li>
+			</ul>
+		</div>
+
+		<!-- League name field -->
+		<label>League Name</label>
+		<input class="u-full-width" type="text" ng-model="name">
+
+		<!-- League description field -->
+		<label>League Description</label>
+		<textarea class="u-full-width" ng-model="description"></textarea>
+
+		<!-- Delete league button -->
+		<button class="u-full-width" ng-click="eventDelete()" ng-show="editOrCreate == 'Edit'">Delete League</button>
+
+		<!-- Submit button -->
+		<button class="u-full-width" ng-click="eventUpdate()">{{ editOrCreate }}</button>
+	</div>
+
+	<div class="box-container side five columns" ng-show="editOrCreate == 'Edit'">
+		<!-- Display all league managers -->
+		<div ng-hide="addingManager">
+			<h2>Managers<a class="u-pull-right" href ng-click="eventAddManager()">Add</a></h2>
+
+			<ul class="list-side">
+				<li ng-repeat="n in data.league_managers">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+					<a class="u-pull-right" href ng-click="eventRemoveManager(n.id)" ng-hide="n.id === yourId">Remove</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Appears when adding a manager -->
+		<div ng-show="addingManager">
+			<h2>Add Manager<a class="u-pull-right" href ng-click="eventCancelAdding()">Cancel</a></h2>
+
+			<!-- @directive cpUserSearch -->
+			<div cp-user-search event-click-name="eventAddSpecificManager"></div>
+		</div>
+
+		<!-- Display all players -->
+		<div ng-hide="addingPlayer">
+			<h2>Players<a class="u-pull-right" href ng-click="eventAddPlayer()">Add</a></h2>
+
+			<ul class="list-side">
+				<li ng-repeat="n in data.players">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+					<a class="u-pull-right" href ng-click="eventRemovePlayer(n.id)">Remove</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Appears when adding a player -->
+		<div ng-show="addingPlayer">
+			<h2>Add Player<a class="u-pull-right" href ng-click="eventCancelAdding()">Cancel</a></h2>
+
+			<!-- @directive cpUserSearch -->
+			<div cp-user-search event-click-name="eventAddSpecificPlayer"></div>
+		</div>
+	</div>
+
+</div>\end{lstlisting}
+\begin{lstlisting}
+<!-- Page where a user can search for a league -->
+<div class="container">
+
+	<div class="box-container offset-by-two eight columns">
+		<h1>League Search</h1>
+
+		<div class="create-league">
+			<a href="#/league/create">Create a League</a>
+		</div>
+
+		<!-- Using @directive cpLeagueSearch to search for a league -->
+		<div cp-league-search event-click-name="eventClickLeague"></div>
+	</div>
+
+</div>\end{lstlisting}
+\begin{lstlisting}
+<div class="container">
+
+	<div class="box-container seven columns">
+		<!-- Name of the league -->
+		<h1 ng-bind="data.name">Premier League</h1>
+
+		<!-- Edit button -->
+		<a class="u-pull-right" href="#/league/{{ data.id }}/edit" ng-show="data.is_league_manager">Edit</a>
+
+		<!-- Description of the league -->
+		<p ng-bind="data.description"></p>
+
+
+		<!-- Mini navigation -->
+		<ul class="nav sub">
+			<li><a href ng-click="subPage = 'table'" ng-class="{ active: subPage === 'table' }">Table</a></li>
+			<li><a href ng-click="subPage = 'results'" ng-class="{ active: subPage === 'results' }">Results</a></li>
+			<li><a href ng-click="subPage = 'fixtures'" ng-class="{ active: subPage === 'fixtures' }">Fixtures</a></li>
+		</ul>
+
+
+		<!-- Sub pages -->
+
+		<!-- League table = subpage -->
+		<div ng-show="subPage === 'table'">
+			<table class="u-full-width league-table">
+				<thead>
+					<tr>
+						<th width="10%">Pos</th>
+						<th width="30%">Name</th>
+						<th width="10%">P</th>
+						<th width="10%">W</th>
+						<th width="10%">L</th>
+						<th>Rating</th>
+						<th width="10%">Pts</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="n in table track by $index">
+						<td ng-bind="$index + 1">1</td>
+						<td><a ng-href="#/profile/{{ n.user_id }}" ng-bind="n.name"></a></td>
+						<td ng-bind="n.played"></td>
+						<td ng-bind="n.wins"></td>
+						<td ng-bind="n.loses"></td>
+						<td ng-bind="n.rating"></td>
+						<td ng-bind="n.points"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+		<!-- Results = subpage -->
+		<div cp-result tournament-id="data.id" is-ready="data.success" ng-show="subPage === 'results'"></div>
+
+		
+		<!-- Fixutes = subpage -->
+		<div cp-fixtures tournament-id="data.id" is-ready="data.success" ng-show="subPage === 'fixtures'"></div>
+	</div>
+
+
+	<!-- Side bar -->
+	<div class="five columns">
+		<div class="box-container side">
+			<!-- Display all league managers -->
+			<h2>Managers</h2>
+
+			<ul class="list-side">
+				<li ng-repeat="n in data.league_managers">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+				</li>
+			</ul>
+			
+			<!-- Display all players -->
+			<h2>Players</h2>
+
+			<ul class="list-side">
+				<li ng-repeat="n in data.players">
+					<a href="#/profile/{{ n.id }}" ng-bind="n.first_name + ' ' + n.last_name"></a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+</div>\end{lstlisting}
+\begin{lstlisting}
+<div class="container">
+
+	<!-- Login form -->
+	<form>
+		<div class="row box-container six columns">
+			<h1>Login</h1>
+
+			<div class="error-container" ng-hide="response.success">
+				<ul>
+					<li ng-bind="response.error_msg"></li>
+				</ul>
+			</div>
+
+			<!-- Email address field -->
+			<div class="u-full-width">
+				<label>Email Address</label>
+				<input class="u-full-width" type="email" ng-model="inputEmailLogin">
+			</div>
+
+			<!-- Password field -->
+			<div class="u-full-width">
+				<label>Password</label>
+				<input class="u-full-width" type="password" ng-model="inputPasswordLogin">
+			</div>
+
+			<!-- Login button -->
+			<!-- When clicked, calls @method eventLogin -->
+			<button class="u-full-width" ng-click="eventLogin()">Login</button>
+
+		</div>
+	</form>
+
+	<!-- Register form -->
+	<form>
+		<div class="row box-container six columns u-pull-right">
+			<h1>Register</h1>
+
+			<div class="error-container" ng-hide="responseRegister.success">
+				<ul>
+					<li ng-bind="responseRegister.error_msg"></li>
+				</ul>
+			</div>
+
+			<!-- First name field -->
+			<div class="u-full-width">
+				<label>First Name</label>
+				<input class="u-full-width" type="text" ng-model="inputFirstName">
+			</div>
+
+			<!-- Last name field -->
+			<div class="u-full-width">
+				<label>Last Name</label>
+				<input class="u-full-width" type="text" ng-model="inputLastName">
+			</div>
+
+			<!-- Email address field -->
+			<div class="u-full-width">
+				<label>Email Address</label>
+				<input class="u-full-width" type="email" ng-model="inputEmailRegister">
+			</div>
+
+			<!-- Password field -->
+			<div class="u-full-width">
+				<label>Password</label>
+				<input class="u-full-width" type="password" ng-model="inputPasswordRegister">
+			</div>
+
+			<!-- Repeat password field -->
+			<div class="u-full-width">
+				<label>Repeat Password</label>
+				<input class="u-full-width" type="password" ng-model="inputPasswordRepeatRegister">
+			</div>
+
+			<!-- Register button -->
+			<!-- When clicked, calls @method eventRegister -->
+			<button class="u-full-width" ng-click="eventRegister()">Register</button>
+
+		</div>
+	</form>
+</div>\end{lstlisting}
+\begin{lstlisting}
+<div class="container profile-edit">
+
+	<div class="box-container offset-by-two eight columns">
+		<h1>Edit Profile</h1>
+
+		<!-- Where error messages go -->
+		<div class="error-container" ng-hide="errorMsg === undefined">
+			<ul>
+				<li ng-bind="errorMsg"></li>
+			</ul>
+		</div>
+
+		<!-- First name field -->
+		<label>First Name</label>
+		<input class="u-full-width" type="text" ng-model="first_name">
+
+		<!-- Last name field -->
+		<label>Last Name</label>
+		<input class="u-full-width" type="text" ng-model="last_name">
+
+		<!-- Home number field -->
+		<!--
+		<label>Home Phone Number</label>
+		<input class="u-full-width" type="tel">
+		-->
+
+		<!-- Mobile number field -->
+		<!--
+		<label>Mobile Phone Number</label>
+		<input class="u-full-width" type="tel">
+		-->
+
+		<!-- Submit button -->
+		<button class="u-full-width" ng-click="eventSubmit()">Submit</button>
+	</div>
+
+</div>\end{lstlisting}
+\begin{lstlisting}
+<div class="container">
+
+	<div class="box-container seven columns">
+		<!-- Full name of user -->
+		<h1 ng-bind="data.full_name"></h1>
+
+		<!-- Edit button -->
+		<a class="u-pull-right" href="#/profile/edit" ng-show="isUser">Edit</a>
+
+
+		<!-- Mini navigation -->
+		<ul class="nav sub">
+			<li><a href ng-click="subPage = 'results'" ng-class="{active: subPage === 'results'}">Results</a></li>
+			<li><a href ng-click="subPage = 'fixtures'" ng-class="{active: subPage === 'fixtures'}">Fixtures</a></li>
+			<li><a href ng-click="subPage = 'progress'" ng-class="{active: subPage === 'progress'}">Progress</a></li>
+		</ul>
+
+
+		<!-- Sub pages -->
+
+		<!-- Results = subpage -->
+		<div ng-show="subPage === 'results'">
+			<div cp-result player-one-id="data.id" is-ready="data.success"></div>
+		</div>
+
+		<!-- Fixutres = subpage -->
+		<div ng-show="subPage === 'fixtures'">
+			<div cp-fixtures player-id="data.id" is-ready="data.success"></div>
+		</div>
+
+		<!-- Progress = subpage -->
+		<canvas id="canvas-rating-chart" class="u-full-width" width="500" height="500" ng-show="subPage === 'progress'"></canvas>
+	</div>
+
+	<!-- Side bar -->
+	<div class="five columns">
+		<div class="box-container side">
+			<h2>Rating</h2>
+			<span ng-bind="data.rating"></span>
+			<div class="buffer"></div>
+		</div>
+
+		<div class="box-container side">
+			<!-- Display all leagues that the user is playing in -->
+			<h2>Leagues</h2>
+			<ul class="list-side">
+				<li ng-repeat="n in data.leagues_playing">
+					<a href="#/league/{{ n.id }}" ng-bind="n.name"></a>
+				</li>
+			</ul>
+
+			<!-- Display all leagues that the user is managing -->
+			<h2>Managing</h2>
+			<ul class="list-side">
+				<li ng-repeat="n in data.leagues_managing">
+					<a href="#/league/{{ n.id }}" ng-bind="n.name"></a>
+				</li>
+			</ul>
+
+			<!--
+			<h2>Achievements</h2>
+			<span>Division 1 winner x2</span>
+			-->
+		</div>
+
+		<!--
+		<div class="box-container side">
+			<h2>Contact</h2>
+			<span>Home: 1234 4567</span><br>
+			<span>Mobile: 07123456789</span>
+		</div>
+		-->
+	</div>
+
+</div>\end{lstlisting}
+\begin{lstlisting}
+<div class="container">
+
+	<div class="box-container seven columns">
+		<h1>Input Result</h1>
+
+		<div class="error-container" ng-show="errorMsg.length != 0">
+			<ul>
+				<li ng-bind="errorMsg"></li>
+			</ul>
+		</div>
+
+		<table>
+			<tr>
+				<td><h2 ng-bind="player1.fullName"></h2></td>
+				<td><input type="number" ng-model="player1.score"></td>
+			</tr>
+			<tr>
+				<td><h2 ng-bind="player2.fullName"></h2></td>
+				<td><input type="number" ng-model="player2.score"></td>
+			</tr>
+		</table>
+
+		<button class="u-full-width" ng-click="eventSubmitResult()">Submit</button>
+	</div>
+
+	<div class="box-container side five columns">
+		<h2>League</h2>
+		<a ng-href="#/league/{{ tournamentId }}" ng-bind="tournamentName"></a>
+		<div class="buffer"></div>
+		<h2>Date</h2>
+		<span ng-bind="date"></span>
+		<div class="buffer"></div>
+	</div>
+
+</div>\end{lstlisting}
+\begin{lstlisting}
+<!-- View for @directive cpResult -->
+<div>
+	<!-- Repeats for every result -->
+	<div class="result" ng-repeat="n in results">
+		<!-- Displays date and league -->
+		<div class="head">
+			<span ng-bind="n.date"></span>
+			<a class="u-pull-right" href="#/league/{{ n.tournament_id }}" ng-bind="n.tournament_name"></a><br>
+			<a class="u-pull-right" href ng-click="eventDelete(n.id)">Delete</a>
+		</div>
+
+		<!-- Displays player names and score -->
+		<div class="body">
+			<table class="u-full-width">
+				<tr>
+					<td width="40%">
+						<a class="player1-name" href="#/profile/{{ n.player1_id }}" ng-bind="n.player1_name"></a>
+					</td>
+					<td width="20%" class="centre-align">
+						<span class="score u-pull-center" ng-class="n.winOrLoss" ng-bind="n.score1 + '-' + n.score2"></span>
+					</td>
+					<td width="40%">
+						<a class="player2-name" href="#/profile/{{ n.player2_id }}" ng-bind="n.player2_name"></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="player1-name">
+							<span ng-bind="n.player1_rating"></span>
+							<span>(<span ng-show="n.player1_rating_change > 0">+</span><span ng-bind="n.player1_rating_change"></span>)</span>
+						</span>
+					</td>
+					<td>
+					</td>
+					<td>
+						<span class="player2-name">
+							<span ng-bind="n.player2_rating"></span>
+							<span>(<span ng-show="n.player2_rating_change > 0">+</span><span ng-bind="n.player2_rating_change"></span>)</span>
+						</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<!-- Error message if there aren't any results to show -->
+	<div class="error-container two-rem" ng-show="results.length === 0">No results yet</div>
+</div>\end{lstlisting}
+\begin{lstlisting}
+<!-- View for the search directives -->
+<div>
+	<!-- Search field -->
+	<input class="u-full-width" type="text" placeholder="Search" ng-model="inputName" ng-change="eventInputChange()"></input>
+
+	<!-- Error shows when no league found -->
+	<div class="error-container" ng-show="results.length === 0 && inputName.length !== 0">
+		<ul>
+			<li>No results</li>
+		</ul>
+	</div>
+
+	<!-- Results from search -->
+	<ul class="list-side" ng-show="inputName.length !== 0">
+		<li ng-repeat="n in results">
+			<a href ng-bind="n.name" ng-click="eventClickName(n.id)"></a>
+		</li>
+	</ul>
+</div>\end{lstlisting}
+\begin{lstlisting}
+<!-- Page where a user can search for a user -->
+<div class="container">
+
+	<div class="box-container offset-by-two eight columns">
+		<h1>User Search</h1>
+
+		<!-- Using @directive cpUserSearch to search for a user -->
+		<div cp-user-search event-click-name="eventClickUser"></div>
+	</div>
+
+</div>\end{lstlisting}
+\subsection{SQL}
+/home/jordan/workspace/sites/computing-project/documentation/../database.sql
