@@ -1,7 +1,7 @@
-/****************************************
+/* **************************************
  * Angular config.                      *
  * Mainly used to configure the routes. *
- ****************************************/
+ ************************************** */
 app.config(['$routeProvider', function ($routeProvider)
 {
 	$routeProvider
