@@ -1,9 +1,10 @@
 <?php
 
+require_once(dirname(__FILE__) . '/Doc.php');
 require_once(dirname(__DIR__) . "/lib/Parsedown.php");
 
 
-class JSONToMarkdown
+class JSONToMarkdown extends Doc
 {
 	private $file;
 	private $data;
@@ -99,9 +100,9 @@ class JSONToMarkdown
 		$this->file = file_get_contents(dirname(__FILE__) . "/yuidoc.json");
 		$this->data = json_decode($this->file);
 
-		$this->getModelParams();
-		//$this->getClassItems();
-		//$this->getClasses();
+		//$this->getModelParams();
+		$this->getClassItems();
+		$this->getClasses();
 		$this->markdownToHTML();
 	}
 }

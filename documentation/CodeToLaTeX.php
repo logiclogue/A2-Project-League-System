@@ -1,40 +1,35 @@
 <?php
 
-class CodeToLaTeX
+require_once(dirname(__FILE__) . '/Doc.php');
+
+
+class CodeToLaTeX extends Doc
 {
-	private $paths = array(
-		'PHP' => array(
-			'Models' => 'models',
-			'Important Classes' => 'php',
-			'Parent Classes' => 'superclasses'
-		),
-		'JavaScript' => array(
-			'Configuration' => 'app',
-			'Controllers' => 'controllers',
-			'Directives' => 'directives',
-			'Services' => 'services'
-		),
-		'CSS' => 'css',
-		'HTML' => 'views',
-		'SQL' => 'database.sql'
-	);
+	private function getFile($path, $value) {
+		echo "\\textbf{" . $value . "}\n\n";
+		echo "Path: " . str_replace(dirname(__FILE__) . "/..", "", $path) . "\n";
 
-
-	private function getFile($path) {
+		echo "{\\scriptsize\n";
 		echo "\begin{lstlisting}\n";
 		echo file_get_contents($path);
 		echo "\\end{lstlisting}\n";
+		echo "}\n";
 	}
 
 	private function foreachFile($dir) {
 		foreach (scandir($dir) as $key => $value) {
-			$this->getFile($dir . "/" . $value);
+			if ($key != 0 && $key != 1) {
+				$path = $dir . "/" . $value;
+
+				$this->getFile($path, $value);
+			}
 		}
 	}
 
 	private function loopAll($val, $level) {
 		foreach ($val as $key => $value) {
 			if ($level == 1) {
+				echo "\\newpage\n";
 				echo "\subsection{" . $key . "}\n";
 			}
 			else {
@@ -51,7 +46,7 @@ class CodeToLaTeX
 					$this->foreachFile($dir);
 				}
 				else {
-					echo $dir . "\n";
+					$this->getFile($dir, str_replace(dirname(__FILE__) . '/../', "", $dir));
 				}
 			}
 		}
@@ -60,7 +55,6 @@ class CodeToLaTeX
 
 	public function __construct() {
 		$this->loopAll($this->paths, 1);
-		//$this->getFile(dirname(__FILE__) . '/../database.sql');
 	}
 }
 
