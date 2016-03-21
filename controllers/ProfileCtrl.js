@@ -1,14 +1,14 @@
 /**
  * Profile page controller.
  *
- * @controller ProfileCtrl
+ * @module ProfileCtrl
  */
 app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, $window, CallModel, RatingChart)
 {
 	/**
 	 * Id of the user.
 	 *
-	 * @var userId
+	 * @property userId
 	 * @type Integer
 	 */
 	var userId;
@@ -16,14 +16,14 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	/**
 	 * Variable for storing the name of the current subpage.
 	 *
-	 * @var $scope.currentSubPage
+	 * @property $scope.currentSubPage
 	 * @type String
 	 */
 	$scope.subPage = 'results';
 	/**
 	 * Is user.
 	 *
-	 * @var $scope.isUser
+	 * @property $scope.isUser
 	 * @type Boolean
 	 */
 	 $scope.isUser = false;

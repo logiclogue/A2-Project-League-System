@@ -1,14 +1,14 @@
 /**
  * Directive for handling results.
  *
- * @directive cpResult
+ * @module cpResult
  */
 app.directive('cpResult', function ($route, CallModel, DateFormat)
 {
 	/**
 	 * Variable for storing scope.
 	 *
-	 * @var self
+	 * @property self
 	 */
 	var self;
 

@@ -1,22 +1,22 @@
 /**
  * League page controller.
  *
- * @controller LeagueCtrl
+ * @module LeagueCtrl
  */
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
 	/**
 	 * String that determines which sub page the user is on.
 	 *
-	 * @var $scope.subPage
-	 * type String
+	 * @property $scope.subPage
+	 * @type String
 	 */
 	$scope.subPage = 'table';
 	/**
 	 * Object that contains the table data.
 	 *
-	 * @var $scope.table
-	 * type Object
+	 * @property $scope.table
+	 * @type Object
 	 */
 	$scope.table;
 

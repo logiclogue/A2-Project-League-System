@@ -1,7 +1,7 @@
 /**
  * Controller used to search for a user.
  *
- * @controller UserSearchCtrl
+ * @module UserSearchCtrl
  */
 app.controller('UserSearchCtrl', function ($scope, $location)
 {
@@ -10,7 +10,7 @@ app.controller('UserSearchCtrl', function ($scope, $location)
 	 * Clicked from @directive cpUserSearch.
 	 *
 	 * @method $scope.eventClickUser
-	 * @param userId
+	 * @param userId {Integer} Id of the user.
 	 */
 	$scope.eventClickUser = function (userId) {
 		$location.path('/profile/' + userId);

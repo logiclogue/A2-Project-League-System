@@ -1,14 +1,15 @@
 /**
  * Directive for displaying fixtures.
  *
- * @directive cpFixtures
+ * @module cpFixtures
  */
 app.directive('cpFixtures', function ($window, CallModel)
 {
 	/**
-	 * Varaibe for storing scope.
+	 * Variable for storing scope.
 	 *
-	 * @var self
+	 * @property self
+	 * @type Object
 	 */
 	var self;
 

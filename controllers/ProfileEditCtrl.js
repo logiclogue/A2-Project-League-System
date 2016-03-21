@@ -1,7 +1,7 @@
 /**
  * Controller for editing a user.
  *
- * @controller
+ * @module ProfileEditCtrl
  */
 app.controller('ProfileEditCtrl', function ($scope, $window, $location, CallModel)
 {

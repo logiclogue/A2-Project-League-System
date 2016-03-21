@@ -2,14 +2,26 @@
  * Controller for managing user login.
  * Also manages user registering.
  *
- * @controller LoginCtrl
+ * @module LoginCtrl
  */
 app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route, CallModel)
 {
+	/**
+	 * States the success of response.
+	 *
+	 * @property $scope.response
+	 * @type Object
+	 */
 	$scope.response = {
 		success: true
 	};
 
+	/**
+	 * States the success of the response from registering.
+	 *
+	 * @property $scope.responseRegister
+	 * @type Object
+	 */
 	$scope.responseRegister = {
 		success: true
 	};

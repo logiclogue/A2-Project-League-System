@@ -1,7 +1,7 @@
 /**
  * Directive used to search for a tournament.
  *
- * @directive cpLeagueSearch
+ * @module cpLeagueSearch
  */
 app.directive('cpLeagueSearch', function (CallModel)
 {

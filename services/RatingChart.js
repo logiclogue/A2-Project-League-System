@@ -1,41 +1,41 @@
 /**
  * Factory for handling the rating graph.
  *
- * @factory RatingChart
+ * @module RatingChart
  */
 app.factory('RatingChart', function ()
 {
-	/**	 *
-	 * @var ctx
-	 * @private
+	/**
+	 * @property ctx
+	 * @type Object
 	 */
 	var ctx;
 	/**
 	 * Chart object for talking to Chart.JS library.
 	 *
-	 * @var chart
-	 * @private
+	 * @property chart
+	 * @type Object
 	 */
 	var chart;
 	/**
 	 * List of dates corresponding to a rating.
 	 *
-	 * @var dates
-	 * @private
+	 * @property dates
+	 * @type Array
 	 */
 	var dates = [];
 	/**
 	 * List of ratings for the graph.
 	 *
-	 * @var averageRating
-	 * @private
+	 * @property averageRating
+	 * @type Array
 	 */
 	var averageRating = [];
 	/**
 	 * Data object for drawing the chart.
 	 *
-	 * @var data
-	 * @private
+	 * @property data
+	 * @type Object
 	 */
 	var data = {
 		labels: dates,
@@ -55,8 +55,8 @@ app.factory('RatingChart', function ()
 	/**
 	 * Configuration for drawing the chart.
 	 *
-	 * @var options
-	 * @private
+	 * @property options
+	 * @type Object
 	 */
 	var options = {
 		scaleShowGridLines : true,

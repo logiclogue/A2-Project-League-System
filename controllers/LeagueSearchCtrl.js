@@ -1,7 +1,7 @@
 /**
  * Controller used to search for a leauge.
  *
- * @controller UserSearchCtrl
+ * @module UserSearchCtrl
  */
 app.controller('LeagueSearchCtrl', function ($scope, $location)
 {
@@ -10,7 +10,7 @@ app.controller('LeagueSearchCtrl', function ($scope, $location)
 	 * Clicked from @directive cpLeagueSearch.
 	 *
 	 * @method $scope.eventClickLeague
-	 * @param leagueId
+	 * @param leagueId {Integer} Id of the league.
 	 */
 	$scope.eventClickLeague = function (leagueId) {
 		$location.path('/league/' + leagueId);

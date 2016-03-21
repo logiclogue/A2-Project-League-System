@@ -1,7 +1,7 @@
 /**
  * Directive used to search for a user.
  *
- * @directive cpUserSearch
+ * @module cpUserSearch
  */
 app.directive('cpUserSearch', function (CallModel)
 {

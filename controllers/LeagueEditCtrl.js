@@ -1,14 +1,14 @@
 /**
  * Controller for editing a league.
  *
- * @controller LeagueEditCtrl
+ * @module LeagueEditCtrl
  */
 app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routeParams, CallModel)
 {
 	/**
 	 * The text that goes in the edit page.
 	 *
-	 * @var $scope.editOrCreate
+	 * @property $scope.editOrCreate
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Edit';
@@ -16,21 +16,21 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * Id of the user.
 	 * Used to prevent the user from removing themselves as a league manager.
 	 *
-	 * @var $scope.yourId
+	 * @property $scope.yourId
 	 * @type Integer
 	 */
 	$scope.yourId = $window.sessionStorage.yourId;
 	/**
 	 * Variable that is used to tell the view whether the adding manager dialog is open.
 	 *
-	 * @var $scope.addingManager
+	 * @property $scope.addingManager
 	 * @type Boolean
 	 */
 	$scope.addingManager = false;
 	/**
 	 * Variable that is used to tell the view whether the adding player dialog is open.
 	 *
-	 * @var $scope.addingPlayer
+	 * @property $scope.addingPlayer
 	 * @type Boolean
 	 */
 	$scope.addingPlayer = false;

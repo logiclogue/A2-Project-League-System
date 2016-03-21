@@ -1,14 +1,14 @@
 /**
  * Controller for creating a league.
  *
- * @controller LeagueCreateCtrl
+ * @module LeagueCreateCtrl
  */
 app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 {
 	/**
 	 * The text that goes in the edit page.
 	 *
-	 * @var $scope.editOrCreate
+	 * @property $scope.editOrCreate
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Create';
