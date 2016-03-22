@@ -1,7 +1,7 @@
 /**
  * Controller for managing the navbar.
  *
- * @module NavCtrl
+ * @class NavCtrl
  */
 app.controller('NavCtrl', function ($scope, $window, $location, CallModel)
 {

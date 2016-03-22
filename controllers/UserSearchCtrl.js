@@ -1,7 +1,7 @@
 /**
  * Controller used to search for a user.
  *
- * @module UserSearchCtrl
+ * @class UserSearchCtrl
  */
 app.controller('UserSearchCtrl', function ($scope, $location)
 {

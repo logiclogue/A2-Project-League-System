@@ -1,7 +1,7 @@
 /**
  * Directive for displaying fixtures.
  *
- * @module cpFixtures
+ * @class cpFixtures
  */
 app.directive('cpFixtures', function ($window, CallModel)
 {

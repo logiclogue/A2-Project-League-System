@@ -1,7 +1,7 @@
 /**
  * Directive for handling results.
  *
- * @module cpResult
+ * @class cpResult
  */
 app.directive('cpResult', function ($route, CallModel, DateFormat)
 {

@@ -1,7 +1,7 @@
 /**
  * Controller for the home page.
  *
- * @module HomeCtrl
+ * @class HomeCtrl
  */
 app.controller('HomeCtrl', function ()
 {

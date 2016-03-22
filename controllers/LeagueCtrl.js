@@ -1,7 +1,7 @@
 /**
  * League page controller.
  *
- * @module LeagueCtrl
+ * @class LeagueCtrl
  */
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {

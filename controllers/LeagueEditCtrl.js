@@ -1,7 +1,7 @@
 /**
  * Controller for editing a league.
  *
- * @module LeagueEditCtrl
+ * @class LeagueEditCtrl
  */
 app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routeParams, CallModel)
 {

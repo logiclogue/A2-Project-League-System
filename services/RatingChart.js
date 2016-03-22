@@ -1,7 +1,7 @@
 /**
  * Factory for handling the rating graph.
  *
- * @module RatingChart
+ * @class RatingChart
  */
 app.factory('RatingChart', function ()
 {

@@ -2,7 +2,7 @@
  * Controller for managing user login.
  * Also manages user registering.
  *
- * @module LoginCtrl
+ * @class LoginCtrl
  */
 app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route, CallModel)
 {

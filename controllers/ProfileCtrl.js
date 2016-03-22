@@ -1,7 +1,7 @@
 /**
  * Profile page controller.
  *
- * @module ProfileCtrl
+ * @class ProfileCtrl
  */
 app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, $window, CallModel, RatingChart)
 {

@@ -1,7 +1,7 @@
 /**
  * Factory that returns the site's format of date.
  *
- * @module DateFormat
+ * @class DateFormat
  */
 app.factory('DateFormat', function ()
 {

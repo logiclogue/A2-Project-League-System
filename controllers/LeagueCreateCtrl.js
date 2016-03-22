@@ -1,7 +1,7 @@
 /**
  * Controller for creating a league.
  *
- * @module LeagueCreateCtrl
+ * @class LeagueCreateCtrl
  */
 app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 {

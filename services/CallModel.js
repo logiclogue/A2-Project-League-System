@@ -1,7 +1,7 @@
 /**
  * Factory for calling the PHP models.
  *
- * @module CallModel
+ * @class CallModel
  */
 app.factory('CallModel', function ($http, $location)
 {

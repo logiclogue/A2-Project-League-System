@@ -1,7 +1,7 @@
 /**
  * Controller that allows a user to input a result.
  *
- * @module ResultEnterCtrl
+ * @class ResultEnterCtrl
  */
 app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, CallModel, DateFormat)
 {

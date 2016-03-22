@@ -1,7 +1,7 @@
 /**
  * Controller used to search for a leauge.
  *
- * @module UserSearchCtrl
+ * @class UserSearchCtrl
  */
 app.controller('LeagueSearchCtrl', function ($scope, $location)
 {
