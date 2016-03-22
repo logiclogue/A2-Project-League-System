@@ -9,6 +9,28 @@ File: /models/FixturesGet.php
 
 Extends \texttt{Model}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{player\_id} - Integer - \textit{Find all matches that a user still has to play.}
+\item \texttt{tournament\_id} - Integer - \textit{Find all matches that still need to be played in a tournament.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{fixtures} - 
+\item \texttt{[].player1\_id} - Integer - \textit{Id of player 1.}
+\item \texttt{[].player2\_id} - Integer - \textit{Id of player 2.}
+\item \texttt{[].player1\_name} - String - \textit{Full name of player 1.}
+\item \texttt{[].player2\_name} - String - \textit{Full name of player 2.}
+\item \texttt{[].player1\_rating} - Integer - \textit{Rating of player 1.}
+\item \texttt{[].player2\_rating} - Integer - \textit{Rating of player 2.}
+\item \texttt{[].expected} - Float - \textit{Odds of player 1 winning.}
+\item \texttt{[].expected\_percent} - Integer - \textit{Percentage chance of player 1 winning.}
+\item \texttt{[].tournament\_id} - Integer - \textit{Id of tournament that the match is in.}
+\item \texttt{[].tournament\_name} - String - \textit{Name of tournament that the match is in.}
+\item \texttt{[].is\_league\_manager} - Boolean - \textit{Whether the user is a league manager.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{query}
@@ -55,6 +77,12 @@ Page: \pageref{Login.php}
 File: /models/Login.php
 
 Extends \texttt{Model}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{email} - String - \textit{Email of the user.}
+\item \texttt{password} - String - \textit{Password of the user.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -162,6 +190,19 @@ File: /models/Register.php
 
 Extends \texttt{Model}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{email} - String - \textit{The email of the user.}
+\item \texttt{first\_name} - String - \textit{The first name of the user.}
+\item \texttt{last\_name} - String - \textit{The last name of the user.}
+\item \texttt{password} - String - \textit{The password of the user.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of the user just registered.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{query}
@@ -242,6 +283,8 @@ Access: private
 
 Line: 101
 
+Returns: Boolean - \textit{Whether all is valid.}
+
 }
 
 \texttt{main()}
@@ -265,6 +308,15 @@ Page: \pageref{ResultEnter.php}
 File: /models/ResultEnter.php
 
 Extends \texttt{Tournament}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament.}
+\item \texttt{player1\_id} - Integer - \textit{Id of player 1.}
+\item \texttt{player2\_id} - Integer - \textit{Id of player 2.}
+\item \texttt{player1\_score} - Integer - \textit{Player 1's score.}
+\item \texttt{player2\_score} - Integer - \textit{Player 2's score.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -402,6 +454,8 @@ Access: private
 
 Line: 80
 
+Returns: Boolean - \textit{Whether valid to enter result.}
+
 }
 
 \texttt{insertScore(user\_id, score, new\_rating, rating\_change)}
@@ -413,6 +467,14 @@ Access: private
 
 Line: 133
 
+Parameters:
+
+\begin{enumerate}
+\item \texttt{user\_id} - Integer - \textit{Id of the user whose score to input.}
+\item \texttt{score} - Integer - \textit{Score that the user achieved.}
+\item \texttt{new\_rating} - Integer - \textit{New rating of the user.}
+\item \texttt{rating\_change} - Integer - \textit{Rating change.}
+\end{enumerate}
 }
 
 \texttt{insertInfo()}
@@ -457,6 +519,33 @@ File: /models/ResultGet.php
 
 Extends \texttt{Model}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{result\_id} - Integer - \textit{Id of the result.}
+\item \texttt{player1\_id} - Integer - \textit{Id of player 1.}
+\item \texttt{player2\_id} - Integer - \textit{Id of player 2.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of tournament.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{results} - Array}
+\item \texttt{[].id} - Integer - \textit{Id of the result.}
+\item \texttt{[].tournament\_id} - Integer - \textit{Id of the tournament.}
+\item \texttt{[].tournament\_name} - String - \textit{Name of the tournament.}
+\item \texttt{[].date} - String - \textit{Date-time the match was played.}
+\item \texttt{[].player1\_id} - Integer - \textit{Id of player 1.}
+\item \texttt{[].player2\_id} - Integer - \textit{Id of player 2.}
+\item \texttt{[].player1\_name} - String - \textit{Name of player 1.}
+\item \texttt{[].player2\_name} - String - \textit{Name of player 2.}
+\item \texttt{[].player1\_rating} - Integer - \textit{Player 1 rating before the match.}
+\item \texttt{[].player2\_rating} - Integer - \textit{Player 2 rating before the match.}
+\item \texttt{[].player1\_rating\_change} - Integer - \textit{Player 1 rating change.}
+\item \texttt{[].player2\_rating\_change} - Integer - \textit{Player 2 rating change.}
+\item \texttt{[].score1} - Integer - \textit{Score of player 1.}
+\item \texttt{[].score2} - Integer - \textit{Score of player 2.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{query}
@@ -493,6 +582,16 @@ File: /models/Status.php
 
 Extends \texttt{Model}
 
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{logged\_in} - Boolean - \textit{Whether you are logged in.}
+\item \texttt{user} - Array - \textit{User data if logged in:}
+\item \texttt{user.id} - Integer - \textit{Your id.}
+\item \texttt{user.email} - String - \textit{Your email address.}
+\item \texttt{user.first\_name} - String - \textit{Your first name.}
+\item \texttt{user.last\_name} - String - \textit{Your last name.}
+\end{itemize}
+
 \textbf{Methods:}
 
 \texttt{logged\_in()}
@@ -526,6 +625,17 @@ Page: \pageref{TournamentCreate.php}
 File: /models/TournamentCreate.php
 
 Extends \texttt{Tournament}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{name} - String - \textit{The name of the tournament.}
+\item \texttt{description} - String - \textit{The description of the tournament.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of the tournament just created.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -633,6 +743,11 @@ File: /models/TournamentDelete.php
 
 Extends \texttt{Tournament}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of the tournament}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{query\_league}
@@ -671,6 +786,8 @@ Access: private
 
 Line: 57
 
+Returns: Boolean - \textit{Whether the league is deletable.}
+
 }
 
 \texttt{main()}
@@ -692,6 +809,27 @@ Page: \pageref{TournamentGet.php}
 File: /models/TournamentGet.php
 
 Extends \texttt{Tournament}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of the tournament.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of the tournament.}
+\item \texttt{name} - String - \textit{Name of the tournament.}
+\item \texttt{description} - String - \textit{Description of the tournament.}
+\item \texttt{is\_league\_manager} - Boolean - \textit{Whether the user calling is a league manager.}
+\item \texttt{league\_managers} - Array - \textit{Array of league managers.}
+\item \texttt{league\_managers[].id} - Integer - \textit{Id of the league manager.}
+\item \texttt{league\_managers[].first\_name} - String - \textit{First name of the league manager.}
+\item \texttt{league\_managers[].last\_name} - String - \textit{Last name of the league manager.}
+\item \texttt{players} - Array - \textit{Array of players in the tournament.}
+\item \texttt{players[].id} - Integer - \textit{Id of the player.}
+\item \texttt{players[].first\_name} - String - \textit{First name of the player.}
+\item \texttt{players[].last\_name} - String - \textit{Last name of the player.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -775,6 +913,8 @@ Access: protected
 
 Line: 135
 
+Returns: Array - \textit{Tournament data.}
+
 }
 
 \subsubsection{TournamentLeagueTable}\label{TournamentLeagueTable.php.doc}
@@ -785,6 +925,23 @@ Page: \pageref{TournamentLeagueTable.php}
 File: /models/TournamentLeagueTable.php
 
 Extends \texttt{Model}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{If of the tournament.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{table} - Array - \textit{Array that holds all the players in order.}
+\item \texttt{[].user\_id} - Integer - \textit{Id of player.}
+\item \texttt{[].name} - String - \textit{Full name of player.}
+\item \texttt{[].played} - Integer - \textit{Number of games played.}
+\item \texttt{[].wins} - Integer - \textit{Number of games won.}
+\item \texttt{[].loses} - Integer - \textit{Number of games lost.}
+\item \texttt{[].points} - Integer - \textit{Number of points from games played.}
+\item \texttt{[].rating} - Integer - \textit{Rating of player in the specific tournament.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -868,6 +1025,12 @@ File: /models/TournamentManagerAttach.php
 
 Extends \texttt{TournamentManagerAlter}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to make a manager.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{is\_league\_manager}
@@ -903,6 +1066,12 @@ Page: \pageref{TournamentManagerRemove.php}
 File: /models/TournamentManagerRemove.php
 
 Extends \texttt{TournamentManagerAlter}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{user\_id} - Integer - \textit{Id of the league manager to remove.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -940,6 +1109,12 @@ File: /models/TournamentPlayerAttach.php
 
 Extends \texttt{TournamentPlayerAlter}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to be added to the tournament.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{is\_player}
@@ -976,6 +1151,12 @@ File: /models/TournamentPlayerRemove.php
 
 Extends \texttt{TournamentPlayerAlter}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to be removed from the tournament.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{is\_player}
@@ -1011,6 +1192,18 @@ Page: \pageref{TournamentSearch.php}
 File: /models/TournamentSearch.php
 
 Extends \texttt{Model}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{name} - String - \textit{Search for tournament with similar name.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{tournaments} - Array - \textit{Array of all tournaments that match.}
+\item \texttt{[].id} - Integer - \textit{Id of the tournament.}
+\item \texttt{[].name} - String - \textit{Name of the tournament.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -1049,6 +1242,13 @@ File: /models/TournamentUpdate.php
 
 Extends \texttt{Tournament}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of tournament.}
+\item \texttt{name} - String - \textit{New name of the tournament.}
+\item \texttt{description} - String - \textit{New description of the tournament.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{query}
@@ -1073,6 +1273,8 @@ Line: 22
 Access: private
 
 Line: 36
+
+Returns: Boolean - \textit{Whether the user has permission.}
 
 }
 
@@ -1107,6 +1309,25 @@ Page: \pageref{UserGet.php}
 File: /models/UserGet.php
 
 Extends \texttt{Model}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of the user to be fetched.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{id} - Integer - \textit{Id of the user.}
+\item \texttt{first\_name} - String - \textit{First name of the user.}
+\item \texttt{last\_name} - String - \textit{Last name of the user.}
+\item \texttt{rating} - Integer - \textit{The user's rating.}
+\item \texttt{leagues\_playing} - Array}
+\item \texttt{leagues\_playing[].id} - Integer - \textit{Id of league playing in.}
+\item \texttt{leagues\_playing[].name} - String - \textit{Name of league playing in.}
+\item \texttt{ leagues\_managing} - Array}
+\item \texttt{leagues\_managing[].id} - Integer - \textit{Id of league managing.}
+\item \texttt{leagues\_managing[].name} - String - \textit{Name of league managing.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -1169,6 +1390,8 @@ Access: private
 
 Line: 90
 
+Returns: Boolean - \textit{Whether the result matches request.}
+
 }
 
 \texttt{executeQuery()}
@@ -1179,6 +1402,8 @@ Line: 90
 Access: private
 
 Line: 109
+
+Returns: Boolean - \textit{Whether executed query successfully.}
 
 }
 
@@ -1213,6 +1438,8 @@ Access: private
 
 Line: 162
 
+Returns: Boolean - \textit{Whether user exists}
+
 }
 
 \texttt{main()}
@@ -1235,6 +1462,19 @@ Page: \pageref{UserRatings.php}
 File: /models/UserRatings.php
 
 Extends \texttt{Model}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to query.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{ratings} - Array - \textit{Array of all the ratings over time.}
+\item \texttt{[].rating} - Integer - \textit{Rating at that moment in time.}
+\item \texttt{[].rating\_change} - Integer - \textit{Change of rating.}
+\item \texttt{[].date} - String - \textit{Date and time when rating was the value.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -1283,6 +1523,18 @@ File: /models/UserSearch.php
 
 Extends \texttt{Model}
 
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{name} - String - \textit{Search for user with similar name.}
+\end{itemize}
+
+\textbf{Output:}
+\begin{itemize}
+\item \texttt{users} - Array - \textit{Array of all users that match.}
+\item \texttt{[].id} - Integer - \textit{Id of the user.}
+\item \texttt{[].name} - String - \textit{Full name of the user.}
+\end{itemize}
+
 \textbf{Properties:}
 
 \texttt{query}
@@ -1319,6 +1571,14 @@ Page: \pageref{UserUpdate.php}
 File: /models/UserUpdate.php
 
 Extends \texttt{Model}
+
+\textbf{Input:}
+\begin{itemize}
+\item \texttt{first\_name} - String - \textit{The new first name of the user.}
+\item \texttt{last\_name} - String - \textit{The new last name of the user.}
+\item \texttt{home\_phone} - String - \textit{The new home phone number of the user.}
+\item \texttt{mobile\_phone} - String - \textit{THe new mobile phone number of the user.}
+\end{itemize}
 
 \textbf{Properties:}
 
@@ -1368,6 +1628,8 @@ Validating first name, last name, and phone numbers.}
 Access: private
 
 Line: 71
+
+Returns: Boolean - \textit{Whether valid.}
 
 }
 
@@ -1479,7 +1741,7 @@ Line: 10
 
 Type: String
 
-Access: private
+Access: private static
 
 Line: 18
 
@@ -1492,9 +1754,11 @@ Line: 18
 \textit{This method is used to create the tables and columns in the database.
 The `database.sql` file provides the SQL query string to do this.}
 
-Access: public
+Access: public static
 
 Line: 31
+
+Returns: Boolean - \textit{Whether success.}
 
 }
 
@@ -1503,9 +1767,11 @@ Line: 31
 {\scriptsize
 \textit{Method that deletes all the tables in the database.}
 
-Access: public
+Access: public static
 
 Line: 47
+
+Returns: Boolean - \textit{Whether success.}
 
 }
 
@@ -1515,9 +1781,11 @@ Line: 47
 \textit{Resets database.
 Deletes then recreates.}
 
-Access: public
+Access: public static
 
 Line: 64
+
+Returns: Boolean - \textit{Whether success.}
 
 }
 
@@ -1528,7 +1796,7 @@ Line: 64
 It is used to connect to the database.
 Also to set @property conn to new PDO.}
 
-Access: public
+Access: public static
 
 Line: 80
 
@@ -1615,6 +1883,8 @@ Access: private
 
 Line: 56
 
+Returns: Array - \textit{Return object.}
+
 }
 
 \texttt{decodePost()}
@@ -1626,6 +1896,8 @@ Access: private
 
 Line: 78
 
+Returns: Object - \textit{The decoded JSON.}
+
 }
 
 \texttt{isPost()}
@@ -1636,6 +1908,8 @@ Line: 78
 Access: private
 
 Line: 91
+
+Returns: Boolean - \textit{Whether it's set.}
 
 }
 
@@ -1659,6 +1933,13 @@ Access: public
 
 Line: 115
 
+Parameters:
+
+\begin{enumerate}
+\item \texttt{Data} - Object - \textit{object to interact with the model.}
+\end{enumerate}
+Returns: Object - \textit{Return data.}
+
 }
 
 \texttt{\_\_construct(notAPI)}
@@ -1670,6 +1951,11 @@ Access: public
 
 Line: 132
 
+Parameters:
+
+\begin{enumerate}
+\item \texttt{notAPI} - Boolean - \textit{}
+\end{enumerate}
 }
 
 \subsubsection{Test}\label{Test.php.doc}
@@ -1686,7 +1972,7 @@ File: /php/Test.php
 {\scriptsize
 \textit{Method that requires all the files.}
 
-Access: private
+Access: private static
 
 Line: 21
 
@@ -1697,10 +1983,15 @@ Line: 21
 {\scriptsize
 \textit{Method that should be called when starting a test.}
 
-Access: private
+Access: private static
 
 Line: 39
 
+Parameters:
+
+\begin{enumerate}
+\item \texttt{testName} - String - \textit{}
+\end{enumerate}
 }
 
 \texttt{testEnd()}
@@ -1708,7 +1999,7 @@ Line: 39
 {\scriptsize
 \textit{Method that should be called when finished a test.}
 
-Access: private
+Access: private static
 
 Line: 66
 
@@ -1720,7 +2011,7 @@ Line: 66
 \textit{When making a single test, call this method.
 Puts row in table.}
 
-Access: private
+Access: private static
 
 Line: 82
 
@@ -1731,7 +2022,7 @@ Line: 82
 {\scriptsize
 \textit{Method that loads the test.}
 
-Access: private
+Access: private static
 
 Line: 105
 
@@ -1803,7 +2094,7 @@ Line: 30
 
 Type: String
 
-Access: private
+Access: private static
 
 Line: 40
 
@@ -1815,7 +2106,7 @@ Line: 40
 
 Type: Integer
 
-Access: public
+Access: public static
 
 Line: 60
 
@@ -1827,9 +2118,16 @@ Line: 60
 {\scriptsize
 \textit{Method gets rating of a user using @property query\_get\_rating.}
 
-Access: public
+Access: public static
 
 Line: 71
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to get rating.}
+\end{enumerate}
+Returns: Integer - \textit{Latest rating of the user.}
 
 }
 
@@ -1838,9 +2136,17 @@ Line: 71
 {\scriptsize
 \textit{Method that calculates a probability of a player winning.}
 
-Access: public
+Access: public static
 
 Line: 100
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{rating\_a} - Integer - \textit{Rating of player A.}
+\item \texttt{rating\_b} - Integer - \textit{Rating of player B.}
+\end{enumerate}
+Returns: Float - \textit{Odds of player A beating player B.}
 
 }
 
@@ -1849,9 +2155,19 @@ Line: 100
 {\scriptsize
 \textit{Method that calculates a new rating based on the score.}
 
-Access: public
+Access: public static
 
 Line: 114
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{rating\_a} - Integer - \textit{Rating of player A.}
+\item \texttt{k\_factor} - Integer - \textit{The k factor of the match.}
+\item \texttt{points\_a} - Float - \textit{Result of the match (0 = defeat, 0.5 = draw, 1 = win).}
+\item \texttt{expected\_a} - Float - \textit{Expected result as calculated from @method expected.}
+\end{enumerate}
+Returns: Integer - \textit{New rating of player A.}
 
 }
 
@@ -1864,6 +2180,15 @@ Access: public
 
 Line: 131
 
+Parameters:
+
+\begin{enumerate}
+\item \texttt{player\_a\_id} - Integer - \textit{Id of player A.}
+\item \texttt{player\_b\_id} - Integer - \textit{Id of player B.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of tournament.}
+\item \texttt{player\_a\_score} - Integer - \textit{Score that player A achieved.}
+\item \texttt{player\_b\_score} - Integer - \textit{Score that player B achieved.}
+\end{enumerate}
 }
 
 \subsubsection{ResultMethods}\label{ResultMethods.php.doc}
@@ -1882,7 +2207,7 @@ File: /superclasses/ResultMethods.php
 
 Type: String
 
-Access: private
+Access: private static
 
 Line: 13
 
@@ -1894,9 +2219,18 @@ Line: 13
 {\scriptsize
 \textit{Method that tests whether a match has already been played.}
 
-Access: public
+Access: public static
 
 Line: 36
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{player1\_id} - Integer - \textit{Id of player in match.}
+\item \texttt{player2\_id} - Integer - \textit{Id of player in match.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of tournament the match is in.}
+\end{enumerate}
+Returns: Boolean - \textit{Whether that result has been entered.}
 
 }
 
@@ -1994,6 +2328,14 @@ Access: protected
 
 Line: 96
 
+Parameters:
+
+\begin{enumerate}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to query.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament to query.}
+\end{enumerate}
+Returns: Boolean - \textit{Whether the user is a player in that tournament.}
+
 }
 
 \texttt{isLeagueManager(user\_id, tournament\_id)}
@@ -2004,6 +2346,14 @@ Line: 96
 Access: protected
 
 Line: 124
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to query.}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament to query.}
+\end{enumerate}
+Returns: Boolean - \textit{Whether the user is a league manager in that tournament.}
 
 }
 
@@ -2016,6 +2366,14 @@ Access: protected
 
 Line: 152
 
+Parameters:
+
+\begin{enumerate}
+\item \texttt{tournament\_id} - Integer - \textit{Id of the tournament.}
+\item \texttt{user\_id} - Integer - \textit{Id of the user.}
+\end{enumerate}
+Returns: Boolean - \textit{Whether successful.}
+
 }
 
 \texttt{tournamentExistsId(tournament\_id)}
@@ -2026,6 +2384,13 @@ Line: 152
 Access: protected
 
 Line: 175
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{tournament\_id} - Integer - \textit{Id of tournament}
+\end{enumerate}
+Returns: Boolean - \textit{Whether tournament exists.}
 
 }
 
@@ -2038,6 +2403,8 @@ Access: protected
 
 Line: 196
 
+Returns: Boolean - \textit{Whether tournament exists.}
+
 }
 
 \texttt{userExists(user\_id)}
@@ -2048,6 +2415,13 @@ Line: 196
 Access: protected
 
 Line: 207
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{user\_id} - Integer - \textit{Id of the user to test.}
+\end{enumerate}
+Returns: Boolean - \textit{Whether a user exists.}
 
 }
 
@@ -2109,6 +2483,8 @@ Access: private
 
 Line: 57
 
+Returns: Integer - \textit{Number of league managers.}
+
 }
 
 \texttt{executeQuery()}
@@ -2134,6 +2510,8 @@ Returns false if:
 Access: private
 
 Line: 91
+
+Returns: Boolean - \textit{Whether can.}
 
 }
 
@@ -2222,6 +2600,8 @@ Access: private
 
 Line: 54
 
+Returns: Boolean - \textit{Whether can.}
+
 }
 
 \texttt{general()}
@@ -2264,9 +2644,17 @@ File: /superclasses/Validate.php
 {\scriptsize
 \textit{Returns standard data such as whether success, error message, and correction.}
 
-Access: private
+Access: private static
 
 Line: 10
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{success} - Boolean - \textit{Whether a success or not.}
+\item \texttt{error\_msg} - String - \textit{Error message.}
+\end{enumerate}
+Returns: String - \textit{[].error\_msg  Error message.}
 
 }
 
@@ -2276,12 +2664,35 @@ Line: 10
 \textit{Valididates user's name.
 Can be first or last name.}
 
+Access: public static
+
+Line: 30
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{name} - String - \textit{Name to be checked.}
+\item \texttt{variableName} - String - \textit{Name of variable e.g. 'First name' or 'Last name'.}
+\end{enumerate}
+Returns: Object - \textit{Return of @method returnData}
+
 }
 
 \texttt{tournamentName(name)}
 
 {\scriptsize
 \textit{Validates tournament name.}
+
+Access: public static
+
+Line: 61
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{name} - String - \textit{}
+\end{enumerate}
+Returns: Object - \textit{Return of @method returnData}
 
 }
 
@@ -2290,12 +2701,34 @@ Can be first or last name.}
 {\scriptsize
 \textit{Validates tournament description.}
 
+Access: public static
+
+Line: 90
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{description} - String - \textit{}
+\end{enumerate}
+Returns: Object - \textit{Return of @method returnData}
+
 }
 
 \texttt{email(email)}
 
 {\scriptsize
 \textit{Validates email address.}
+
+Access: public static
+
+Line: 107
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{email} - String - \textit{}
+\end{enumerate}
+Returns: Object - \textit{Return of @method returnData}
 
 }
 
@@ -2304,12 +2737,34 @@ Can be first or last name.}
 {\scriptsize
 \textit{Validates password.}
 
+Access: public static
+
+Line: 132
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{password} - String - \textit{}
+\end{enumerate}
+Returns: Object - \textit{Return of @method returnData}
+
 }
 
 \texttt{phoneNumber(phoneNumber)}
 
 {\scriptsize
 \textit{Validates phone number.}
+
+Access: public static
+
+Line: 150
+
+Parameters:
+
+\begin{enumerate}
+\item \texttt{phoneNumber} - String - \textit{}
+\end{enumerate}
+Returns: Object - \textit{Return of @method returnData}
 
 }
 

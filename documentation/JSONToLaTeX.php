@@ -20,12 +20,80 @@ class JSONTOLaTeX extends Doc
 		return $val;
 	}
 
-	private function getModelParams() {
-		$code = file_get_contents(dirname(__FILE__) . "/../models/Login.php");
+	private function getModelParams($path) {
+		$code = file_get_contents($path);
 
 		preg_match("/\/\*\&(.|\n)*?\*\//", $code, $matches);
 
-		// $this->printLine($matches[0]);
+		$match = $matches[0];
+
+		preg_match_all("/@param [^\n]*/", $match, $params);
+		preg_match_all("/@return [^\n]*/", $match, $returns);
+
+		$params = $params[0];
+		$returns = $returns[0];
+
+		foreach ($params as $key => &$param) {
+			if ($key == 0) {
+				echo "\\textbf{Input:}\n";
+				echo "\\begin{itemize}\n";
+			}
+
+			$param = str_replace("@param ", "", $param);
+			$param = explode(" {", $param);
+			$variable = $param[0];
+			$param = explode("} ", $param[1]);
+			$type = $param[0];
+			$description = $param[1];
+
+			echo "\\item ";
+			echo "\\texttt{" . $this->replace($variable) . "}";
+			
+			if (isset($type)) {
+				echo " - " . $type;
+			}
+
+			if (isset($description)) {
+				echo " - \\textit{" . $description . "}";
+			}
+
+			echo "\n";
+
+			if ($key == count($params) - 1) {
+				echo "\\end{itemize}\n\n";
+			}
+		}
+
+		foreach ($returns as $key => &$return) {
+			if ($key == 0) {
+				echo "\\textbf{Output:}\n";
+				echo "\\begin{itemize}\n";
+			}
+
+			$return = str_replace("@return ", "", $return);
+			$return = explode(" {", $return);
+			$variable = $return[0];
+			$return = explode("} ", $return[1]);
+			$type = $return[0];
+			$description = $return[1];
+
+			echo "\\item ";
+			echo "\\texttt{" . $this->replace($variable) . "}";
+			
+			if (isset($type)) {
+				echo " - " . $type;
+			}
+
+			if (isset($description)) {
+				echo " - \\textit{" . $description . "}";
+			}
+
+			echo "\n";
+
+			if ($key == count($returns) - 1) {
+				echo "\\end{itemize}\n\n";
+			}
+		}
 	}
 
 	private function printProperty(&$property) {
@@ -35,11 +103,35 @@ class JSONTOLaTeX extends Doc
 		echo "Type: " . $property->type . "\n\n";
 
 		if (isset($property->access)) {
-			echo "Access: " . $property->access . "\n\n";
+			echo "Access: " . $property->access;
+
+			if ($property->static) {
+				echo " static\n\n";
+			}
+			else {
+				echo "\n\n";
+			}
 		}
 
 		echo "Line: " . $property->line . "\n\n";
 		echo "}\n";
+	}
+
+	private function printMethodParams(&$method) {
+		if (isset($method->params)) {
+			foreach ($method->params as $key => $param) {
+				if ($key == 0) {
+					echo "Parameters:\n\n";
+					echo "\\begin{enumerate}\n";
+				}
+
+				echo "\\item \\texttt{" . $this->replace($param->name) . "} - " . $param->type . " - \\textit{" . $param->description . "}\n";
+				
+				if ($key == count($method->params) - 1) {
+					echo "\\end{enumerate}\n";
+				}
+			}
+		}
 	}
 
 	private function printMethod(&$method) {
@@ -57,14 +149,29 @@ class JSONTOLaTeX extends Doc
 			}
 		}
 
+		// End title
 		echo ")}\n\n";
 
 		echo "{\\scriptsize\n";
 		echo "\\textit{" . $this->replace($method->description) . "}\n\n";
 
 		if (isset($method->access)) {
-			echo "Access: " . $method->access . "\n\n";
+			echo "Access: " . $method->access;
+
+			if ($method->static) {
+				echo " static\n\n";
+			}
+			else {
+				echo "\n\n";
+			}
+
 			echo "Line: " . $method->line . "\n\n";
+			
+			$this->printMethodParams($method);
+
+			if (isset($method->return)) {
+				echo "Returns: " . $method->return->type . " - \\textit{" . $this->replace($method->return->description) . "}\n\n";
+			}
 		}
 		
 		echo "}\n\n";
@@ -81,6 +188,8 @@ class JSONTOLaTeX extends Doc
 		if (isset($class->extends)) {
 			echo "Extends \\texttt{" . $class->extends . "}\n\n";
 		}
+
+		$this->getModelParams($class->file);
 
 		// Properties
 		foreach ($properties as $key => &$property) {
@@ -148,9 +257,7 @@ class JSONTOLaTeX extends Doc
 
 		$this->getClassItems();
 		$this->sortClasses();
-		//$this->getModelParams();
 		$this->getClasses();
-		//$this->markdownToHTML();
 
 		//print_r($this->classes);
 	}

@@ -33,6 +33,7 @@ class Validate
 	 *
 	 * @method userName
 	 * @static
+	 * @public
 	 * @param name {String} Name to be checked.
 	 * @param variableName {String} Name of variable e.g. 'First name' or 'Last name'.
 	 * @return {Object} Return of @method returnData
@@ -62,6 +63,7 @@ class Validate
 	 *
 	 * @method tournamentName
 	 * @static
+	 * @public
 	 * @param name {String}
 	 * @return {Object} Return of @method returnData
 	 */
@@ -90,6 +92,7 @@ class Validate
 	 *
 	 * @method tournamentDescription
 	 * @static
+	 * @public
 	 * @param description {String}
 	 * @return {Object} Return of @method returnData
 	 */
@@ -106,6 +109,7 @@ class Validate
 	 *
 	 * @method email
 	 * @static
+	 * @public
 	 * @param email {String}
 	 * @return {Object} Return of @method returnData
 	 */
@@ -130,6 +134,7 @@ class Validate
 	 *
 	 * @method password
 	 * @static
+	 * @public
 	 * @param password {String}
 	 * @return {Object} Return of @method returnData
 	 */
@@ -147,6 +152,7 @@ class Validate
 	 *
 	 * @method phoneNumber
 	 * @static
+	 * @public
 	 * @param phoneNumber {String}
 	 * @return {Object} Return of @method returnData
 	 */
