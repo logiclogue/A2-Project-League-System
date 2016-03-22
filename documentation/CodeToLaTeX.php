@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . '/Doc.php');
 class CodeToLaTeX extends Doc
 {
 	private function getFile($path, $value) {
-		echo "\\textbf{" . $value . "}\n\n";
+		echo "\\textbf{" . $value . "}\label{" . $value . "}\n\n";
 		echo "Path: " . str_replace(dirname(__FILE__) . "/..", "", $path) . "\n";
 
 		echo "{\\scriptsize\n";
