@@ -13,10 +13,6 @@ class JSONTOLaTeX extends Doc
 	private $classes = array();
 
 
-	private function printLine($text) {
-		//$this->text .= $text . "\r\n\n";
-	}
-
 	private function replace($val) {
 		$val = str_replace("_", "\_", $val);
 		$val = str_replace("$", "\\$", $val);
@@ -29,7 +25,7 @@ class JSONTOLaTeX extends Doc
 
 		preg_match("/\/\*\&(.|\n)*?\*\//", $code, $matches);
 
-		$this->printLine($matches[0]);
+		// $this->printLine($matches[0]);
 	}
 
 	private function printProperty(&$property) {
@@ -68,6 +64,7 @@ class JSONTOLaTeX extends Doc
 
 		if (isset($method->access)) {
 			echo "Access: " . $method->access . "\n\n";
+			echo "Line: " . $method->line . "\n\n";
 		}
 		
 		echo "}\n\n";
@@ -78,8 +75,8 @@ class JSONTOLaTeX extends Doc
 		$methods = $class->classitems["method"];
 
 		echo "\\textit{" . $class->description . "}\n\n";
-		echo "Page \pageref{" . $class->file_name . "}\n\n";
-		echo "File " . str_replace($this->path, "", $class->file) . "\n\n";
+		echo "Page: \pageref{" . $class->file_name . "}\n\n";
+		echo "File: " . str_replace($this->path, "", $class->file) . "\n\n";
 
 		if (isset($class->extends)) {
 			echo "Extends \\texttt{" . $class->extends . "}\n\n";
@@ -109,7 +106,7 @@ class JSONTOLaTeX extends Doc
 			echo "\subsection{" . $class_type . "}\n";
 
 			foreach ($classes as $class) {
-				echo "\subsubsection{" . $class->name . "}\n";
+				echo "\subsubsection{" . $class->name . "}\\label{" . $class->file_name . ".doc}\n";
 
 				$this->printClass($class);
 			}

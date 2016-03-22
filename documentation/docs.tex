@@ -1,11 +1,11 @@
 \subsection{PHP - Models}
-\subsubsection{FixturesGet}
+\subsubsection{FixturesGet}\label{FixturesGet.php.doc}
 \textit{Model that returns fixture list for a tournament or user.
 Lists all matches that are still to be played.}
 
-Page \pageref{FixturesGet.php}
+Page: \pageref{FixturesGet.php}
 
-File /models/FixturesGet.php
+File: /models/FixturesGet.php
 
 Extends \texttt{Model}
 
@@ -32,6 +32,8 @@ Line: 36
 
 Access: private
 
+Line: 86
+
 }
 
 \texttt{main()}
@@ -41,14 +43,16 @@ Access: private
 
 Access: protected
 
+Line: 101
+
 }
 
-\subsubsection{Login}
+\subsubsection{Login}\label{Login.php.doc}
 \textit{Login model for logging into the system.}
 
-Page \pageref{Login.php}
+Page: \pageref{Login.php}
 
-File /models/Login.php
+File: /models/Login.php
 
 Extends \texttt{Model}
 
@@ -100,6 +104,8 @@ Line: 43
 
 Access: private
 
+Line: 54
+
 }
 
 \texttt{verify()}
@@ -108,6 +114,8 @@ Access: private
 \textit{Checks to see if password entered matches the password associated to the email entered.}
 
 Access: private
+
+Line: 68
 
 }
 
@@ -119,14 +127,16 @@ Binds parameters to @property query.}
 
 Access: protected
 
+Line: 88
+
 }
 
-\subsubsection{Logout}
+\subsubsection{Logout}\label{Logout.php.doc}
 \textit{Logout model called when the user logs out.}
 
-Page \pageref{Logout.php}
+Page: \pageref{Logout.php}
 
-File /models/Logout.php
+File: /models/Logout.php
 
 Extends \texttt{Model}
 
@@ -139,14 +149,16 @@ Extends \texttt{Model}
 
 Access: protected
 
+Line: 18
+
 }
 
-\subsubsection{Register}
+\subsubsection{Register}\label{Register.php.doc}
 \textit{Register model used to register onto the system.}
 
-Page \pageref{Register.php}
+Page: \pageref{Register.php}
 
-File /models/Register.php
+File: /models/Register.php
 
 Extends \texttt{Model}
 
@@ -210,6 +222,8 @@ Data inputted by user is bound.}
 
 Access: private
 
+Line: 69
+
 }
 
 \texttt{checkEmail()}
@@ -226,6 +240,8 @@ Access: private
 
 Access: private
 
+Line: 101
+
 }
 
 \texttt{main()}
@@ -237,14 +253,16 @@ Executes query.}
 
 Access: public
 
+Line: 143
+
 }
 
-\subsubsection{ResultEnter}
+\subsubsection{ResultEnter}\label{ResultEnter.php.doc}
 \textit{Model used for entering a result.}
 
-Page \pageref{ResultEnter.php}
+Page: \pageref{ResultEnter.php}
 
-File /models/ResultEnter.php
+File: /models/ResultEnter.php
 
 Extends \texttt{Tournament}
 
@@ -327,6 +345,8 @@ Line: 50
 
 Access: private
 
+Line: 47
+
 }
 
 \texttt{validate()}
@@ -335,6 +355,8 @@ Access: private
 \textit{Validates whether the user can delete the result.}
 
 Access: private
+
+Line: 64
 
 }
 
@@ -345,6 +367,8 @@ Access: private
 
 Access: private
 
+Line: 94
+
 }
 
 \texttt{main()}
@@ -353,6 +377,8 @@ Access: private
 \textit{Main method.}
 
 Access: protected
+
+Line: 108
 
 }
 
@@ -363,6 +389,8 @@ Access: protected
 
 Access: private
 
+Line: 60
+
 }
 
 \texttt{validate()}
@@ -371,6 +399,8 @@ Access: private
 \textit{Main validation method.}
 
 Access: private
+
+Line: 80
 
 }
 
@@ -381,6 +411,8 @@ Access: private
 
 Access: private
 
+Line: 133
+
 }
 
 \texttt{insertInfo()}
@@ -389,6 +421,8 @@ Access: private
 \textit{Method used to insert general result info.}
 
 Access: private
+
+Line: 155
 
 }
 
@@ -399,6 +433,8 @@ Access: private
 
 Access: private
 
+Line: 177
+
 }
 
 \texttt{main()}
@@ -408,14 +444,16 @@ Access: private
 
 Access: protected
 
+Line: 197
+
 }
 
-\subsubsection{ResultGet}
+\subsubsection{ResultGet}\label{ResultGet.php.doc}
 \textit{Model for retrieving information on a particular result.}
 
-Page \pageref{ResultGet.php}
+Page: \pageref{ResultGet.php}
 
-File /models/ResultGet.php
+File: /models/ResultGet.php
 
 Extends \texttt{Model}
 
@@ -442,14 +480,16 @@ Line: 37
 
 Access: protected
 
+Line: 92
+
 }
 
-\subsubsection{Status}
+\subsubsection{Status}\label{Status.php.doc}
 \textit{Model for getting the status of the current user.}
 
-Page \pageref{Status.php}
+Page: \pageref{Status.php}
 
-File /models/Status.php
+File: /models/Status.php
 
 Extends \texttt{Model}
 
@@ -462,6 +502,8 @@ Extends \texttt{Model}
 
 Access: private
 
+Line: 26
+
 }
 
 \texttt{main()}
@@ -472,14 +514,16 @@ Then sets @property return\_data.}
 
 Access: protected
 
+Line: 36
+
 }
 
-\subsubsection{TournamentCreate}
+\subsubsection{TournamentCreate}\label{TournamentCreate.php.doc}
 \textit{Model for users to create tournaments.}
 
-Page \pageref{TournamentCreate.php}
+Page: \pageref{TournamentCreate.php}
 
-File /models/TournamentCreate.php
+File: /models/TournamentCreate.php
 
 Extends \texttt{Tournament}
 
@@ -543,6 +587,8 @@ Data collected from @class TournamentGet.}
 
 Access: private
 
+Line: 64
+
 }
 
 \texttt{addLeagueManager()}
@@ -551,6 +597,8 @@ Access: private
 \textit{Method for attaching the current user as the league manager.}
 
 Access: private
+
+Line: 75
 
 }
 
@@ -561,6 +609,8 @@ Access: private
 
 Access: private
 
+Line: 97
+
 }
 
 \texttt{main()}
@@ -570,14 +620,16 @@ Access: private
 
 Access: protected
 
+Line: 122
+
 }
 
-\subsubsection{TournamentDelete}
+\subsubsection{TournamentDelete}\label{TournamentDelete.php.doc}
 \textit{Class that deletes a tournament.}
 
-Page \pageref{TournamentDelete.php}
+Page: \pageref{TournamentDelete.php}
 
-File /models/TournamentDelete.php
+File: /models/TournamentDelete.php
 
 Extends \texttt{Tournament}
 
@@ -606,6 +658,8 @@ Line: 19
 
 Access: private
 
+Line: 40
+
 }
 
 \texttt{verify()}
@@ -614,6 +668,8 @@ Access: private
 \textit{Checks whether the user can delete the league.}
 
 Access: private
+
+Line: 57
 
 }
 
@@ -624,14 +680,16 @@ Access: private
 
 Access: protected
 
+Line: 79
+
 }
 
-\subsubsection{TournamentGet}
+\subsubsection{TournamentGet}\label{TournamentGet.php.doc}
 \textit{Model that fetches tournament data based on id.}
 
-Page \pageref{TournamentGet.php}
+Page: \pageref{TournamentGet.php}
 
-File /models/TournamentGet.php
+File: /models/TournamentGet.php
 
 Extends \texttt{Tournament}
 
@@ -682,6 +740,8 @@ Line: 58
 
 Access: private
 
+Line: 74
+
 }
 
 \texttt{getLeagueManagers()}
@@ -690,6 +750,8 @@ Access: private
 \textit{Method that queries league managers in the tournament.}
 
 Access: private
+
+Line: 93
 
 }
 
@@ -700,6 +762,8 @@ Access: private
 
 Access: private
 
+Line: 112
+
 }
 
 \texttt{main()}
@@ -709,14 +773,16 @@ Access: private
 
 Access: protected
 
+Line: 135
+
 }
 
-\subsubsection{TournamentLeagueTable}
+\subsubsection{TournamentLeagueTable}\label{TournamentLeagueTable.php.doc}
 \textit{Class for generating a league table.}
 
-Page \pageref{TournamentLeagueTable.php}
+Page: \pageref{TournamentLeagueTable.php}
 
-File /models/TournamentLeagueTable.php
+File: /models/TournamentLeagueTable.php
 
 Extends \texttt{Model}
 
@@ -755,6 +821,8 @@ Line: 38
 
 Access: private
 
+Line: 63
+
 }
 
 \texttt{calcuate()}
@@ -764,6 +832,8 @@ Access: private
 
 Access: private
 
+Line: 87
+
 }
 
 \texttt{order()}
@@ -772,6 +842,8 @@ Access: private
 \textit{Order table and return.}
 
 Access: private
+
+Line: 126
 
 }
 
@@ -783,14 +855,16 @@ Returns league table.}
 
 Access: protected
 
+Line: 152
+
 }
 
-\subsubsection{TournamentManagerAttach}
+\subsubsection{TournamentManagerAttach}\label{TournamentManagerAttach.php.doc}
 \textit{Model for adding a user as a manager of a tournament.}
 
-Page \pageref{TournamentManagerAttach.php}
+Page: \pageref{TournamentManagerAttach.php}
 
-File /models/TournamentManagerAttach.php
+File: /models/TournamentManagerAttach.php
 
 Extends \texttt{TournamentManagerAlter}
 
@@ -817,14 +891,16 @@ Line: 18
 
 Access: protected
 
+Line: 27
+
 }
 
-\subsubsection{TournamentManagerRemove}
+\subsubsection{TournamentManagerRemove}\label{TournamentManagerRemove.php.doc}
 \textit{Model for removing a league manager from a tournament.}
 
-Page \pageref{TournamentManagerRemove.php}
+Page: \pageref{TournamentManagerRemove.php}
 
-File /models/TournamentManagerRemove.php
+File: /models/TournamentManagerRemove.php
 
 Extends \texttt{TournamentManagerAlter}
 
@@ -851,14 +927,16 @@ Line: 18
 
 Access: protected
 
+Line: 27
+
 }
 
-\subsubsection{TournamentPlayerAttach}
+\subsubsection{TournamentPlayerAttach}\label{TournamentPlayerAttach.php.doc}
 \textit{Model for adding a user as a player to a tournament.}
 
-Page \pageref{TournamentPlayerAttach.php}
+Page: \pageref{TournamentPlayerAttach.php}
 
-File /models/TournamentPlayerAttach.php
+File: /models/TournamentPlayerAttach.php
 
 Extends \texttt{TournamentPlayerAlter}
 
@@ -885,14 +963,16 @@ Line: 18
 
 Access: protected
 
+Line: 27
+
 }
 
-\subsubsection{TournamentPlayerRemove}
+\subsubsection{TournamentPlayerRemove}\label{TournamentPlayerRemove.php.doc}
 \textit{Model for removing a player from a tournament.}
 
-Page \pageref{TournamentPlayerRemove.php}
+Page: \pageref{TournamentPlayerRemove.php}
 
-File /models/TournamentPlayerRemove.php
+File: /models/TournamentPlayerRemove.php
 
 Extends \texttt{TournamentPlayerAlter}
 
@@ -919,14 +999,16 @@ Line: 18
 
 Access: protected
 
+Line: 27
+
 }
 
-\subsubsection{TournamentSearch}
+\subsubsection{TournamentSearch}\label{TournamentSearch.php.doc}
 \textit{Model that is used to search for a tournament by name.}
 
-Page \pageref{TournamentSearch.php}
+Page: \pageref{TournamentSearch.php}
 
-File /models/TournamentSearch.php
+File: /models/TournamentSearch.php
 
 Extends \texttt{Model}
 
@@ -954,14 +1036,16 @@ Used to execute @property query.}
 
 Access: protected
 
+Line: 37
+
 }
 
-\subsubsection{TournamentUpdate}
+\subsubsection{TournamentUpdate}\label{TournamentUpdate.php.doc}
 \textit{Model that updates tournament info.}
 
-Page \pageref{TournamentUpdate.php}
+Page: \pageref{TournamentUpdate.php}
 
-File /models/TournamentUpdate.php
+File: /models/TournamentUpdate.php
 
 Extends \texttt{Tournament}
 
@@ -988,6 +1072,8 @@ Line: 22
 
 Access: private
 
+Line: 36
+
 }
 
 \texttt{update()}
@@ -998,6 +1084,8 @@ Thus updating tournament info.}
 
 Access: private
 
+Line: 73
+
 }
 
 \texttt{main()}
@@ -1007,14 +1095,16 @@ Access: private
 
 Access: protected
 
+Line: 93
+
 }
 
-\subsubsection{UserGet}
+\subsubsection{UserGet}\label{UserGet.php.doc}
 \textit{Model for querying a user based on the id.}
 
-Page \pageref{UserGet.php}
+Page: \pageref{UserGet.php}
 
-File /models/UserGet.php
+File: /models/UserGet.php
 
 Extends \texttt{Model}
 
@@ -1077,6 +1167,8 @@ Line: 80
 
 Access: private
 
+Line: 90
+
 }
 
 \texttt{executeQuery()}
@@ -1085,6 +1177,8 @@ Access: private
 \textit{Method that executes the query.}
 
 Access: private
+
+Line: 109
 
 }
 
@@ -1095,6 +1189,8 @@ Access: private
 
 Access: private
 
+Line: 130
+
 }
 
 \texttt{getManaging()}
@@ -1104,6 +1200,8 @@ Access: private
 
 Access: private
 
+Line: 146
+
 }
 
 \texttt{getUserData()}
@@ -1112,6 +1210,8 @@ Access: private
 \textit{Method for getting user data.}
 
 Access: private
+
+Line: 162
 
 }
 
@@ -1123,14 +1223,16 @@ If the user exists, it gets tournament data.}
 
 Access: protected
 
+Line: 182
+
 }
 
-\subsubsection{UserRatings}
+\subsubsection{UserRatings}\label{UserRatings.php.doc}
 \textit{Model when called will return all the user's ratings over time.}
 
-Page \pageref{UserRatings.php}
+Page: \pageref{UserRatings.php}
 
-File /models/UserRatings.php
+File: /models/UserRatings.php
 
 Extends \texttt{Model}
 
@@ -1157,6 +1259,8 @@ Line: 25
 
 Access: private
 
+Line: 45
+
 }
 
 \texttt{main()}
@@ -1166,14 +1270,16 @@ Access: private
 
 Access: protected
 
+Line: 65
+
 }
 
-\subsubsection{UserSearch}
+\subsubsection{UserSearch}\label{UserSearch.php.doc}
 \textit{Model that is used to search for a user.}
 
-Page \pageref{UserSearch.php}
+Page: \pageref{UserSearch.php}
 
-File /models/UserSearch.php
+File: /models/UserSearch.php
 
 Extends \texttt{Model}
 
@@ -1201,14 +1307,16 @@ Used to execute @property query.}
 
 Access: protected
 
+Line: 37
+
 }
 
-\subsubsection{UserUpdate}
+\subsubsection{UserUpdate}\label{UserUpdate.php.doc}
 \textit{This model is used to update user details.}
 
-Page \pageref{UserUpdate.php}
+Page: \pageref{UserUpdate.php}
 
-File /models/UserUpdate.php
+File: /models/UserUpdate.php
 
 Extends \texttt{Model}
 
@@ -1247,6 +1355,8 @@ Line: 41
 
 Access: private
 
+Line: 51
+
 }
 
 \texttt{validate()}
@@ -1256,6 +1366,8 @@ Access: private
 Validating first name, last name, and phone numbers.}
 
 Access: private
+
+Line: 71
 
 }
 
@@ -1267,15 +1379,17 @@ Calls @method update if true.}
 
 Access: protected
 
+Line: 109
+
 }
 
 \subsection{PHP - Important Classes}
-\subsubsection{API}
+\subsubsection{API}\label{API.php.doc}
 \textit{Allows the JavaScript to communicate with the PHP models.}
 
-Page \pageref{API.php}
+Page: \pageref{API.php}
 
-File /php/API.php
+File: /php/API.php
 
 \textbf{Properties:}
 
@@ -1301,6 +1415,8 @@ Therefore calling the model.}
 
 Access: private
 
+Line: 20
+
 }
 
 \texttt{getData()}
@@ -1310,6 +1426,8 @@ Access: private
 
 Access: private
 
+Line: 31
+
 }
 
 \texttt{requireAll()}
@@ -1318,6 +1436,8 @@ Access: private
 \textit{Method that requires all the files.}
 
 Access: private
+
+Line: 43
 
 }
 
@@ -1329,14 +1449,16 @@ Calls all of the other methods.}
 
 Access: public
 
+Line: 61
+
 }
 
-\subsubsection{Database}
+\subsubsection{Database}\label{Database.php.doc}
 \textit{The Database class connects the the database when the file is included.}
 
-Page \pageref{Database.php}
+Page: \pageref{Database.php}
 
-File /php/Database.php
+File: /php/Database.php
 
 \textbf{Properties:}
 
@@ -1372,6 +1494,8 @@ The `database.sql` file provides the SQL query string to do this.}
 
 Access: public
 
+Line: 31
+
 }
 
 \texttt{delete()}
@@ -1380,6 +1504,8 @@ Access: public
 \textit{Method that deletes all the tables in the database.}
 
 Access: public
+
+Line: 47
 
 }
 
@@ -1390,6 +1516,8 @@ Access: public
 Deletes then recreates.}
 
 Access: public
+
+Line: 64
 
 }
 
@@ -1402,15 +1530,17 @@ Also to set @property conn to new PDO.}
 
 Access: public
 
+Line: 80
+
 }
 
-\subsubsection{Model}
+\subsubsection{Model}\label{Model.php.doc}
 \textit{Model class, the class is extended by all models.
 It provides a foundation for all models.}
 
-Page \pageref{Model.php}
+Page: \pageref{Model.php}
 
-File /php/Model.php
+File: /php/Model.php
 
 \textbf{Properties:}
 
@@ -1483,6 +1613,8 @@ Line: 46
 
 Access: private
 
+Line: 56
+
 }
 
 \texttt{decodePost()}
@@ -1491,6 +1623,8 @@ Access: private
 \textit{This method is used to decode the JSON data in the post.}
 
 Access: private
+
+Line: 78
 
 }
 
@@ -1501,6 +1635,8 @@ Access: private
 
 Access: private
 
+Line: 91
+
 }
 
 \texttt{setVars()}
@@ -1509,6 +1645,8 @@ Access: private
 \textit{Resets variables when model is called.}
 
 Access: private
+
+Line: 102
 
 }
 
@@ -1519,6 +1657,8 @@ Access: private
 
 Access: public
 
+Line: 115
+
 }
 
 \texttt{\_\_construct(notAPI)}
@@ -1528,14 +1668,16 @@ Access: public
 
 Access: public
 
+Line: 132
+
 }
 
-\subsubsection{Test}
+\subsubsection{Test}\label{Test.php.doc}
 \textit{Class for testing PHP models.}
 
-Page \pageref{Test.php}
+Page: \pageref{Test.php}
 
-File /php/Test.php
+File: /php/Test.php
 
 \textbf{Methods:}
 
@@ -1546,6 +1688,8 @@ File /php/Test.php
 
 Access: private
 
+Line: 21
+
 }
 
 \texttt{testStart(testName)}
@@ -1555,6 +1699,8 @@ Access: private
 
 Access: private
 
+Line: 39
+
 }
 
 \texttt{testEnd()}
@@ -1563,6 +1709,8 @@ Access: private
 \textit{Method that should be called when finished a test.}
 
 Access: private
+
+Line: 66
 
 }
 
@@ -1574,6 +1722,8 @@ Puts row in table.}
 
 Access: private
 
+Line: 82
+
 }
 
 \texttt{loadTest()}
@@ -1582,6 +1732,8 @@ Access: private
 \textit{Method that loads the test.}
 
 Access: private
+
+Line: 105
 
 }
 
@@ -1593,15 +1745,17 @@ Calls all tests individually.}
 
 Access: public
 
+Line: 117
+
 }
 
 \subsection{PHP - Parent Classes}
-\subsubsection{EloRating}
+\subsubsection{EloRating}\label{EloRating.php.doc}
 \textit{Class with functions for calculating new elo rating.}
 
-Page \pageref{EloRating.php}
+Page: \pageref{EloRating.php}
 
-File /superclasses/EloRating.php
+File: /superclasses/EloRating.php
 
 \textbf{Properties:}
 
@@ -1675,6 +1829,8 @@ Line: 60
 
 Access: public
 
+Line: 71
+
 }
 
 \texttt{expected(rating\_a, rating\_b)}
@@ -1683,6 +1839,8 @@ Access: public
 \textit{Method that calculates a probability of a player winning.}
 
 Access: public
+
+Line: 100
 
 }
 
@@ -1693,6 +1851,8 @@ Access: public
 
 Access: public
 
+Line: 114
+
 }
 
 \texttt{\_\_construct(player\_a\_id, player\_b\_id, tournament\_id, player\_a\_score, player\_b\_score)}
@@ -1702,14 +1862,16 @@ Access: public
 
 Access: public
 
+Line: 131
+
 }
 
-\subsubsection{ResultMethods}
+\subsubsection{ResultMethods}\label{ResultMethods.php.doc}
 \textit{Helpful functions for dealing with results.}
 
-Page \pageref{ResultMethods.php}
+Page: \pageref{ResultMethods.php}
 
-File /superclasses/ResultMethods.php
+File: /superclasses/ResultMethods.php
 
 \textbf{Properties:}
 
@@ -1734,14 +1896,16 @@ Line: 13
 
 Access: public
 
+Line: 36
+
 }
 
-\subsubsection{Tournament}
+\subsubsection{Tournament}\label{Tournament.php.doc}
 \textit{Parent class for general tournament stuff.}
 
-Page \pageref{Tournament.php}
+Page: \pageref{Tournament.php}
 
-File /superclasses/Tournament.php
+File: /superclasses/Tournament.php
 
 Extends \texttt{Model}
 
@@ -1828,6 +1992,8 @@ Line: 83
 
 Access: protected
 
+Line: 96
+
 }
 
 \texttt{isLeagueManager(user\_id, tournament\_id)}
@@ -1836,6 +2002,8 @@ Access: protected
 \textit{Method for telling whether the current user is a league manager is the tournament.}
 
 Access: protected
+
+Line: 124
 
 }
 
@@ -1846,6 +2014,8 @@ Access: protected
 
 Access: protected
 
+Line: 152
+
 }
 
 \texttt{tournamentExistsId(tournament\_id)}
@@ -1854,6 +2024,8 @@ Access: protected
 \textit{Checks whether a tournament exists from parameter id.}
 
 Access: protected
+
+Line: 175
 
 }
 
@@ -1864,6 +2036,8 @@ Access: protected
 
 Access: protected
 
+Line: 196
+
 }
 
 \texttt{userExists(user\_id)}
@@ -1873,14 +2047,16 @@ Access: protected
 
 Access: protected
 
+Line: 207
+
 }
 
-\subsubsection{TournamentManagerAlter}
+\subsubsection{TournamentManagerAlter}\label{TournamentManagerAlter.php.doc}
 \textit{Parent class of classes that add or remove league managers.}
 
-Page \pageref{TournamentManagerAlter.php}
+Page: \pageref{TournamentManagerAlter.php}
 
-File /superclasses/TournamentManagerAlter.php
+File: /superclasses/TournamentManagerAlter.php
 
 Extends \texttt{Tournament}
 
@@ -1931,6 +2107,8 @@ Line: 47
 
 Access: private
 
+Line: 57
+
 }
 
 \texttt{executeQuery()}
@@ -1939,6 +2117,8 @@ Access: private
 \textit{Checks any faults and executes query.}
 
 Access: private
+
+Line: 78
 
 }
 
@@ -1953,6 +2133,8 @@ Returns false if:
 
 Access: private
 
+Line: 91
+
 }
 
 \texttt{general()}
@@ -1961,6 +2143,8 @@ Access: private
 \textit{Main method for making the user a league manager}
 
 Access: private
+
+Line: 132
 
 }
 
@@ -1971,14 +2155,16 @@ Access: private
 
 Access: protected
 
+Line: 157
+
 }
 
-\subsubsection{TournamentPlayerAlter}
+\subsubsection{TournamentPlayerAlter}\label{TournamentPlayerAlter.php.doc}
 \textit{Parent class of classes that add or remove players.}
 
-Page \pageref{TournamentPlayerAlter.php}
+Page: \pageref{TournamentPlayerAlter.php}
 
-File /superclasses/TournamentPlayerAlter.php
+File: /superclasses/TournamentPlayerAlter.php
 
 Extends \texttt{Tournament}
 
@@ -2017,6 +2203,8 @@ Line: 31
 
 Access: private
 
+Line: 41
+
 }
 
 \texttt{verifyPlayer()}
@@ -2032,6 +2220,8 @@ Returns false if:
 
 Access: private
 
+Line: 54
+
 }
 
 \texttt{general()}
@@ -2044,6 +2234,8 @@ Then execute query.}
 
 Access: private
 
+Line: 92
+
 }
 
 \texttt{subMain()}
@@ -2054,14 +2246,16 @@ Then calls @method general}
 
 Access: protected
 
+Line: 120
+
 }
 
-\subsubsection{Validate}
+\subsubsection{Validate}\label{Validate.php.doc}
 \textit{Class used to validate input text.}
 
-Page \pageref{Validate.php}
+Page: \pageref{Validate.php}
 
-File /superclasses/Validate.php
+File: /superclasses/Validate.php
 
 \textbf{Methods:}
 
@@ -2071,6 +2265,8 @@ File /superclasses/Validate.php
 \textit{Returns standard data such as whether success, error message, and correction.}
 
 Access: private
+
+Line: 10
 
 }
 
@@ -2118,12 +2314,12 @@ Can be first or last name.}
 }
 
 \subsection{JavaScript - Services}
-\subsubsection{CallModel}
+\subsubsection{CallModel}\label{CallModel.js.doc}
 \textit{Factory for calling the PHP models.}
 
-Page \pageref{CallModel.js}
+Page: \pageref{CallModel.js}
 
-File /services/CallModel.js
+File: /services/CallModel.js
 
 \textbf{Methods:}
 
@@ -2151,12 +2347,12 @@ The other is called if the user is not logged in.}
 
 }
 
-\subsubsection{DateFormat}
+\subsubsection{DateFormat}\label{DateFormat.js.doc}
 \textit{Factory that returns the site's format of date.}
 
-Page \pageref{DateFormat.js}
+Page: \pageref{DateFormat.js}
 
-File /services/DateFormat.js
+File: /services/DateFormat.js
 
 \textbf{Properties:}
 
@@ -2189,12 +2385,12 @@ Line: 15
 
 }
 
-\subsubsection{RatingChart}
+\subsubsection{RatingChart}\label{RatingChart.js.doc}
 \textit{Factory for handling the rating graph.}
 
-Page \pageref{RatingChart.js}
+Page: \pageref{RatingChart.js}
 
-File /services/RatingChart.js
+File: /services/RatingChart.js
 
 \textbf{Properties:}
 
@@ -2282,12 +2478,12 @@ Line: 55
 }
 
 \subsection{JavaScript - Directives}
-\subsubsection{cpFixtures}
+\subsubsection{cpFixtures}\label{cpFixtures.js.doc}
 \textit{Directive for displaying fixtures.}
 
-Page \pageref{cpFixtures.js}
+Page: \pageref{cpFixtures.js}
 
-File /directives/cpFixtures.js
+File: /directives/cpFixtures.js
 
 \textbf{Properties:}
 
@@ -2310,12 +2506,12 @@ Line: 8
 
 }
 
-\subsubsection{cpLeagueSearch}
+\subsubsection{cpLeagueSearch}\label{cpLeagueSearch.js.doc}
 \textit{Directive used to search for a tournament.}
 
-Page \pageref{cpLeagueSearch.js}
+Page: \pageref{cpLeagueSearch.js}
 
-File /directives/cpLeagueSearch.js
+File: /directives/cpLeagueSearch.js
 
 \textbf{Properties:}
 
@@ -2339,12 +2535,12 @@ Updates search for tournament when input is changed.}
 
 }
 
-\subsubsection{cpResult}
+\subsubsection{cpResult}\label{cpResult.js.doc}
 \textit{Directive for handling results.}
 
-Page \pageref{cpResult.js}
+Page: \pageref{cpResult.js}
 
-File /directives/cpResult.js
+File: /directives/cpResult.js
 
 \textbf{Properties:}
 
@@ -2382,12 +2578,12 @@ Also calls @method getDateString for each result.}
 
 }
 
-\subsubsection{cpUserSearch}
+\subsubsection{cpUserSearch}\label{cpUserSearch.js.doc}
 \textit{Directive used to search for a user.}
 
-Page \pageref{cpUserSearch.js}
+Page: \pageref{cpUserSearch.js}
 
-File /directives/cpUserSearch.js
+File: /directives/cpUserSearch.js
 
 \textbf{Properties:}
 
@@ -2412,19 +2608,19 @@ Updates search for user when input is changed.}
 }
 
 \subsection{JavaScript - Controllers}
-\subsubsection{HomeCtrl}
+\subsubsection{HomeCtrl}\label{HomeCtrl.js.doc}
 \textit{Controller for the home page.}
 
-Page \pageref{HomeCtrl.js}
+Page: \pageref{HomeCtrl.js}
 
-File /controllers/HomeCtrl.js
+File: /controllers/HomeCtrl.js
 
-\subsubsection{LeagueCreateCtrl}
+\subsubsection{LeagueCreateCtrl}\label{LeagueCreateCtrl.js.doc}
 \textit{Controller for creating a league.}
 
-Page \pageref{LeagueCreateCtrl.js}
+Page: \pageref{LeagueCreateCtrl.js}
 
-File /controllers/LeagueCreateCtrl.js
+File: /controllers/LeagueCreateCtrl.js
 
 \textbf{Properties:}
 
@@ -2458,12 +2654,12 @@ Creating the league.}
 
 }
 
-\subsubsection{LeagueCtrl}
+\subsubsection{LeagueCtrl}\label{LeagueCtrl.js.doc}
 \textit{League page controller.}
 
-Page \pageref{LeagueCtrl.js}
+Page: \pageref{LeagueCtrl.js}
 
-File /controllers/LeagueCtrl.js
+File: /controllers/LeagueCtrl.js
 
 \textbf{Properties:}
 
@@ -2496,12 +2692,12 @@ Line: 15
 
 }
 
-\subsubsection{LeagueEditCtrl}
+\subsubsection{LeagueEditCtrl}\label{LeagueEditCtrl.js.doc}
 \textit{Controller for editing a league.}
 
-Page \pageref{LeagueEditCtrl.js}
+Page: \pageref{LeagueEditCtrl.js}
 
-File /controllers/LeagueEditCtrl.js
+File: /controllers/LeagueEditCtrl.js
 
 \textbf{Properties:}
 
@@ -2635,12 +2831,12 @@ Line: 37
 
 }
 
-\subsubsection{UserSearchCtrl}
+\subsubsection{UserSearchCtrl}\label{UserSearchCtrl.js.doc}
 \textit{Controller used to search for a user.}
 
-Page \pageref{UserSearchCtrl.js}
+Page: \pageref{UserSearchCtrl.js}
 
-File /controllers/UserSearchCtrl.js
+File: /controllers/UserSearchCtrl.js
 
 \textbf{Methods:}
 
@@ -2660,13 +2856,13 @@ Clicked from @directive cpUserSearch.}
 
 }
 
-\subsubsection{LoginCtrl}
+\subsubsection{LoginCtrl}\label{LoginCtrl.js.doc}
 \textit{Controller for managing user login.
 Also manages user registering.}
 
-Page \pageref{LoginCtrl.js}
+Page: \pageref{LoginCtrl.js}
 
-File /controllers/LoginCtrl.js
+File: /controllers/LoginCtrl.js
 
 \textbf{Properties:}
 
@@ -2713,12 +2909,12 @@ Line: 19
 
 }
 
-\subsubsection{NavCtrl}
+\subsubsection{NavCtrl}\label{NavCtrl.js.doc}
 \textit{Controller for managing the navbar.}
 
-Page \pageref{NavCtrl.js}
+Page: \pageref{NavCtrl.js}
 
-File /controllers/NavCtrl.js
+File: /controllers/NavCtrl.js
 
 \textbf{Methods:}
 
@@ -2737,12 +2933,12 @@ Calls model 'Logout' then redirects to login page.}
 
 }
 
-\subsubsection{ProfileCtrl}
+\subsubsection{ProfileCtrl}\label{ProfileCtrl.js.doc}
 \textit{Profile page controller.}
 
-Page \pageref{ProfileCtrl.js}
+Page: \pageref{ProfileCtrl.js}
 
-File /controllers/ProfileCtrl.js
+File: /controllers/ProfileCtrl.js
 
 \textbf{Properties:}
 
@@ -2800,12 +2996,12 @@ Then calls @method getUser with id of current user.}
 
 }
 
-\subsubsection{ProfileEditCtrl}
+\subsubsection{ProfileEditCtrl}\label{ProfileEditCtrl.js.doc}
 \textit{Controller for editing a user.}
 
-Page \pageref{ProfileEditCtrl.js}
+Page: \pageref{ProfileEditCtrl.js}
 
-File /controllers/ProfileEditCtrl.js
+File: /controllers/ProfileEditCtrl.js
 
 \textbf{Properties:}
 
@@ -2845,12 +3041,12 @@ Line: 15
 
 }
 
-\subsubsection{ResultEnterCtrl}
+\subsubsection{ResultEnterCtrl}\label{ResultEnterCtrl.js.doc}
 \textit{Controller that allows a user to input a result.}
 
-Page \pageref{ResultEnterCtrl.js}
+Page: \pageref{ResultEnterCtrl.js}
 
-File /controllers/ResultEnterCtrl.js
+File: /controllers/ResultEnterCtrl.js
 
 \textbf{Properties:}
 

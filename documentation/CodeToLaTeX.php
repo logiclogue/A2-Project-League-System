@@ -6,8 +6,15 @@ require_once(dirname(__FILE__) . '/Doc.php');
 class CodeToLaTeX extends Doc
 {
 	private function getFile($path, $value) {
+		$path_short = str_replace(dirname(__FILE__) . "/..", "", $path);
+		$file_type = explode("/", $path_short);
+
 		echo "\\textbf{" . $value . "}\label{" . $value . "}\n\n";
-		echo "Path: " . str_replace(dirname(__FILE__) . "/..", "", $path) . "\n";
+		echo "Path: " . $path_short . "\n\n";
+
+		if (array_key_exists($file_type[1], $this->class_type_name)) {
+			echo "Documentation for this file can be found on page \\pageref{" . $value . ".doc}.\n\n";
+		}
 
 		echo "{\\scriptsize\n";
 		echo "\begin{lstlisting}\n";
