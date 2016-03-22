@@ -78,7 +78,7 @@ class Model
 	/**
 	 * This method is used to decode the JSON data in the post.
 	 *
-	 * @method
+	 * @method decodePost
 	 * @private
 	 * @return {Object} The decoded JSON.
 	 */

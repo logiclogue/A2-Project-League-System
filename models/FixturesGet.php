@@ -38,6 +38,7 @@ class FixturesGet extends Model
 	 *
 	 * @property query
 	 * @private
+	 * @type String
 	 */
 	private $query = <<<SQL
 		SELECT

@@ -1,0 +1,2940 @@
+\subsection{PHP - Models}
+\subsubsection{FixturesGet}
+\textit{Model that returns fixture list for a tournament or user.
+Lists all matches that are still to be played.}
+
+Page \pageref{FixturesGet.php}
+
+File /models/FixturesGet.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string that fetches the matches to be played.}
+
+Type: String
+
+Access: private
+
+Line: 36
+
+}
+\textbf{Methods:}
+
+\texttt{attachRatings()}
+
+{\scriptsize
+\textit{Method that gets the user ratings and puts them in every fixture including the expected result for player 1.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method that execute @property query and binds input data.}
+
+Access: protected
+
+}
+
+\subsubsection{Login}
+\textit{Login model for logging into the system.}
+
+Page \pageref{Login.php}
+
+File /models/Login.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for getting the details of the user.
+Finds user by email.}
+
+Type: String
+
+Line: 21
+
+}
+\texttt{stmt}
+
+{\scriptsize
+\textit{Connects to the database.
+Binds query and parameters.}
+
+Type: Object
+
+Access: private
+
+Line: 34
+
+}
+\texttt{user}
+
+{\scriptsize
+\textit{Stores result from database.
+User data.}
+
+Type: Object
+
+Access: private
+
+Line: 43
+
+}
+\textbf{Methods:}
+
+\texttt{storeSession()}
+
+{\scriptsize
+\textit{Stores the user details in the current user session.}
+
+Access: private
+
+}
+
+\texttt{verify()}
+
+{\scriptsize
+\textit{Checks to see if password entered matches the password associated to the email entered.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Defines @property result.
+Binds parameters to @property query.}
+
+Access: protected
+
+}
+
+\subsubsection{Logout}
+\textit{Logout model called when the user logs out.}
+
+Page \pageref{Logout.php}
+
+File /models/Logout.php
+
+Extends \texttt{Model}
+
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Method that destroys the session.}
+
+Access: protected
+
+}
+
+\subsubsection{Register}
+\textit{Register model used to register onto the system.}
+
+Page \pageref{Register.php}
+
+File /models/Register.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for inserting user data into the database.}
+
+Type: String
+
+Access: private
+
+Line: 26
+
+}
+\texttt{query\_email}
+
+{\scriptsize
+\textit{SQL query string for checking whether email is already in use.}
+
+Type: String
+
+Access: private
+
+Line: 38
+
+}
+\texttt{result}
+
+{\scriptsize
+\textit{For executing the query string.}
+
+Type: Object
+
+Access: private
+
+Line: 51
+
+}
+\texttt{hash}
+
+{\scriptsize
+\textit{Hash of the password entered.}
+
+Type: String
+
+Access: private
+
+Line: 59
+
+}
+\textbf{Methods:}
+
+\texttt{bindParams()}
+
+{\scriptsize
+\textit{Used to bind the parameters to @property query.
+Data inputted by user is bound.}
+
+Access: private
+
+}
+
+\texttt{checkEmail()}
+
+{\scriptsize
+\textit{Method that will check whether email is already in use.}
+
+}
+
+\texttt{validate()}
+
+{\scriptsize
+\textit{Validate email, first name, last name, and password.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Prepares query.
+Hashes password.
+Executes query.}
+
+Access: public
+
+}
+
+\subsubsection{ResultEnter}
+\textit{Model used for entering a result.}
+
+Page \pageref{ResultEnter.php}
+
+File /models/ResultEnter.php
+
+Extends \texttt{Tournament}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for deleting a result.
+Also deletes the users' association with the result.}
+
+Type: String
+
+Access: private
+
+Line: 21
+
+}
+\texttt{result\_data}
+
+{\scriptsize
+\textit{Data associated with the result that the user wants to delete.}
+
+Type: Array
+
+Access: private
+
+Line: 37
+
+}
+\texttt{query\_info}
+
+{\scriptsize
+\textit{SQL query string for inserting result info.}
+
+Type: String
+
+Access: private
+
+Line: 27
+
+}
+\texttt{query\_score}
+
+{\scriptsize
+\textit{SQL query string for inserting result score.}
+
+Type: String
+
+Access: private
+
+Line: 38
+
+}
+\texttt{id\_of\_result}
+
+{\scriptsize
+\textit{Id of the result that is being entered.}
+
+Type: Integer
+
+Access: private
+
+Line: 50
+
+}
+\textbf{Methods:}
+
+\texttt{ResultDelete()}
+
+{\scriptsize
+\textit{Model that is called to delete a particular result.}
+
+}
+
+\texttt{delete()}
+
+{\scriptsize
+\textit{Method that actually deletes the result.}
+
+Access: private
+
+}
+
+\texttt{validate()}
+
+{\scriptsize
+\textit{Validates whether the user can delete the result.}
+
+Access: private
+
+}
+
+\texttt{getResult()}
+
+{\scriptsize
+\textit{Method that gets the result data from @class ResultGet.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method.}
+
+Access: protected
+
+}
+
+\texttt{validScore()}
+
+{\scriptsize
+\textit{Method that checks whether the entered score is valid.}
+
+Access: private
+
+}
+
+\texttt{validate()}
+
+{\scriptsize
+\textit{Main validation method.}
+
+Access: private
+
+}
+
+\texttt{insertScore(user\_id, score, new\_rating, rating\_change)}
+
+{\scriptsize
+\textit{Method for inserting the score of a player.}
+
+Access: private
+
+}
+
+\texttt{insertInfo()}
+
+{\scriptsize
+\textit{Method used to insert general result info.}
+
+Access: private
+
+}
+
+\texttt{general()}
+
+{\scriptsize
+\textit{Calls all general methods.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Checks login.}
+
+Access: protected
+
+}
+
+\subsubsection{ResultGet}
+\textit{Model for retrieving information on a particular result.}
+
+Page \pageref{ResultGet.php}
+
+File /models/ResultGet.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for getting result information.}
+
+Type: String
+
+Access: private
+
+Line: 37
+
+}
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method that executes @property query.}
+
+Access: protected
+
+}
+
+\subsubsection{Status}
+\textit{Model for getting the status of the current user.}
+
+Page \pageref{Status.php}
+
+File /models/Status.php
+
+Extends \texttt{Model}
+
+\textbf{Methods:}
+
+\texttt{logged\_in()}
+
+{\scriptsize
+\textit{Method that stores user data in @property return\_data.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Method that checks if the user is logged in.
+Then sets @property return\_data.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentCreate}
+\textit{Model for users to create tournaments.}
+
+Page \pageref{TournamentCreate.php}
+
+File /models/TournamentCreate.php
+
+Extends \texttt{Tournament}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for creating a tournament.}
+
+Type: String
+
+Access: private
+
+Line: 23
+
+}
+\texttt{query\_add\_league\_manager}
+
+{\scriptsize
+\textit{Query for making the creator of the league a league manager.}
+
+Type: String
+
+Access: private
+
+Line: 34
+
+}
+\texttt{stmt}
+
+{\scriptsize
+\textit{Statement object for executing @property query.}
+
+Type: Object
+
+Access: private
+
+Line: 46
+
+}
+\texttt{tournament\_id}
+
+{\scriptsize
+\textit{Id of the tournament that has just been created.}
+
+Type: 
+
+Access: private
+
+Line: 55
+
+}
+\textbf{Methods:}
+
+\texttt{returnTournamentData()}
+
+{\scriptsize
+\textit{Method which returns the tournament data.
+Data collected from @class TournamentGet.}
+
+Access: private
+
+}
+
+\texttt{addLeagueManager()}
+
+{\scriptsize
+\textit{Method for attaching the current user as the league manager.}
+
+Access: private
+
+}
+
+\texttt{create()}
+
+{\scriptsize
+\textit{Main function for creating database object, binding params, and executing query.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main function for checking whether user is logged in.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentDelete}
+\textit{Class that deletes a tournament.}
+
+Page \pageref{TournamentDelete.php}
+
+File /models/TournamentDelete.php
+
+Extends \texttt{Tournament}
+
+\textbf{Properties:}
+
+\texttt{query\_league}
+
+{\scriptsize
+\textit{SQL query string for deleting the league.
+Also deletes all associations with the league.
+This includes results.}
+
+Type: String
+
+Access: private
+
+Line: 19
+
+}
+\textbf{Methods:}
+
+\texttt{delete()}
+
+{\scriptsize
+\textit{Method that uses @property query\_league to delete the league.}
+
+Access: private
+
+}
+
+\texttt{verify()}
+
+{\scriptsize
+\textit{Checks whether the user can delete the league.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Result of @method verify determines whether it calls @method delete.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentGet}
+\textit{Model that fetches tournament data based on id.}
+
+Page \pageref{TournamentGet.php}
+
+File /models/TournamentGet.php
+
+Extends \texttt{Tournament}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for fetching tournament data.}
+
+Type: String
+
+Access: private
+
+Line: 32
+
+}
+\texttt{query\_players}
+
+{\scriptsize
+\textit{SQL query string for fetching the players in the tournament.}
+
+Type: String
+
+Access: private
+
+Line: 44
+
+}
+\texttt{query\_leauge\_managers}
+
+{\scriptsize
+\textit{SQL query string for fetching the league managers of the tournament.}
+
+Type: String
+
+Access: private
+
+Line: 58
+
+}
+\textbf{Methods:}
+
+\texttt{getPlayers()}
+
+{\scriptsize
+\textit{Method that queries players in the tournament.}
+
+Access: private
+
+}
+
+\texttt{getLeagueManagers()}
+
+{\scriptsize
+\textit{Method that queries league managers in the tournament.}
+
+Access: private
+
+}
+
+\texttt{getTournamentData()}
+
+{\scriptsize
+\textit{Method that gets the data about the tournament.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Method that fetches the database info.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentLeagueTable}
+\textit{Class for generating a league table.}
+
+Page \pageref{TournamentLeagueTable.php}
+
+File /models/TournamentLeagueTable.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{table}
+
+{\scriptsize
+\textit{Array that stores the table data.}
+
+Type: Array
+
+Access: private
+
+Line: 29
+
+}
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for getting the players in the leauge.}
+
+Type: String
+
+Access: private
+
+Line: 38
+
+}
+\textbf{Methods:}
+
+\texttt{populateTable()}
+
+{\scriptsize
+\textit{If that player is unpopulated, then populate the table.}
+
+Access: private
+
+}
+
+\texttt{calcuate()}
+
+{\scriptsize
+\textit{Calculate points and put in table.}
+
+Access: private
+
+}
+
+\texttt{order()}
+
+{\scriptsize
+\textit{Order table and return.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Method the executes @property query.
+Returns league table.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentManagerAttach}
+\textit{Model for adding a user as a manager of a tournament.}
+
+Page \pageref{TournamentManagerAttach.php}
+
+File /models/TournamentManagerAttach.php
+
+Extends \texttt{TournamentManagerAlter}
+
+\textbf{Properties:}
+
+\texttt{is\_league\_manager}
+
+{\scriptsize
+\textit{User becomes a league manager.}
+
+Type: 
+
+Access: protected
+
+Line: 18
+
+}
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method calls @method subMain.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentManagerRemove}
+\textit{Model for removing a league manager from a tournament.}
+
+Page \pageref{TournamentManagerRemove.php}
+
+File /models/TournamentManagerRemove.php
+
+Extends \texttt{TournamentManagerAlter}
+
+\textbf{Properties:}
+
+\texttt{is\_league\_manager}
+
+{\scriptsize
+\textit{No longer a league manager.}
+
+Type: 
+
+Access: protected
+
+Line: 18
+
+}
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method that calls @method subMain.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentPlayerAttach}
+\textit{Model for adding a user as a player to a tournament.}
+
+Page \pageref{TournamentPlayerAttach.php}
+
+File /models/TournamentPlayerAttach.php
+
+Extends \texttt{TournamentPlayerAlter}
+
+\textbf{Properties:}
+
+\texttt{is\_player}
+
+{\scriptsize
+\textit{Player becomes true when adding a player.}
+
+Type: 
+
+Access: protected
+
+Line: 18
+
+}
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Calls @method subMain.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentPlayerRemove}
+\textit{Model for removing a player from a tournament.}
+
+Page \pageref{TournamentPlayerRemove.php}
+
+File /models/TournamentPlayerRemove.php
+
+Extends \texttt{TournamentPlayerAlter}
+
+\textbf{Properties:}
+
+\texttt{is\_player}
+
+{\scriptsize
+\textit{Player becomes false when removing a player.}
+
+Type: 
+
+Access: protected
+
+Line: 18
+
+}
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Calls @method subMain}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentSearch}
+\textit{Model that is used to search for a tournament by name.}
+
+Page \pageref{TournamentSearch.php}
+
+File /models/TournamentSearch.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for searching for tournaments and returning their name and id.}
+
+Type: String
+
+Access: private
+
+Line: 22
+
+}
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method.
+Used to execute @property query.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentUpdate}
+\textit{Model that updates tournament info.}
+
+Page \pageref{TournamentUpdate.php}
+
+File /models/TournamentUpdate.php
+
+Extends \texttt{Tournament}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string that updates tournament info.}
+
+Type: String
+
+Access: private
+
+Line: 22
+
+}
+\textbf{Methods:}
+
+\texttt{validate()}
+
+{\scriptsize
+\textit{Validates whether the user can update tournament info.}
+
+Access: private
+
+}
+
+\texttt{update()}
+
+{\scriptsize
+\textit{Method that executes @property query.
+Thus updating tournament info.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Method that checks login, then calls @method update.}
+
+Access: protected
+
+}
+
+\subsubsection{UserGet}
+\textit{Model for querying a user based on the id.}
+
+Page \pageref{UserGet.php}
+
+File /models/UserGet.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for fetching the user's data.}
+
+Type: String
+
+Access: private
+
+Line: 32
+
+}
+\texttt{query\_managing}
+
+{\scriptsize
+\textit{SQL query string for getting tournaments that the user is managing.}
+
+Type: String
+
+Access: private
+
+Line: 46
+
+}
+\texttt{query\_playing}
+
+{\scriptsize
+\textit{SQL query string for getting tournaments that the user is playing in.}
+
+Type: String
+
+Access: private
+
+Line: 63
+
+}
+\texttt{stmt}
+
+{\scriptsize
+\textit{Database object for executing query.}
+
+Type: Object
+
+Access: private
+
+Line: 80
+
+}
+\textbf{Methods:}
+
+\texttt{verifyResult()}
+
+{\scriptsize
+\textit{Method that verifies whether the requested user is the one returned.}
+
+Access: private
+
+}
+
+\texttt{executeQuery()}
+
+{\scriptsize
+\textit{Method that executes the query.}
+
+Access: private
+
+}
+
+\texttt{getPlaying()}
+
+{\scriptsize
+\textit{Get tournament playing in.}
+
+Access: private
+
+}
+
+\texttt{getManaging()}
+
+{\scriptsize
+\textit{Method for getting tournaments managing}
+
+Access: private
+
+}
+
+\texttt{getUserData()}
+
+{\scriptsize
+\textit{Method for getting user data.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method.
+If the user exists, it gets tournament data.}
+
+Access: protected
+
+}
+
+\subsubsection{UserRatings}
+\textit{Model when called will return all the user's ratings over time.}
+
+Page \pageref{UserRatings.php}
+
+File /models/UserRatings.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string that fetches all the user's ratings over time.}
+
+Type: String
+
+Access: private
+
+Line: 25
+
+}
+\textbf{Methods:}
+
+\texttt{general()}
+
+{\scriptsize
+\textit{Method that executes @property query.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Checks whether user is logged in then calls @method general.}
+
+Access: protected
+
+}
+
+\subsubsection{UserSearch}
+\textit{Model that is used to search for a user.}
+
+Page \pageref{UserSearch.php}
+
+File /models/UserSearch.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for searching for users and returning their name and id.}
+
+Type: String
+
+Access: private
+
+Line: 22
+
+}
+\textbf{Methods:}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Main method.
+Used to execute @property query.}
+
+Access: protected
+
+}
+
+\subsubsection{UserUpdate}
+\textit{This model is used to update user details.}
+
+Page \pageref{UserUpdate.php}
+
+File /models/UserUpdate.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string to update the user's data.}
+
+Type: String
+
+Access: private
+
+Line: 24
+
+}
+\texttt{stmt}
+
+{\scriptsize
+\textit{Database object variable.}
+
+Type: Object
+
+Access: private
+
+Line: 41
+
+}
+\textbf{Methods:}
+
+\texttt{update()}
+
+{\scriptsize
+\textit{Main method once @method main has checked login.}
+
+Access: private
+
+}
+
+\texttt{validate()}
+
+{\scriptsize
+\textit{Method that validates the inputs.
+Validating first name, last name, and phone numbers.}
+
+Access: private
+
+}
+
+\texttt{main()}
+
+{\scriptsize
+\textit{Checks to see if the user is logged in.
+Calls @method update if true.}
+
+Access: protected
+
+}
+
+\subsection{PHP - Important Classes}
+\subsubsection{API}
+\textit{Allows the JavaScript to communicate with the PHP models.}
+
+Page \pageref{API.php}
+
+File /php/API.php
+
+\textbf{Properties:}
+
+\texttt{modelName}
+
+{\scriptsize
+\textit{Name of the model to be called.}
+
+Type: String
+
+Access: private
+
+Line: 10
+
+}
+\textbf{Methods:}
+
+\texttt{execute()}
+
+{\scriptsize
+\textit{Creates an instance of the class requested.
+Therefore calling the model.}
+
+Access: private
+
+}
+
+\texttt{getData()}
+
+{\scriptsize
+\textit{Gets the data from GET or POST.}
+
+Access: private
+
+}
+
+\texttt{requireAll()}
+
+{\scriptsize
+\textit{Method that requires all the files.}
+
+Access: private
+
+}
+
+\texttt{\_\_construct()}
+
+{\scriptsize
+\textit{Method that is executed when the API is called.
+Calls all of the other methods.}
+
+Access: public
+
+}
+
+\subsubsection{Database}
+\textit{The Database class connects the the database when the file is included.}
+
+Page \pageref{Database.php}
+
+File /php/Database.php
+
+\textbf{Properties:}
+
+\texttt{conn}
+
+{\scriptsize
+\textit{This variable is the connection variable for connecting to the database.}
+
+Type: Object
+
+Line: 10
+
+}
+\texttt{query\_delete}
+
+{\scriptsize
+\textit{SQL query string for deleting all tables}
+
+Type: String
+
+Access: private
+
+Line: 18
+
+}
+\textbf{Methods:}
+
+\texttt{create()}
+
+{\scriptsize
+\textit{This method is used to create the tables and columns in the database.
+The `database.sql` file provides the SQL query string to do this.}
+
+Access: public
+
+}
+
+\texttt{delete()}
+
+{\scriptsize
+\textit{Method that deletes all the tables in the database.}
+
+Access: public
+
+}
+
+\texttt{reset()}
+
+{\scriptsize
+\textit{Resets database.
+Deletes then recreates.}
+
+Access: public
+
+}
+
+\texttt{init()}
+
+{\scriptsize
+\textit{This method is called when the file is included.
+It is used to connect to the database.
+Also to set @property conn to new PDO.}
+
+Access: public
+
+}
+
+\subsubsection{Model}
+\textit{Model class, the class is extended by all models.
+It provides a foundation for all models.}
+
+Page \pageref{Model.php}
+
+File /php/Model.php
+
+\textbf{Properties:}
+
+\texttt{name}
+
+{\scriptsize
+\textit{The name of the data variable in POST.}
+
+Type: 
+
+Access: private
+
+Line: 11
+
+}
+\texttt{data}
+
+{\scriptsize
+\textit{The data object is used to store.}
+
+Type: Array
+
+Access: protected
+
+Line: 19
+
+}
+\texttt{return\_data}
+
+{\scriptsize
+\textit{The object for holding all data that wants to be returned.}
+
+Type: Array
+
+Access: protected
+
+Line: 28
+
+}
+\texttt{success}
+
+{\scriptsize
+\textit{Whether model executed successfully.}
+
+Type: {Boolean} Default true.
+
+Access: protected
+
+Line: 37
+
+}
+\texttt{error\_msg}
+
+{\scriptsize
+\textit{Error message string, if error.}
+
+Type: String
+
+Access: protected
+
+Line: 46
+
+}
+\textbf{Methods:}
+
+\texttt{returnObj()}
+
+{\scriptsize
+\textit{Method that assembles the return object.}
+
+Access: private
+
+}
+
+\texttt{decodePost()}
+
+{\scriptsize
+\textit{This method is used to decode the JSON data in the post.}
+
+Access: private
+
+}
+
+\texttt{isPost()}
+
+{\scriptsize
+\textit{This returns whether the post data variable is set.}
+
+Access: private
+
+}
+
+\texttt{setVars()}
+
+{\scriptsize
+\textit{Resets variables when model is called.}
+
+Access: private
+
+}
+
+\texttt{call(Data)}
+
+{\scriptsize
+\textit{Call allows PHP to pass data into the model.}
+
+Access: public
+
+}
+
+\texttt{\_\_construct(notAPI)}
+
+{\scriptsize
+\textit{Function that is called to check if it is called with Post.}
+
+Access: public
+
+}
+
+\subsubsection{Test}
+\textit{Class for testing PHP models.}
+
+Page \pageref{Test.php}
+
+File /php/Test.php
+
+\textbf{Methods:}
+
+\texttt{requireAll()}
+
+{\scriptsize
+\textit{Method that requires all the files.}
+
+Access: private
+
+}
+
+\texttt{testStart(testName)}
+
+{\scriptsize
+\textit{Method that should be called when starting a test.}
+
+Access: private
+
+}
+
+\texttt{testEnd()}
+
+{\scriptsize
+\textit{Method that should be called when finished a test.}
+
+Access: private
+
+}
+
+\texttt{unitTest()}
+
+{\scriptsize
+\textit{When making a single test, call this method.
+Puts row in table.}
+
+Access: private
+
+}
+
+\texttt{loadTest()}
+
+{\scriptsize
+\textit{Method that loads the test.}
+
+Access: private
+
+}
+
+\texttt{init()}
+
+{\scriptsize
+\textit{Method that is called first.
+Calls all tests individually.}
+
+Access: public
+
+}
+
+\subsection{PHP - Parent Classes}
+\subsubsection{EloRating}
+\textit{Class with functions for calculating new elo rating.}
+
+Page \pageref{EloRating.php}
+
+File /superclasses/EloRating.php
+
+\textbf{Properties:}
+
+\texttt{new\_rating}
+
+{\scriptsize
+\textit{New rating of the player.}
+
+Type: Integer
+
+Access: public
+
+Line: 13
+
+}
+\texttt{rating\_change}
+
+{\scriptsize
+\textit{Rating change.
+New rating - old rating.}
+
+Type: Integer
+
+Access: public
+
+Line: 21
+
+}
+\texttt{k\_factor}
+
+{\scriptsize
+\textit{K factor for the weight of rating change.}
+
+Type: Integer
+
+Access: public
+
+Line: 30
+
+}
+\texttt{query\_get\_rating}
+
+{\scriptsize
+\textit{SQL query for getting the player's latest rating.}
+
+Type: String
+
+Access: private
+
+Line: 40
+
+}
+\texttt{default\_rating}
+
+{\scriptsize
+\textit{Start rating for all players.}
+
+Type: Integer
+
+Access: public
+
+Line: 60
+
+}
+\textbf{Methods:}
+
+\texttt{getPlayerRating(user\_id)}
+
+{\scriptsize
+\textit{Method gets rating of a user using @property query\_get\_rating.}
+
+Access: public
+
+}
+
+\texttt{expected(rating\_a, rating\_b)}
+
+{\scriptsize
+\textit{Method that calculates a probability of a player winning.}
+
+Access: public
+
+}
+
+\texttt{newRating(rating\_a, k\_factor, points\_a, expected\_a)}
+
+{\scriptsize
+\textit{Method that calculates a new rating based on the score.}
+
+Access: public
+
+}
+
+\texttt{\_\_construct(player\_a\_id, player\_b\_id, tournament\_id, player\_a\_score, player\_b\_score)}
+
+{\scriptsize
+\textit{Method that is called when an instance of the class is made.}
+
+Access: public
+
+}
+
+\subsubsection{ResultMethods}
+\textit{Helpful functions for dealing with results.}
+
+Page \pageref{ResultMethods.php}
+
+File /superclasses/ResultMethods.php
+
+\textbf{Properties:}
+
+\texttt{query\_result\_exists}
+
+{\scriptsize
+\textit{SQL query that checks whether a result exists or not.}
+
+Type: String
+
+Access: private
+
+Line: 13
+
+}
+\textbf{Methods:}
+
+\texttt{resultExists(player1\_id, player2\_id, tournament\_id)}
+
+{\scriptsize
+\textit{Method that tests whether a match has already been played.}
+
+Access: public
+
+}
+
+\subsubsection{Tournament}
+\textit{Parent class for general tournament stuff.}
+
+Page \pageref{Tournament.php}
+
+File /superclasses/Tournament.php
+
+Extends \texttt{Model}
+
+\textbf{Properties:}
+
+\texttt{query\_players}
+
+{\scriptsize
+\textit{SQL query string for fetching the players in the tournament.}
+
+Type: String
+
+Access: private
+
+Line: 15
+
+}
+\texttt{query\_player\_count}
+
+{\scriptsize
+\textit{SQL query string for checking whether the user is a player in a particular league.}
+
+Type: String
+
+Access: private
+
+Line: 29
+
+}
+\texttt{query\_user\_exist}
+
+{\scriptsize
+\textit{SQL query string for telling whether a user exists.}
+
+Type: String
+
+Access: private
+
+Line: 44
+
+}
+\texttt{query\_league\_manager\_count}
+
+{\scriptsize
+\textit{SQL query string for checking whether the user is league manager of a particular league.}
+
+Type: String
+
+Access: private
+
+Line: 56
+
+}
+\texttt{query\_tournament\_count}
+
+{\scriptsize
+\textit{SQL query string for checking whether a tournament exists.}
+
+Type: String
+
+Access: private
+
+Line: 71
+
+}
+\texttt{query\_attach}
+
+{\scriptsize
+\textit{SQL query for attaching a user to a tournament.}
+
+Type: String
+
+Access: private
+
+Line: 83
+
+}
+\textbf{Methods:}
+
+\texttt{isPlayer(user\_id, tournament\_id)}
+
+{\scriptsize
+\textit{Method for telling whether the current user is a player in the tournament.}
+
+Access: protected
+
+}
+
+\texttt{isLeagueManager(user\_id, tournament\_id)}
+
+{\scriptsize
+\textit{Method for telling whether the current user is a league manager is the tournament.}
+
+Access: protected
+
+}
+
+\texttt{attachUser(tournament\_id, user\_id)}
+
+{\scriptsize
+\textit{Attaches a user to a tournament.}
+
+Access: protected
+
+}
+
+\texttt{tournamentExistsId(tournament\_id)}
+
+{\scriptsize
+\textit{Checks whether a tournament exists from parameter id.}
+
+Access: protected
+
+}
+
+\texttt{tournamentExists()}
+
+{\scriptsize
+\textit{Checks whether a tournament exists.}
+
+Access: protected
+
+}
+
+\texttt{userExists(user\_id)}
+
+{\scriptsize
+\textit{Checks whether a user exists.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentManagerAlter}
+\textit{Parent class of classes that add or remove league managers.}
+
+Page \pageref{TournamentManagerAlter.php}
+
+File /superclasses/TournamentManagerAlter.php
+
+Extends \texttt{Tournament}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for changing league manager status.}
+
+Type: String
+
+Access: private
+
+Line: 17
+
+}
+\texttt{query\_managers\_count}
+
+{\scriptsize
+\textit{SQL query string for counting the number of league managers.}
+
+Type: String
+
+Access: private
+
+Line: 32
+
+}
+\texttt{stmt}
+
+{\scriptsize
+\textit{Database object for executing @property query.}
+
+Type: Object
+
+Access: private
+
+Line: 47
+
+}
+\textbf{Methods:}
+
+\texttt{noOfLeagueManagers()}
+
+{\scriptsize
+\textit{Method for finding the number of league manager.}
+
+Access: private
+
+}
+
+\texttt{executeQuery()}
+
+{\scriptsize
+\textit{Checks any faults and executes query.}
+
+Access: private
+
+}
+
+\texttt{verifyManager()}
+
+{\scriptsize
+\textit{Verifies whether the user can carry out the task.
+Returns false if:
+- User doesn't exist.
+- Tournament doesn't exist.
+- Not a league manager.}
+
+Access: private
+
+}
+
+\texttt{general()}
+
+{\scriptsize
+\textit{Main method for making the user a league manager}
+
+Access: private
+
+}
+
+\texttt{subMain()}
+
+{\scriptsize
+\textit{Method that checks whether the user is logged in.}
+
+Access: protected
+
+}
+
+\subsubsection{TournamentPlayerAlter}
+\textit{Parent class of classes that add or remove players.}
+
+Page \pageref{TournamentPlayerAlter.php}
+
+File /superclasses/TournamentPlayerAlter.php
+
+Extends \texttt{Tournament}
+
+\textbf{Properties:}
+
+\texttt{query}
+
+{\scriptsize
+\textit{SQL query string for updating a player}
+
+Type: String
+
+Access: private
+
+Line: 16
+
+}
+\texttt{stmt}
+
+{\scriptsize
+\textit{Database object for executing @property query.}
+
+Type: Object
+
+Access: private
+
+Line: 31
+
+}
+\textbf{Methods:}
+
+\texttt{executeQuery()}
+
+{\scriptsize
+\textit{Checks any faults and executes query.}
+
+Access: private
+
+}
+
+\texttt{verifyPlayer()}
+
+{\scriptsize
+\textit{Method for verifying whether the user can carry out the task.
+Returns false if:
+- User doesn't exist.
+- Tournament doesn't exist.
+- Either:
+  - Not a league manager.
+  - Altering someone else.}
+
+Access: private
+
+}
+
+\texttt{general()}
+
+{\scriptsize
+\textit{Method that creates database object.
+Binds parameters.
+Checks to see if able to execute query.
+Then execute query.}
+
+Access: private
+
+}
+
+\texttt{subMain()}
+
+{\scriptsize
+\textit{Method that checks login.
+Then calls @method general}
+
+Access: protected
+
+}
+
+\subsubsection{Validate}
+\textit{Class used to validate input text.}
+
+Page \pageref{Validate.php}
+
+File /superclasses/Validate.php
+
+\textbf{Methods:}
+
+\texttt{returnData(success, error\_msg)}
+
+{\scriptsize
+\textit{Returns standard data such as whether success, error message, and correction.}
+
+Access: private
+
+}
+
+\texttt{userName(name, variableName)}
+
+{\scriptsize
+\textit{Valididates user's name.
+Can be first or last name.}
+
+}
+
+\texttt{tournamentName(name)}
+
+{\scriptsize
+\textit{Validates tournament name.}
+
+}
+
+\texttt{tournamentDescription(description)}
+
+{\scriptsize
+\textit{Validates tournament description.}
+
+}
+
+\texttt{email(email)}
+
+{\scriptsize
+\textit{Validates email address.}
+
+}
+
+\texttt{password(password)}
+
+{\scriptsize
+\textit{Validates password.}
+
+}
+
+\texttt{phoneNumber(phoneNumber)}
+
+{\scriptsize
+\textit{Validates phone number.}
+
+}
+
+\subsection{JavaScript - Services}
+\subsubsection{CallModel}
+\textit{Factory for calling the PHP models.}
+
+Page \pageref{CallModel.js}
+
+File /services/CallModel.js
+
+\textbf{Methods:}
+
+\texttt{fetch(modelName, data, callbacks, success, fail, normal)}
+
+{\scriptsize
+\textit{Method for fetching a result from a model.
+Sends data to the model.}
+
+}
+
+\texttt{ifLoggedIn(callbackTrue, callbackFalse)}
+
+{\scriptsize
+\textit{Method that accepts two functions.
+One is executed if the user is logged in.
+The other is called if the user is not logged in.}
+
+}
+
+\texttt{redirectIfNotLoggedIn()}
+
+{\scriptsize
+\textit{Method that redirects to login page if not logged in.}
+
+}
+
+\subsubsection{DateFormat}
+\textit{Factory that returns the site's format of date.}
+
+Page \pageref{DateFormat.js}
+
+File /services/DateFormat.js
+
+\textbf{Properties:}
+
+\texttt{days}
+
+{\scriptsize
+\textit{Days of the week for date format.}
+
+Type: Array
+
+Line: 8
+
+}
+\texttt{months}
+
+{\scriptsize
+\textit{Months of the year for date format.}
+
+Type: Array
+
+Line: 15
+
+}
+\textbf{Methods:}
+
+\texttt{getDateString(dateString)}
+
+{\scriptsize
+\textit{Function that returns formated output date from input date.}
+
+}
+
+\subsubsection{RatingChart}
+\textit{Factory for handling the rating graph.}
+
+Page \pageref{RatingChart.js}
+
+File /services/RatingChart.js
+
+\textbf{Properties:}
+
+\texttt{ctx}
+
+{\scriptsize
+\textit{}
+
+Type: Object
+
+Line: 8
+
+}
+\texttt{chart}
+
+{\scriptsize
+\textit{Chart object for talking to Chart.JS library.}
+
+Type: Object
+
+Line: 13
+
+}
+\texttt{dates}
+
+{\scriptsize
+\textit{List of dates corresponding to a rating.}
+
+Type: Array
+
+Line: 20
+
+}
+\texttt{averageRating}
+
+{\scriptsize
+\textit{List of ratings for the graph.}
+
+Type: Array
+
+Line: 27
+
+}
+\texttt{data}
+
+{\scriptsize
+\textit{Data object for drawing the chart.}
+
+Type: Object
+
+Line: 34
+
+}
+\texttt{options}
+
+{\scriptsize
+\textit{Configuration for drawing the chart.}
+
+Type: Object
+
+Line: 55
+
+}
+\textbf{Methods:}
+
+\texttt{inputRatings(ratings)}
+
+{\scriptsize
+\textit{Method that filters the ratings into different tournaments.}
+
+}
+
+\texttt{init()}
+
+{\scriptsize
+\textit{Call this method when initialising the graph.}
+
+}
+
+\texttt{draw()}
+
+{\scriptsize
+\textit{This method is called when drawing the graph.}
+
+}
+
+\subsection{JavaScript - Directives}
+\subsubsection{cpFixtures}
+\textit{Directive for displaying fixtures.}
+
+Page \pageref{cpFixtures.js}
+
+File /directives/cpFixtures.js
+
+\textbf{Properties:}
+
+\texttt{self}
+
+{\scriptsize
+\textit{Variable for storing scope.}
+
+Type: Object
+
+Line: 8
+
+}
+\textbf{Methods:}
+
+\texttt{getFixtures()}
+
+{\scriptsize
+\textit{Method that gets data about fixtures from @class FixturesGet.}
+
+}
+
+\subsubsection{cpLeagueSearch}
+\textit{Directive used to search for a tournament.}
+
+Page \pageref{cpLeagueSearch.js}
+
+File /directives/cpLeagueSearch.js
+
+\textbf{Properties:}
+
+\texttt{scope.inputName}
+
+{\scriptsize
+\textit{Must be empty string for search results box to fully hide}
+
+Type: String
+
+Line: 15
+
+}
+\textbf{Methods:}
+
+\texttt{scope.eventInputChange()}
+
+{\scriptsize
+\textit{Method that is called when text in input field is changed.
+Updates search for tournament when input is changed.}
+
+}
+
+\subsubsection{cpResult}
+\textit{Directive for handling results.}
+
+Page \pageref{cpResult.js}
+
+File /directives/cpResult.js
+
+\textbf{Properties:}
+
+\texttt{self}
+
+{\scriptsize
+\textit{Variable for storing scope.}
+
+Type: 
+
+Line: 8
+
+}
+\textbf{Methods:}
+
+\texttt{sortResults()}
+
+{\scriptsize
+\textit{Function that sets CSS class for colouring result.
+Also calls @method getDateString for each result.}
+
+}
+
+\texttt{getResults()}
+
+{\scriptsize
+\textit{Function that gets the results data from @class ResultGet.}
+
+}
+
+\texttt{\$scope.eventDelete(id)}
+
+{\scriptsize
+\textit{Function that deletes a result when delete button is clicked.}
+
+}
+
+\subsubsection{cpUserSearch}
+\textit{Directive used to search for a user.}
+
+Page \pageref{cpUserSearch.js}
+
+File /directives/cpUserSearch.js
+
+\textbf{Properties:}
+
+\texttt{scope.inputName}
+
+{\scriptsize
+\textit{Search name}
+
+Type: String
+
+Line: 15
+
+}
+\textbf{Methods:}
+
+\texttt{scope.eventInputChange()}
+
+{\scriptsize
+\textit{Method that is called when text in input field is changed.
+Updates search for user when input is changed.}
+
+}
+
+\subsection{JavaScript - Controllers}
+\subsubsection{HomeCtrl}
+\textit{Controller for the home page.}
+
+Page \pageref{HomeCtrl.js}
+
+File /controllers/HomeCtrl.js
+
+\subsubsection{LeagueCreateCtrl}
+\textit{Controller for creating a league.}
+
+Page \pageref{LeagueCreateCtrl.js}
+
+File /controllers/LeagueCreateCtrl.js
+
+\textbf{Properties:}
+
+\texttt{\$scope.editOrCreate}
+
+{\scriptsize
+\textit{The text that goes in the edit page.}
+
+Type: String
+
+Line: 8
+
+}
+\texttt{\$scope.response}
+
+{\scriptsize
+\textit{Object where error message is and tells whether there is an error message.}
+
+Type: Object
+
+Line: 15
+
+}
+\textbf{Methods:}
+
+\texttt{\$scope.eventUpdate()}
+
+{\scriptsize
+\textit{Event that is called when 'Create' button is clicked.
+Creating the league.}
+
+}
+
+\subsubsection{LeagueCtrl}
+\textit{League page controller.}
+
+Page \pageref{LeagueCtrl.js}
+
+File /controllers/LeagueCtrl.js
+
+\textbf{Properties:}
+
+\texttt{\$scope.subPage}
+
+{\scriptsize
+\textit{String that determines which sub page the user is on.}
+
+Type: String
+
+Line: 8
+
+}
+\texttt{\$scope.table}
+
+{\scriptsize
+\textit{Object that contains the table data.}
+
+Type: Object
+
+Line: 15
+
+}
+\textbf{Methods:}
+
+\texttt{getLeague()}
+
+{\scriptsize
+\textit{Method for getting league data from @class TournamentGet.}
+
+}
+
+\subsubsection{LeagueEditCtrl}
+\textit{Controller for editing a league.}
+
+Page \pageref{LeagueEditCtrl.js}
+
+File /controllers/LeagueEditCtrl.js
+
+\textbf{Properties:}
+
+\texttt{\$scope.editOrCreate}
+
+{\scriptsize
+\textit{The text that goes in the edit page.}
+
+Type: String
+
+Line: 8
+
+}
+\texttt{\$scope.yourId}
+
+{\scriptsize
+\textit{Id of the user.
+Used to prevent the user from removing themselves as a league manager.}
+
+Type: Integer
+
+Line: 15
+
+}
+\texttt{\$scope.addingManager}
+
+{\scriptsize
+\textit{Variable that is used to tell the view whether the adding manager dialog is open.}
+
+Type: Boolean
+
+Line: 23
+
+}
+\texttt{\$scope.addingPlayer}
+
+{\scriptsize
+\textit{Variable that is used to tell the view whether the adding player dialog is open.}
+
+Type: Boolean
+
+Line: 30
+
+}
+\texttt{\$scope.response}
+
+{\scriptsize
+\textit{Object where error message is and tells whether there is an error message.}
+
+Type: Object
+
+Line: 37
+
+}
+\textbf{Methods:}
+
+\texttt{redirect()}
+
+{\scriptsize
+\textit{Method that redirects to home page and prints error message.}
+
+}
+
+\texttt{getLeague()}
+
+{\scriptsize
+\textit{Method for getting league data from @class TournamentGet.}
+
+}
+
+\texttt{\$scope.eventUpdate()}
+
+{\scriptsize
+\textit{Function that is called when the update button is pressed.}
+
+}
+
+\texttt{\$scope.eventRemoveUser(userId)}
+
+{\scriptsize
+\textit{Function that is called when a player is removed from the league.}
+
+}
+
+\texttt{\$scope.eventRemoveManager(userId)}
+
+{\scriptsize
+\textit{Function that is called when a league manager is removed.}
+
+}
+
+\texttt{\$scope.eventAddSpecificPlayer(userId)}
+
+{\scriptsize
+\textit{Function that is called by @directive cpUserSearch when adding a player.}
+
+}
+
+\texttt{\$scope.eventAddSpecificManager(userId)}
+
+{\scriptsize
+\textit{Function that is called by @directive cpUserSearch when adding a league manager.}
+
+}
+
+\texttt{\$scope.eventAddManager()}
+
+{\scriptsize
+\textit{Function that opens adding league manager dialog but closes others.}
+
+}
+
+\texttt{\$scope.eventAddPlayer()}
+
+{\scriptsize
+\textit{Function that opens adding player dialog but closes others.}
+
+}
+
+\texttt{\$scope.eventCancelAdding()}
+
+{\scriptsize
+\textit{Function that closes all adding user dialogs.}
+
+}
+
+\texttt{\$scope.eventDelete()}
+
+{\scriptsize
+\textit{Function that calls @class TournamentDelete, to delete the league.}
+
+}
+
+\subsubsection{UserSearchCtrl}
+\textit{Controller used to search for a user.}
+
+Page \pageref{UserSearchCtrl.js}
+
+File /controllers/UserSearchCtrl.js
+
+\textbf{Methods:}
+
+\texttt{\$scope.eventClickLeague(leagueId)}
+
+{\scriptsize
+\textit{Method that is called when a league is clicked.
+Clicked from @directive cpLeagueSearch.}
+
+}
+
+\texttt{\$scope.eventClickUser(userId)}
+
+{\scriptsize
+\textit{Method that is called when a user is clicked.
+Clicked from @directive cpUserSearch.}
+
+}
+
+\subsubsection{LoginCtrl}
+\textit{Controller for managing user login.
+Also manages user registering.}
+
+Page \pageref{LoginCtrl.js}
+
+File /controllers/LoginCtrl.js
+
+\textbf{Properties:}
+
+\texttt{\$scope.response}
+
+{\scriptsize
+\textit{States the success of response.}
+
+Type: Object
+
+Line: 9
+
+}
+\texttt{\$scope.responseRegister}
+
+{\scriptsize
+\textit{States the success of the response from registering.}
+
+Type: Object
+
+Line: 19
+
+}
+\textbf{Methods:}
+
+\texttt{getUserData()}
+
+{\scriptsize
+\textit{Method for getting user data and storing it in a session.}
+
+}
+
+\texttt{eventLogin()}
+
+{\scriptsize
+\textit{Method that logs the user in.}
+
+}
+
+\texttt{eventRegister()}
+
+{\scriptsize
+\textit{Method that registers the user.}
+
+}
+
+\subsubsection{NavCtrl}
+\textit{Controller for managing the navbar.}
+
+Page \pageref{NavCtrl.js}
+
+File /controllers/NavCtrl.js
+
+\textbf{Methods:}
+
+\texttt{loginButtonText()}
+
+{\scriptsize
+\textit{Changes login boolean depending whether logged in or not.}
+
+}
+
+\texttt{\$scope.btnLogout()}
+
+{\scriptsize
+\textit{Event when logout button is clicked.
+Calls model 'Logout' then redirects to login page.}
+
+}
+
+\subsubsection{ProfileCtrl}
+\textit{Profile page controller.}
+
+Page \pageref{ProfileCtrl.js}
+
+File /controllers/ProfileCtrl.js
+
+\textbf{Properties:}
+
+\texttt{userId}
+
+{\scriptsize
+\textit{Id of the user.}
+
+Type: Integer
+
+Line: 8
+
+}
+\texttt{\$scope.currentSubPage}
+
+{\scriptsize
+\textit{Variable for storing the name of the current subpage.}
+
+Type: String
+
+Line: 16
+
+}
+\texttt{\$scope.isUser}
+
+{\scriptsize
+\textit{Is user.}
+
+Type: Boolean
+
+Line: 23
+
+}
+\textbf{Methods:}
+
+\texttt{getUser(user\_id)}
+
+{\scriptsize
+\textit{Method that gets user data from UserGet model.}
+
+}
+
+\texttt{getStatus(callback)}
+
+{\scriptsize
+\textit{Method the gets the id of the current user.
+Then calls @method getUser with id of current user.}
+
+}
+
+\texttt{getRatings()}
+
+{\scriptsize
+\textit{Method that gets the users ratings for the graph.}
+
+}
+
+\subsubsection{ProfileEditCtrl}
+\textit{Controller for editing a user.}
+
+Page \pageref{ProfileEditCtrl.js}
+
+File /controllers/ProfileEditCtrl.js
+
+\textbf{Properties:}
+
+\texttt{\$scope.yourId}
+
+{\scriptsize
+\textit{The user id.}
+
+Type: Integer
+
+Line: 8
+
+}
+\texttt{\$scope.errorMsg}
+
+{\scriptsize
+\textit{Error message to be displayed if there is an error.}
+
+Type: String
+
+Line: 15
+
+}
+\textbf{Methods:}
+
+\texttt{\$scope.eventSubmit()}
+
+{\scriptsize
+\textit{Method that is called when submit button is pressed.}
+
+}
+
+\texttt{getUserData()}
+
+{\scriptsize
+\textit{Method the gets the data of the user.}
+
+}
+
+\subsubsection{ResultEnterCtrl}
+\textit{Controller that allows a user to input a result.}
+
+Page \pageref{ResultEnterCtrl.js}
+
+File /controllers/ResultEnterCtrl.js
+
+\textbf{Properties:}
+
+\texttt{\$scope.tournamentId}
+
+{\scriptsize
+\textit{The id of the tournament as defined by the route parametre.}
+
+Type: Integer
+
+Line: 8
+
+}
+\texttt{\$scope.tournamentName}
+
+{\scriptsize
+\textit{Name of the tournament.}
+
+Type: String
+
+Line: 15
+
+}
+\texttt{\$scope.player1}
+
+{\scriptsize
+\textit{Player 1 data object.}
+
+Type: Integer
+
+Line: 22
+
+}
+\texttt{\$scope.player2}
+
+{\scriptsize
+\textit{Player 2 data object.}
+
+Type: Integer
+
+Line: 29
+
+}
+\texttt{\$scope.date}
+
+{\scriptsize
+\textit{The date that the result will be entered.}
+
+Type: String
+
+Line: 36
+
+}
+\texttt{\$scope.errorMsg}
+
+{\scriptsize
+\textit{Error message, if there is one.}
+
+Type: String
+
+Line: 43
+
+}
+\textbf{Methods:}
+
+\texttt{\$scope.eventSubmitResult()}
+
+{\scriptsize
+\textit{Method that is called when submit button is pressed.
+Enters a result.}
+
+}
+
+\texttt{getTournamentData()}
+
+{\scriptsize
+\textit{Method for getting information about the tournament.}
+
+}
+
+\texttt{getPlayerData()}
+
+{\scriptsize
+\textit{Method that gets the player data.}
+
+}
+

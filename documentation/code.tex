@@ -46,6 +46,7 @@ class FixturesGet extends Model
 	 *
 	 * @property query
 	 * @private
+	 * @type String
 	 */
 	private $query = <<<SQL
 		SELECT
@@ -129,7 +130,8 @@ SQL;
 	}
 }
 
-?>\end{lstlisting}
+?>
+\end{lstlisting}
 }
 \textbf{Login.php}\label{Login.php}
 
@@ -2725,7 +2727,7 @@ class Model
 	/**
 	 * This method is used to decode the JSON data in the post.
 	 *
-	 * @method
+	 * @method decodePost
 	 * @private
 	 * @return {Object} The decoded JSON.
 	 */
@@ -2801,7 +2803,8 @@ class Model
 	}
 }
 
-?>\end{lstlisting}
+?>
+\end{lstlisting}
 }
 \textbf{Test.php}\label{Test.php}
 
@@ -3944,10 +3947,8 @@ class Validate
 Path: /app/app.js
 {\scriptsize
 \begin{lstlisting}
-/**
+/*
  * Main Angular object.
- *
- * @var app
  */
 var app = angular.module('computing-project', ['ngRoute']);\end{lstlisting}
 }
@@ -3956,10 +3957,10 @@ var app = angular.module('computing-project', ['ngRoute']);\end{lstlisting}
 Path: /app/config.js
 {\scriptsize
 \begin{lstlisting}
-/****************************************
+/* **************************************
  * Angular config.                      *
  * Mainly used to configure the routes. *
- ****************************************/
+ ************************************** */
 app.config(['$routeProvider', function ($routeProvider)
 {
 	$routeProvider
@@ -4025,7 +4026,7 @@ Path: /controllers/HomeCtrl.js
 /**
  * Controller for the home page.
  *
- * @controller HomeCtrl
+ * @class HomeCtrl
  */
 app.controller('HomeCtrl', function ()
 {
@@ -4040,14 +4041,14 @@ Path: /controllers/LeagueCreateCtrl.js
 /**
  * Controller for creating a league.
  *
- * @controller LeagueCreateCtrl
+ * @class LeagueCreateCtrl
  */
 app.controller('LeagueCreateCtrl', function ($scope, $location, CallModel)
 {
 	/**
 	 * The text that goes in the edit page.
 	 *
-	 * @var $scope.editOrCreate
+	 * @property $scope.editOrCreate
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Create';
@@ -4099,22 +4100,22 @@ Path: /controllers/LeagueCtrl.js
 /**
  * League page controller.
  *
- * @controller LeagueCtrl
+ * @class LeagueCtrl
  */
 app.controller('LeagueCtrl', function ($scope, $http, $location, $routeParams, CallModel)
 {
 	/**
 	 * String that determines which sub page the user is on.
 	 *
-	 * @var $scope.subPage
-	 * type String
+	 * @property $scope.subPage
+	 * @type String
 	 */
 	$scope.subPage = 'table';
 	/**
 	 * Object that contains the table data.
 	 *
-	 * @var $scope.table
-	 * type Object
+	 * @property $scope.table
+	 * @type Object
 	 */
 	$scope.table;
 
@@ -4164,14 +4165,14 @@ Path: /controllers/LeagueEditCtrl.js
 /**
  * Controller for editing a league.
  *
- * @controller LeagueEditCtrl
+ * @class LeagueEditCtrl
  */
 app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routeParams, CallModel)
 {
 	/**
 	 * The text that goes in the edit page.
 	 *
-	 * @var $scope.editOrCreate
+	 * @property $scope.editOrCreate
 	 * @type String
 	 */
 	$scope.editOrCreate = 'Edit';
@@ -4179,21 +4180,21 @@ app.controller('LeagueEditCtrl', function ($scope, $window, $location, $routePar
 	 * Id of the user.
 	 * Used to prevent the user from removing themselves as a league manager.
 	 *
-	 * @var $scope.yourId
+	 * @property $scope.yourId
 	 * @type Integer
 	 */
 	$scope.yourId = $window.sessionStorage.yourId;
 	/**
 	 * Variable that is used to tell the view whether the adding manager dialog is open.
 	 *
-	 * @var $scope.addingManager
+	 * @property $scope.addingManager
 	 * @type Boolean
 	 */
 	$scope.addingManager = false;
 	/**
 	 * Variable that is used to tell the view whether the adding player dialog is open.
 	 *
-	 * @var $scope.addingPlayer
+	 * @property $scope.addingPlayer
 	 * @type Boolean
 	 */
 	$scope.addingPlayer = false;
@@ -4419,7 +4420,7 @@ Path: /controllers/LeagueSearchCtrl.js
 /**
  * Controller used to search for a leauge.
  *
- * @controller UserSearchCtrl
+ * @class UserSearchCtrl
  */
 app.controller('LeagueSearchCtrl', function ($scope, $location)
 {
@@ -4428,7 +4429,7 @@ app.controller('LeagueSearchCtrl', function ($scope, $location)
 	 * Clicked from @directive cpLeagueSearch.
 	 *
 	 * @method $scope.eventClickLeague
-	 * @param leagueId
+	 * @param leagueId {Integer} Id of the league.
 	 */
 	$scope.eventClickLeague = function (leagueId) {
 		$location.path('/league/' + leagueId);
@@ -4444,14 +4445,26 @@ Path: /controllers/LoginCtrl.js
  * Controller for managing user login.
  * Also manages user registering.
  *
- * @controller LoginCtrl
+ * @class LoginCtrl
  */
 app.controller('LoginCtrl', function ($scope, $window, $http, $location, $route, CallModel)
 {
+	/**
+	 * States the success of response.
+	 *
+	 * @property $scope.response
+	 * @type Object
+	 */
 	$scope.response = {
 		success: true
 	};
 
+	/**
+	 * States the success of the response from registering.
+	 *
+	 * @property $scope.responseRegister
+	 * @type Object
+	 */
 	$scope.responseRegister = {
 		success: true
 	};
@@ -4545,7 +4558,7 @@ Path: /controllers/NavCtrl.js
 /**
  * Controller for managing the navbar.
  *
- * @controller NavCtrl
+ * @class NavCtrl
  */
 app.controller('NavCtrl', function ($scope, $window, $location, CallModel)
 {
@@ -4590,14 +4603,14 @@ Path: /controllers/ProfileCtrl.js
 /**
  * Profile page controller.
  *
- * @controller ProfileCtrl
+ * @class ProfileCtrl
  */
 app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, $window, CallModel, RatingChart)
 {
 	/**
 	 * Id of the user.
 	 *
-	 * @var userId
+	 * @property userId
 	 * @type Integer
 	 */
 	var userId;
@@ -4605,14 +4618,14 @@ app.controller('ProfileCtrl', function ($scope, $http, $location, $routeParams, 
 	/**
 	 * Variable for storing the name of the current subpage.
 	 *
-	 * @var $scope.currentSubPage
+	 * @property $scope.currentSubPage
 	 * @type String
 	 */
 	$scope.subPage = 'results';
 	/**
 	 * Is user.
 	 *
-	 * @var $scope.isUser
+	 * @property $scope.isUser
 	 * @type Boolean
 	 */
 	 $scope.isUser = false;
@@ -4712,7 +4725,7 @@ Path: /controllers/ProfileEditCtrl.js
 /**
  * Controller for editing a user.
  *
- * @controller
+ * @class ProfileEditCtrl
  */
 app.controller('ProfileEditCtrl', function ($scope, $window, $location, CallModel)
 {
@@ -4798,49 +4811,49 @@ Path: /controllers/ResultEnterCtrl.js
 /**
  * Controller that allows a user to input a result.
  *
- * @controller ResultEnterCtrl
+ * @class ResultEnterCtrl
  */
 app.controller('ResultEnterCtrl', function ($scope, $routeParams, $location, CallModel, DateFormat)
 {
 	/**
 	 * The id of the tournament as defined by the route parametre.
 	 *
-	 * @var $scope.tournamentId
+	 * @property $scope.tournamentId
 	 * @type Integer
 	 */
 	$scope.tournamentId = $routeParams.tournamentId;
 	/**
 	 * Name of the tournament.
 	 *
-	 * @var $scope.tournamentName
+	 * @property $scope.tournamentName
 	 * @type String
 	 */
 	$scope.tournamentName;
 	/**
 	 * Player 1 data object.
 	 *
-	 * @var $scope.player1
+	 * @property $scope.player1
 	 * @type Integer
 	 */
 	$scope.player1 = {};
 	/**
 	 * Player 2 data object.
 	 *
-	 * @var $scope.player2
+	 * @property $scope.player2
 	 * @type Integer
 	 */
 	$scope.player2 = {};
 	/**
 	 * The date that the result will be entered.
 	 *
-	 * @var $scope.date
+	 * @property $scope.date
 	 * @type String
 	 */
 	$scope.date = DateFormat.getString(Date.now());
 	/**
 	 * Error message, if there is one.
 	 *
-	 * @var $scope.errorMsg
+	 * @property $scope.errorMsg
 	 * @type String
 	 */
 	$scope.errorMsg = '';
@@ -4936,7 +4949,7 @@ Path: /controllers/UserSearchCtrl.js
 /**
  * Controller used to search for a user.
  *
- * @controller UserSearchCtrl
+ * @class UserSearchCtrl
  */
 app.controller('UserSearchCtrl', function ($scope, $location)
 {
@@ -4945,7 +4958,7 @@ app.controller('UserSearchCtrl', function ($scope, $location)
 	 * Clicked from @directive cpUserSearch.
 	 *
 	 * @method $scope.eventClickUser
-	 * @param userId
+	 * @param userId {Integer} Id of the user.
 	 */
 	$scope.eventClickUser = function (userId) {
 		$location.path('/profile/' + userId);
@@ -4961,14 +4974,15 @@ Path: /directives/cpFixtures.js
 /**
  * Directive for displaying fixtures.
  *
- * @directive cpFixtures
+ * @class cpFixtures
  */
 app.directive('cpFixtures', function ($window, CallModel)
 {
 	/**
-	 * Varaibe for storing scope.
+	 * Variable for storing scope.
 	 *
-	 * @var self
+	 * @property self
+	 * @type Object
 	 */
 	var self;
 
@@ -5022,7 +5036,7 @@ Path: /directives/cpLeagueSearch.js
 /**
  * Directive used to search for a tournament.
  *
- * @directive cpLeagueSearch
+ * @class cpLeagueSearch
  */
 app.directive('cpLeagueSearch', function (CallModel)
 {
@@ -5070,14 +5084,14 @@ Path: /directives/cpResult.js
 /**
  * Directive for handling results.
  *
- * @directive cpResult
+ * @class cpResult
  */
 app.directive('cpResult', function ($route, CallModel, DateFormat)
 {
 	/**
 	 * Variable for storing scope.
 	 *
-	 * @var self
+	 * @property self
 	 */
 	var self;
 
@@ -5178,7 +5192,7 @@ Path: /directives/cpUserSearch.js
 /**
  * Directive used to search for a user.
  *
- * @directive cpUserSearch
+ * @class cpUserSearch
  */
 app.directive('cpUserSearch', function (CallModel)
 {
@@ -5226,7 +5240,7 @@ Path: /services/CallModel.js
 /**
  * Factory for calling the PHP models.
  *
- * @factory CallModel
+ * @class CallModel
  */
 app.factory('CallModel', function ($http, $location)
 {
@@ -5307,20 +5321,22 @@ Path: /services/DateFormat.js
 /**
  * Factory that returns the site's format of date.
  *
- * @factory DateFormat
+ * @class DateFormat
  */
 app.factory('DateFormat', function ()
 {
 	/**
 	 * Days of the week for date format.
 	 *
-	 * @var days
+	 * @property days
+	 * @type Array
 	 */
 	var days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 	/**
 	 * Months of the year for date format.
 	 *
-	 * @var months
+	 * @property months
+	 * @type Array
 	 */
 	var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
@@ -5349,41 +5365,41 @@ Path: /services/RatingChart.js
 /**
  * Factory for handling the rating graph.
  *
- * @factory RatingChart
+ * @class RatingChart
  */
 app.factory('RatingChart', function ()
 {
-	/**	 *
-	 * @var ctx
-	 * @private
+	/**
+	 * @property ctx
+	 * @type Object
 	 */
 	var ctx;
 	/**
 	 * Chart object for talking to Chart.JS library.
 	 *
-	 * @var chart
-	 * @private
+	 * @property chart
+	 * @type Object
 	 */
 	var chart;
 	/**
 	 * List of dates corresponding to a rating.
 	 *
-	 * @var dates
-	 * @private
+	 * @property dates
+	 * @type Array
 	 */
 	var dates = [];
 	/**
 	 * List of ratings for the graph.
 	 *
-	 * @var averageRating
-	 * @private
+	 * @property averageRating
+	 * @type Array
 	 */
 	var averageRating = [];
 	/**
 	 * Data object for drawing the chart.
 	 *
-	 * @var data
-	 * @private
+	 * @property data
+	 * @type Object
 	 */
 	var data = {
 		labels: dates,
@@ -5403,8 +5419,8 @@ app.factory('RatingChart', function ()
 	/**
 	 * Configuration for drawing the chart.
 	 *
-	 * @var options
-	 * @private
+	 * @property options
+	 * @type Object
 	 */
 	var options = {
 		scaleShowGridLines : true,

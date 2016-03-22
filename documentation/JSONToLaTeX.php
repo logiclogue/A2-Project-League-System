@@ -10,10 +10,18 @@ class JSONTOLaTeX extends Doc
 	private $data;
 	private $text;
 	private $path = "/home/jordan/workspace/sites/computing-project";
+	private $classes = array();
 
 
 	private function printLine($text) {
 		//$this->text .= $text . "\r\n\n";
+	}
+
+	private function replace($val) {
+		$val = str_replace("_", "\_", $val);
+		$val = str_replace("$", "\\$", $val);
+
+		return $val;
 	}
 
 	private function getModelParams() {
@@ -24,59 +32,100 @@ class JSONTOLaTeX extends Doc
 		$this->printLine($matches[0]);
 	}
 
+	private function printProperty(&$property) {
+		echo "\\texttt{" . $this->replace($property->name) . "}\n\n";
+		echo "{\\scriptsize\n";
+		echo "\\textit{" . $property->description . "}\n\n";
+		echo "Type: " . $property->type . "\n\n";
+
+		if (isset($property->access)) {
+			echo "Access: " . $property->access . "\n\n";
+		}
+
+		echo "Line: " . $property->line . "\n\n";
+		echo "}\n";
+	}
+
+	private function printMethod(&$method) {
+		// Print title
+		echo "\\texttt{" . $this->replace($method->name) . "(";
+
+		// Print params in title
+		if (isset($method->params)) {
+			foreach ($method->params as $key => $param) {
+				echo $this->replace($param->name);
+
+				if (count($method->params) != $key + 1) {
+					echo ", ";
+				}
+			}
+		}
+
+		echo ")}\n\n";
+
+		echo "{\\scriptsize\n";
+		echo "\\textit{" . $this->replace($method->description) . "}\n\n";
+
+		if (isset($method->access)) {
+			echo "Access: " . $method->access . "\n\n";
+		}
+		
+		echo "}\n\n";
+	}
+
+	private function printClass(&$class) {
+		$properties = $class->classitems["property"];
+		$methods = $class->classitems["method"];
+
+		echo "\\textit{" . $class->description . "}\n\n";
+		echo "Page \pageref{" . $class->file_name . "}\n\n";
+		echo "File " . str_replace($this->path, "", $class->file) . "\n\n";
+
+		if (isset($class->extends)) {
+			echo "Extends \\texttt{" . $class->extends . "}\n\n";
+		}
+
+		// Properties
+		foreach ($properties as $key => &$property) {
+			if ($key == 0) {
+				echo "\\textbf{Properties:}\n\n";
+			}
+
+			$this->printProperty($property);
+		}
+
+		// Methods
+		foreach ($methods as $key => &$method) {
+			if ($key == 0) {
+				echo "\\textbf{Methods:}\n\n";
+			}
+
+			$this->printMethod($method);
+		}
+	}
+
 	private function getClasses() {
-		foreach ($this->data->classes as &$class) {
-			$class->file = str_replace($this->path, "", $class->file);
+		foreach ($this->classes as $class_type => $classes) {
+			echo "\subsection{" . $class_type . "}\n";
 
-			$this->printLine("## " . $class->name);
-			$this->printLine("*" . $class->description . "*");
-			$this->printLine("Line: " . $class->line . " in file " . $class->file);
-			$this->printLine("Extends: " . $class->extends);
+			foreach ($classes as $class) {
+				echo "\subsubsection{" . $class->name . "}\n";
 
-			if (count($class->classitems["property"]) != 0) {
-				$this->printLine("### Properties:");
+				$this->printClass($class);
 			}
+		}
+	}
 
-			foreach ($class->classitems["property"] as &$property) {
-				$this->printLine("#### " . $property->name);
+	private function sortClasses() {
+		foreach ($this->data->classes as $key => $class) {
+			$local_path = str_replace($this->path, "", $class->file);
+			$exploded_path = explode("/", $local_path);
+			$class_type = $exploded_path[1];
+			$file_name = $exploded_path[2];
 
-				$this->printLine("*" . $property->description . "*");
-				$this->printLine("Line: " . $property->line);
-				$this->printLine("Access: " . $property->access);
-				$this->printLine("Type: " . $property->type);
-			}
+			$class->file_name = $file_name;
 
-			if (count($class->classitems["method"]) != 0) {
-				$this->printLine("### Methods:");
-			}
-
-			foreach ($class->classitems["method"] as &$method) {
-				$params = "";
-
-				foreach ($method->params as &$param) {
-					if ($params != "") {
-						$params .= ", ";
-					}
-
-					$params .= $param->name;
-				}
-
-				$this->printLine("#### " . $method->name . "($params)");
-
-				$this->printLine("*" . $method->description . "*");
-				$this->printLine("Line: " . $method->line);
-				$this->printLine("Access: " . $method->access);
-
-				if (count($method->params) != 0) {
-					$this->printLine("**Parameters**");
-				}
-
-				foreach ($method->params as &$param) {
-					$this->printLine("* " . $param->name . ": " . $param->type . " (*" . $param->description . "*)");
-				}
-			}
-
-			$this->printLine("<hr>");
+			$this->classes[$this->class_type_name[$class_type]][] = $class;
 		}
 	}
 
@@ -92,7 +141,7 @@ class JSONTOLaTeX extends Doc
 		$parsedown = new Parsedown();
 
 		echo $parsedown->text($this->text);
-		//echo $this->text;
+		echo $this->text;
 	}
 
 
@@ -101,9 +150,12 @@ class JSONTOLaTeX extends Doc
 		$this->data = json_decode($this->file);
 
 		$this->getClassItems();
-		$this->getClasses();
+		$this->sortClasses();
 		//$this->getModelParams();
-		$this->markdownToHTML();
+		$this->getClasses();
+		//$this->markdownToHTML();
+
+		//print_r($this->classes);
 	}
 }
 
