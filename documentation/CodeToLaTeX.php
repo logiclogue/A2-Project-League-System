@@ -37,7 +37,7 @@ class CodeToLaTeX extends Doc
 		foreach ($val as $key => $value) {
 			if ($level == 1) {
 				echo "\\newpage\n";
-				echo "\subsection{" . $key . "}\n";
+				echo "\subsection{" . $key . "}\label{" . $key . "}\n";
 			}
 			else {
 				echo "\subsubsection{" . $key . "}\n";
