@@ -9,8 +9,10 @@ the following steps. The following will show you how to install on a
 GNU/Linux based server; the steps should mostly be the same for other
 operating systems.
 
-Requirements: - Git - PHP version 5.5 or later - MySQL version 14 or
-later
+Requirements:
+ - Git
+ - PHP version 5.5 or later
+ - MySQL version 14 or later
 
 The first step is to clone the repository from GitHub. You must be in
 the `var/www/` directory, or elsewhere depending on how your webserver
